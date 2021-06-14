@@ -307,31 +307,10 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
         // Load the MethodInfo instance for the given class and method onto the stack.
         // The MethodInfo will be cached in the AppDomain to improve performance if useCache is true.
         // The function id is used as a tie-breaker for overloaded methods when computing the key name for the app domain cache.
-        void LoadMethodInfo(xstring_t assemblyPath, xstring_t className, xstring_t methodName, uintptr_t functionId, std::function<void()> argumentTypesLambda, bool useCache)
+        void LoadMethodInfo(xstring_t assemblyPath, xstring_t className, xstring_t methodName, std::function<void()> argumentTypesLambda)
         {
-            if (useCache)
-            {
-                auto keyName = className + _X(".") + methodName + _X("_") + to_xstring((unsigned long)functionId);
-                _instructions->AppendString(keyName);
-                _instructions->AppendString(assemblyPath);
-                _instructions->AppendString(className);
-                _instructions->AppendString(methodName);
-                if (argumentTypesLambda == NULL)
-                {
-                    _instructions->Append(CEE_LDNULL);
-                }
-                else
-                {
-                    argumentTypesLambda();
-                }
-                
-                _instructions->Append(CEE_CALL, _X("class [mscorlib]System.Reflection.MethodInfo [mscorlib]System.CannotUnloadAppDomainException::GetMethodFromAppDomainStorageOrReflectionOrThrow(string,string,string,string,class [mscorlib]System.Type[])"));
-            }
-            else
-            {
-                LoadType(assemblyPath, className);
-                LoadMethodInfoFromType(methodName, argumentTypesLambda);
-            }
+            LoadType(assemblyPath, className);
+            LoadMethodInfoFromType(methodName, argumentTypesLambda);
         }
 
         // Creates an array of elementLoadLanbdas.size() and loads the elements into the array

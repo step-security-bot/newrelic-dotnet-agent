@@ -38,20 +38,6 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter {
 
         void Initialize()
         {
-            // We have to instrument mscorlib to add our hooks.  Yes, this is a little brittle
-            // and it should probably live closer to the code that mucks with these methods.
-            _instrumentedAssemblies->emplace(_X("mscorlib"));
-            _instrumentedTypes->emplace(_X("System.CannotUnloadAppDomainException"));
-            _instrumentedFunctionNames->emplace(_X("GetAppDomainBoolean"));
-            _instrumentedFunctionNames->emplace(_X("GetThreadLocalBoolean"));
-            _instrumentedFunctionNames->emplace(_X("SetThreadLocalBoolean"));
-            _instrumentedFunctionNames->emplace(_X("GetMethodFromAppDomainStorageOrReflectionOrThrow"));
-            _instrumentedFunctionNames->emplace(_X("GetMethodFromAppDomainStorage"));
-            _instrumentedFunctionNames->emplace(_X("GetMethodViaReflectionOrThrow"));
-            _instrumentedFunctionNames->emplace(_X("GetTypeViaReflectionOrThrow"));
-            _instrumentedFunctionNames->emplace(_X("LoadAssemblyOrThrow"));
-            _instrumentedFunctionNames->emplace(_X("StoreMethodInAppDomainStorageOrThrow"));
-
             auto instrumentationPoints = _instrumentationConfiguration->GetInstrumentationPoints();
 
             for (auto instrumentationPoint : *instrumentationPoints) {
@@ -104,7 +90,7 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter {
 
             InstrumentationSettingsPtr instrumentationSettings = std::make_shared<InstrumentationSettings>(_instrumentationConfiguration, _corePath);
 
-            if (_helperInstrumentor->Instrument(function, instrumentationSettings) || _apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {
+            if (_apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {
             }
         }
 
