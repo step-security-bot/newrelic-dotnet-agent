@@ -277,7 +277,7 @@ namespace NewRelic.Agent.Core.Attributes
         }
     }
 
-    public class AttributeValueCollection : AttributeValueCollectionBase<AttributeValue>
+    public class AttributeValueCollection : AttributeValueCollectionBase<BasicAttributeValue>
     {
         public AttributeValueCollection(IAttributeValueCollection fromCollection, params AttributeDestinations[] targetModelTypes) : base(fromCollection, targetModelTypes)
         {
@@ -287,64 +287,64 @@ namespace NewRelic.Agent.Core.Attributes
         {
         }
 
-        private List<AttributeValue> _attribValuesIntrinsicAttribs;
-        private List<AttributeValue> _attribValuesAgentAttribs;
-        private List<AttributeValue> _attribValuesUserAttribs;
+        private List<BasicAttributeValue> _attribValuesIntrinsicAttribs;
+        private List<BasicAttributeValue> _attribValuesAgentAttribs;
+        private List<BasicAttributeValue> _attribValuesUserAttribs;
 
-        private List<AttributeValue> GetAttribValues(AttributeClassification classification, bool withCreate)
+        private List<BasicAttributeValue> GetAttribValues(AttributeClassification classification, bool withCreate)
         {
             switch (classification)
             {
                 case AttributeClassification.Intrinsics:
                     return withCreate
-                        ? _attribValuesIntrinsicAttribs ?? (_attribValuesIntrinsicAttribs = new List<AttributeValue>())
+                        ? _attribValuesIntrinsicAttribs ?? (_attribValuesIntrinsicAttribs = new List<BasicAttributeValue>())
                         : _attribValuesIntrinsicAttribs;
 
                 case AttributeClassification.AgentAttributes:
                     return withCreate
-                        ? _attribValuesAgentAttribs ?? (_attribValuesAgentAttribs = new List<AttributeValue>())
+                        ? _attribValuesAgentAttribs ?? (_attribValuesAgentAttribs = new List<BasicAttributeValue>())
                         : _attribValuesAgentAttribs;
 
                 case AttributeClassification.UserAttributes:
                     return withCreate
-                        ? _attribValuesUserAttribs ?? (_attribValuesUserAttribs = new List<AttributeValue>())
+                        ? _attribValuesUserAttribs ?? (_attribValuesUserAttribs = new List<BasicAttributeValue>())
                         : _attribValuesUserAttribs;
             }
 
             return null;
         }
 
-        protected override IEnumerable<AttributeValue> GetAttribValuesImpl(AttributeClassification classification)
+        protected override IEnumerable<BasicAttributeValue> GetAttribValuesImpl(AttributeClassification classification)
         {
             var dic = GetAttribValues(classification, false);
 
             return dic == null
-                ? Enumerable.Empty<AttributeValue>()
+                ? Enumerable.Empty<BasicAttributeValue>()
                 : dic;
         }
 
-        protected override void RemoveItemsImpl(IEnumerable<AttributeValue> itemsToRemove)
+        protected override void RemoveItemsImpl(IEnumerable<BasicAttributeValue> itemsToRemove)
         {
 
             if (_attribValuesIntrinsicAttribs != null)
             {
-                Interlocked.Exchange(ref _attribValuesIntrinsicAttribs, new List<AttributeValue>(_attribValuesIntrinsicAttribs.Except(itemsToRemove)));
+                Interlocked.Exchange(ref _attribValuesIntrinsicAttribs, new List<BasicAttributeValue>(_attribValuesIntrinsicAttribs.Except(itemsToRemove)));
             }
 
             if (_attribValuesAgentAttribs != null)
             {
-                Interlocked.Exchange(ref _attribValuesAgentAttribs, new List<AttributeValue>(_attribValuesAgentAttribs.Except(itemsToRemove)));
+                Interlocked.Exchange(ref _attribValuesAgentAttribs, new List<BasicAttributeValue>(_attribValuesAgentAttribs.Except(itemsToRemove)));
             }
 
             if (_attribValuesUserAttribs != null)
             {
-                Interlocked.Exchange(ref _attribValuesUserAttribs, new List<AttributeValue>(_attribValuesUserAttribs.Except(itemsToRemove)));
+                Interlocked.Exchange(ref _attribValuesUserAttribs, new List<BasicAttributeValue>(_attribValuesUserAttribs.Except(itemsToRemove)));
             }
         }
 
         protected override bool SetValueImpl(IAttributeValue attribVal)
         {
-            var attribValTyped = attribVal as AttributeValue;
+            var attribValTyped = attribVal as BasicAttributeValue;
             if (attribValTyped != null)
             {
                 return SetValueImplInternal(attribValTyped);
@@ -370,7 +370,7 @@ namespace NewRelic.Agent.Core.Attributes
                 return false;
             }
 
-            var attribVal = new AttributeValue(attribDef);
+            var attribVal = new BasicAttributeValue(attribDef);
             attribVal.Value = value;
 
             return SetValueImplInternal(attribVal);
@@ -383,7 +383,7 @@ namespace NewRelic.Agent.Core.Attributes
                 return false;
             }
 
-            var attribVal = new AttributeValue(attribDef);
+            var attribVal = new BasicAttributeValue(attribDef);
             attribVal.LazyValue = lazyValue;
 
             return SetValueImplInternal(attribVal);
@@ -391,7 +391,7 @@ namespace NewRelic.Agent.Core.Attributes
 
         private object syncObj = new object();
 
-        private bool SetValueImplInternal(AttributeValue attribVal)
+        private bool SetValueImplInternal(BasicAttributeValue attribVal)
         {
             if (IsImmutable)
             {
