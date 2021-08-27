@@ -3707,7 +3707,7 @@ namespace NewRelic.Agent.Core.Config
         {
             this.attributesField = new configurationSpanEventsAttributes();
             this.enabledField = true;
-            this.maximumSamplesStored = 1000;
+            this.maximumSamplesStoredField = 1000;
         }
         
         public configurationSpanEventsAttributes attributes
