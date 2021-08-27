@@ -887,13 +887,7 @@ namespace NewRelic.Agent.Core.Configuration
             }
         }
 
-        public TimeSpan SpanEventsHarvestCycle
-        {
-            get
-            {
-                return ServerOverrides(_serverConfiguration.EventHarvestConfig?.SpanEventHarvestCycle(), TimeSpan.FromMinutes(1));
-            }
-        }
+        public TimeSpan SpanEventsHarvestCycle => ServerOverrides(_serverConfiguration.SpanEventHarvestConfig?.HarvestCycle, TimeSpan.FromMinutes(1));
 
         public bool SpanEventsAttributesEnabled => CaptureAttributes && _localConfiguration.spanEvents.attributes.enabled;
 

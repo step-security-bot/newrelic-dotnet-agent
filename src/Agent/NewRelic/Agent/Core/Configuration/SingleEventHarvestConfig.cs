@@ -15,5 +15,7 @@ namespace NewRelic.Agent.Core.Configuration
 
         [JsonProperty("harvest_limit")]
         public int HarvestLimit { get; set; }
+
+        public TimeSpan? HarvestCycle => ReportPeriodMs.HasValue ? TimeSpan.FromMilliseconds(ReportPeriodMs.Value) : (TimeSpan?)null;
     }
 }
