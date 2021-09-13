@@ -6,7 +6,6 @@
     <AssemblyName>NewRelic.Agent.Core</AssemblyName>
     <RootNamespace>NewRelic.Agent.Core</RootNamespace>
     <Description></Description>
-    <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\obj</IntermediateOutputPath>
     <OutputPath>$(MSBuildThisFileDirectory)..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\</OutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
