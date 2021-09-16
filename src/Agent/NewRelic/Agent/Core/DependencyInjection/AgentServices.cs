@@ -123,7 +123,17 @@ namespace NewRelic.Agent.Core.DependencyInjection
             container.Register<IErrorEventAggregator, ErrorEventAggregator>();
             container.Register<ICustomEventAggregator, CustomEventAggregator>();
             container.Register<ISpanEventAggregator, SpanEventAggregator>();
-            container.Register<ISpanEventAggregatorInfiniteTracing, SpanEventAggregatorInfiniteTracing>();
+
+            var infiniteTracingOtlpEndpoint = System.Environment.GetEnvironmentVariable("NEW_RELIC_INFINITE_TRACING_OTLP_ENDPOINT");
+            if (string.IsNullOrEmpty(infiniteTracingOtlpEndpoint))
+            {
+                container.Register<ISpanEventAggregatorInfiniteTracing, SpanEventAggregatorInfiniteTracing>();
+            }
+            else
+            {
+                container.Register<ISpanEventAggregatorInfiniteTracing, SpanEventAggregatorOpenTelemetryProtocol>();
+            }
+
             container.Register<IGrpcWrapper<SpanBatch, RecordStatus>, SpanBatchGrpcWrapper>();
             container.Register<IDelayer, Delayer>();
             container.Register<IDataStreamingService<Span, SpanBatch, RecordStatus>, SpanStreamingService>();
