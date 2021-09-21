@@ -124,8 +124,8 @@ namespace NewRelic.Agent.Core.DependencyInjection
             container.Register<ICustomEventAggregator, CustomEventAggregator>();
             container.Register<ISpanEventAggregator, SpanEventAggregator>();
 
-            var infiniteTracingOtlpEndpoint = System.Environment.GetEnvironmentVariable("NEW_RELIC_INFINITE_TRACING_OTLP_ENDPOINT");
-            if (string.IsNullOrEmpty(infiniteTracingOtlpEndpoint))
+            var otlpTracesEndpoint = System.Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT");
+            if (string.IsNullOrEmpty(otlpTracesEndpoint))
             {
                 container.Register<ISpanEventAggregatorInfiniteTracing, SpanEventAggregatorInfiniteTracing>();
             }
