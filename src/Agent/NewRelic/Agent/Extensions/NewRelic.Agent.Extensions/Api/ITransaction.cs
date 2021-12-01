@@ -217,6 +217,13 @@ namespace NewRelic.Agent.Api
         void SetCustomTransactionName(string name, TransactionNamePriority priority = TransactionNamePriority.Uri);
 
         /// <summary>
+        /// Set the Request Method for the current transaction (if there is one).
+        /// </summary>
+        /// <param name="requestMethod">The Request Method for this transaction. Must not be null.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        void SetRequestMethod(string requestMethod);
+
+        /// <summary>
         /// Set the URI for the current transaction (if there is one).
         /// </summary>
         /// <param name="uri">The URI for this transaction. Must not be null.</param>
@@ -265,5 +272,7 @@ namespace NewRelic.Agent.Api
         void InsertDistributedTraceHeaders<T>(T carrier, Action<T, string, string> setter);
 
         void AcceptDistributedTraceHeaders<T>(T carrier, Func<T, string, IEnumerable<string>> getter, TransportType transportType);
+
+        ITransaction SetRequestHeaders<T>(T headers, IEnumerable<string> keysToCapture, Func<T, string, string> getter);
     }
 }

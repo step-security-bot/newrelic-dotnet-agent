@@ -77,6 +77,13 @@ namespace NewRelic.Providers.Wrapper.Asp35.IntegratedPipeline
             if (httpContext == null)
                 throw new NullReferenceException("httpContext");
 
+            // Avoid instrumenting OPTIONS pre-flight requests
+            if ("OPTIONS".Equals(httpContext.Request?.HttpMethod, StringComparison.OrdinalIgnoreCase))
+            {
+                agent.Logger.Log(Agent.Extensions.Logging.Level.Finest, "Skipping instrumenting incoming OPTIONS request.");
+                return Delegates.NoOp;
+            }
+
             var requestNotification = Statics.RequestNotificationToStringMap[httpContext.CurrentNotification];
             var lastRequestNotification = httpContext.Items[HttpContextActions.HttpContextSegmentTypeKey] as string;
             if (requestNotification == lastRequestNotification)
@@ -90,6 +97,7 @@ namespace NewRelic.Providers.Wrapper.Asp35.IntegratedPipeline
 
             transaction = TryCreateTransaction(agent, httpContext, requestNotification);
             segment = transaction.StartTransactionSegment(instrumentedMethodCall.MethodCall, requestNotification);
+            segment.AlwaysDeductChildDuration = true;
 
             httpContext.Items[HttpContextActions.HttpContextSegmentKey] = segment;
             httpContext.Items[HttpContextActions.HttpContextSegmentTypeKey] = requestNotification;

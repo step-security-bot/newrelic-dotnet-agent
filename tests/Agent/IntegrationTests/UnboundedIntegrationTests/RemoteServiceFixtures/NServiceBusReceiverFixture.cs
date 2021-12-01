@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
-using DotNet_Msmq_Shared;
 using NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures;
+using NewRelic.Agent.IntegrationTests.Shared.Util;
 using System;
 
 namespace NewRelic.Agent.UnboundedIntegrationTests.RemoteServiceFixtures
@@ -12,7 +12,7 @@ namespace NewRelic.Agent.UnboundedIntegrationTests.RemoteServiceFixtures
     {
         private const string ApplicationDirectoryName = @"NServiceBusReceiverHost";
         private const string ExecutableName = @"NServiceBusReceiverHost.exe";
-        private const string TargetFramework = "net452";
+        private const string TargetFramework = "net462";
 
         public NServiceBusReceiverFixture() : base(new RemoteService(ApplicationDirectoryName, ExecutableName, TargetFramework, ApplicationType.Unbounded, false))
         {

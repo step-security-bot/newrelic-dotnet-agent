@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace NewRelic.Agent.IntegrationTests.DistributedTracing
 {
-    public abstract class DtApiTestBase : IClassFixture<RemoteServiceFixtures.DistributedTracingApiFixture>
+    public abstract class DtApiTestBase : NewRelicIntegrationTest<RemoteServiceFixtures.DistributedTracingApiFixture>
     {
         public enum TracingTestOption
         {
@@ -22,9 +22,7 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
 
         protected readonly TracingTestOption _tracingTestOption;
 
-        public DtApiTestBase(DistributedTracingApiFixture fixture, ITestOutputHelper output,
-            TracingTestOption tracingTestOption
-        )
+        public DtApiTestBase(DistributedTracingApiFixture fixture, ITestOutputHelper output, TracingTestOption tracingTestOption) : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -35,8 +33,6 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
                 setupConfiguration: () =>
                 {
                     _fixture.RemoteApplication.NewRelicConfig.SetLogLevel("finest");
-                    var configModifier = new NewRelicConfigModifier(_fixture.DestinationNewRelicConfigFilePath);
-                    configModifier.SetOrDeleteDistributedTraceEnabled(true);
                 }
             );
 

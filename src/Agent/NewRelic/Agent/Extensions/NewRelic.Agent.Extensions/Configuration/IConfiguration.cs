@@ -14,6 +14,7 @@ namespace NewRelic.Agent.Configuration
         bool AgentEnabled { get; }
         string AgentLicenseKey { get; }
         IEnumerable<string> ApplicationNames { get; }
+        string ApplicationNamesSource { get; }
         bool AutoStartAgent { get; }
         string BrowserMonitoringApplicationId { get; }
         bool BrowserMonitoringAutoInstrument { get; }
@@ -26,6 +27,7 @@ namespace NewRelic.Agent.Configuration
         bool BrowserMonitoringUseSsl { get; }
         string SecurityPoliciesToken { get; }
         bool SecurityPoliciesTokenExists { get; }
+        bool AllowAllRequestHeaders { get; }
         bool CaptureAttributes { get; }
         bool CanUseAttributesIncludes { get; }
         string CanUseAttributesIncludesSource { get; }
@@ -46,7 +48,6 @@ namespace NewRelic.Agent.Configuration
         IEnumerable<string> CaptureBrowserMonitoringAttributesExcludes { get; }
         bool CaptureCustomParameters { get; }
         string CaptureCustomParametersSource { get; }
-        bool CaptureRequestParameters { get; }
         string CollectorHost { get; }
         int CollectorPort { get; }
         bool CollectorSendDataOnExit { get; }
@@ -71,12 +72,14 @@ namespace NewRelic.Agent.Configuration
         string InfiniteTracingTraceObserverPort { get; }
         string InfiniteTracingTraceObserverSsl { get; }
         float? InfiniteTracingTraceObserverTestFlaky { get; }
+        int? InfiniteTracingTraceObserverTestFlakyCode { get; }
         int? InfiniteTracingTraceObserverTestDelayMs { get; }
         int InfiniteTracingQueueSizeSpans { get; }
         int InfiniteTracingPartitionCountSpans { get; }
         int InfiniteTracingBatchSizeSpans { get; }
         int InfiniteTracingTraceTimeoutMsConnect { get; }
         int InfiniteTracingTraceTimeoutMsSendData { get; }
+        int InfiniteTracingExitTimeoutMs { get; }
         string PrimaryApplicationId { get; }
         string TrustedAccountKey { get; }
         string AccountId { get; }
@@ -90,9 +93,8 @@ namespace NewRelic.Agent.Configuration
         IEnumerable<MatchRule> ExpectedStatusCodes { get; }
         IEnumerable<string> ExpectedErrorClassesForAgentSettings { get; }
         IDictionary<string, IEnumerable<string>> ExpectedErrorMessagesForAgentSettings { get; }
-        string ExpectedErrorStatusCodesForAgentSettings { get; }
+        IEnumerable<string> ExpectedErrorStatusCodesForAgentSettings { get; }
         IDictionary<string, IEnumerable<string>> ExpectedErrorsConfiguration { get; }
-        IEnumerable<string> IgnoreErrorsForAgentSettings { get; }
         IDictionary<string, IEnumerable<string>> IgnoreErrorsConfiguration { get; }
         IEnumerable<string> IgnoreErrorClassesForAgentSettings { get; }
         IDictionary<string, IEnumerable<string>> IgnoreErrorMessagesForAgentSettings { get; }
@@ -109,6 +111,7 @@ namespace NewRelic.Agent.Configuration
         string Labels { get; }
         IEnumerable<RegexRule> MetricNameRegexRules { get; }
         string NewRelicConfigFilePath { get; }
+        string AppSettingsConfigFilePath { get; }
         string ProxyHost { get; }
         string ProxyUriPath { get; }
         int ProxyPort { get; }

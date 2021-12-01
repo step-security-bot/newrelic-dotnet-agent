@@ -15,7 +15,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.CatOutbound
 {
     [NetFrameworkTest]
-    public class CatEnabledChainedRequests : IClassFixture<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
+    public class CatEnabledChainedRequests : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
 
         private RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;
@@ -23,7 +23,7 @@ namespace NewRelic.Agent.IntegrationTests.CatOutbound
 
         private HttpResponseHeaders _responseHeaders;
 
-        public CatEnabledChainedRequests(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output)
+        public CatEnabledChainedRequests(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -35,9 +35,7 @@ namespace NewRelic.Agent.IntegrationTests.CatOutbound
                     var configModifier = new NewRelicConfigModifier(configPath);
 
                     configModifier.ForceTransactionTraces();
-
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration" }, "crossApplicationTracingEnabled", "true");
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration", "crossApplicationTracer" }, "enabled", "true");
+                    configModifier.EnableCat();
                 },
                 exerciseApplication: () =>
                 {

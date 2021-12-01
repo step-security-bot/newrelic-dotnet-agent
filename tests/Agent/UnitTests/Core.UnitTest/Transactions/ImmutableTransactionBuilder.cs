@@ -16,9 +16,7 @@ namespace NewRelic.Agent.Core.Transactions
 {
     public class TestImmutableTransactionMetadata : IImmutableTransactionMetadata
     {
-        public KeyValuePair<string, string>[] RequestParameters { get; }
-        public KeyValuePair<string, object>[] UserAttributes { get; }
-
+        public string RequestMethod { get; }
 
         public string Uri { get; }
         public string OriginalUri { get; }
@@ -27,6 +25,8 @@ namespace NewRelic.Agent.Core.Transactions
         public TimeSpan? QueueTime { get; }
 
         public int? HttpResponseStatusCode { get; }
+
+        public AttributeValueCollection UserAndRequestAttributes { get; }
 
         public IEnumerable<string> CrossApplicationAlternatePathHashes { get; }
 
@@ -59,8 +59,7 @@ namespace NewRelic.Agent.Core.Transactions
             string originalUri,
             string referrerUri,
             TimeSpan? queueTime,
-            ConcurrentDictionary<string, string> requestParameters,
-            ConcurrentDictionary<string, object> userAttributes,
+            AttributeValueCollection userAndRequestAttributes,
             ITransactionErrorState transactionErrorState,
             int? httpResponseStatusCode,
             int? httpResponseSubStatusCode,
@@ -84,9 +83,7 @@ namespace NewRelic.Agent.Core.Transactions
             ReferrerUri = referrerUri;
             QueueTime = queueTime;
 
-            // The following must use ToArray because ToArray is thread safe on a ConcurrentDictionary.
-            RequestParameters = requestParameters.ToArray();
-            UserAttributes = userAttributes.ToArray();
+            UserAndRequestAttributes = userAndRequestAttributes;
 
             ReadOnlyTransactionErrorState = transactionErrorState;
 
@@ -250,8 +247,7 @@ namespace NewRelic.Agent.Core.Transactions
                 originalUri: "originalUri",
                 referrerUri: "referrerUri",
                 queueTime: new TimeSpan(1),
-                requestParameters: new ConcurrentDictionary<string, string>(),
-                userAttributes: new ConcurrentDictionary<string, object>(),
+                userAndRequestAttributes: new AttributeValueCollection(AttributeValueCollection.AllTargetModelTypes),
                 transactionErrorState: _transactionErrorState,
                 httpResponseStatusCode: 200,
                 httpResponseSubStatusCode: 201,
@@ -268,7 +264,7 @@ namespace NewRelic.Agent.Core.Transactions
                 syntheticsMonitorId: "syntheticsMonitorId",
                 isSynthetics: false,
                 hasCatResponseHeaders: false,
-                priority: _priority);
+                priority: _priority);;
 
             var attribDefSvc = new AttributeDefinitionService((f) => new AttributeDefinitions(f));
             return new ImmutableTransaction(_transactionName, _segments, metadata, _startTime, _duration, _responseTime, _transactionGuid, true, true, false, 0.5f, _distributedTraceSampled, _distributedTraceTraceId, _tracingState, attribDefSvc.AttributeDefs);

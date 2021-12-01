@@ -6,9 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using Microsoft.Owin;
-using System.Linq;
 using NewRelic.Agent.Api;
-using NewRelic.Agent.Api.Experimental;
 
 namespace NewRelic.Providers.Wrapper.Owin
 {
@@ -36,6 +34,16 @@ namespace NewRelic.Providers.Wrapper.Owin
                 transaction.DetachFromPrimary();
 
                 segment = SetupSegment(transaction, context);
+                segment.AlwaysDeductChildDuration = true;
+
+                if (_agent.Configuration.AllowAllRequestHeaders)
+                {
+                    transaction.SetRequestHeaders(context.Request.Headers, context.Request.Headers.Keys, GetHeaderValue);
+                }
+                else
+                {
+                    transaction.SetRequestHeaders(context.Request.Headers, Statics.DefaultCaptureHeaders, GetHeaderValue);
+                }
 
                 ProcessHeaders(context);
 
@@ -74,6 +82,7 @@ namespace NewRelic.Providers.Wrapper.Owin
                 transactionDisplayName: path,
                 doNotTrackAsUnitOfWork: true);
 
+            transaction.SetRequestMethod(request.Method);
             transaction.SetUri(string.IsNullOrEmpty(request.Path.Value) ? "/Unknown" : request.Path.Value);
 
             if (request.QueryString.HasValue)
@@ -116,6 +125,12 @@ namespace NewRelic.Providers.Wrapper.Owin
             var segment = transaction.StartTransactionSegment(methodCall, "Owin Middleware Pipeline");
             return segment;
         }
+
+        private string GetHeaderValue(IHeaderDictionary headers, string key)
+        {
+            return headers[key];
+        }
+
 
         private void EndTransaction(ISegment segment, ITransaction transaction, IOwinContext owinContext, Exception appException)
         {

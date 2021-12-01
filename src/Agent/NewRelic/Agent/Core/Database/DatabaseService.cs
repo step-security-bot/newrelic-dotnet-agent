@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
-using NewRelic.Agent.Core.AgentHealth;
 using NewRelic.Agent.Core.Events;
 using NewRelic.Agent.Core.Utilities;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
@@ -20,10 +19,10 @@ namespace NewRelic.Agent.Core.Database
         private SqlObfuscator _sqlObfuscator;
         private readonly CacheByDatastoreVendor<string, string> _cache;
 
-        public DatabaseService(ICacheStatsReporter cacheStatsReporter)
+        public DatabaseService()
         {
-            _sqlObfuscator = SqlObfuscator.GetSqlObfuscator(_configuration.TransactionTracerEnabled, _configuration.TransactionTracerRecordSql);
-            _cache = new CacheByDatastoreVendor<string, string>("SqlObfuscationCache", cacheStatsReporter);
+            _sqlObfuscator = SqlObfuscator.GetSqlObfuscator(_configuration.TransactionTracerRecordSql);
+            _cache = new CacheByDatastoreVendor<string, string>("SqlObfuscationCache");
         }
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace NewRelic.Agent.Core.Database
             // It is *CRITICAL* that this method never do anything more complicated than clearing data and starting and ending subscriptions.
             // If this method ends up trying to send data synchronously (even indirectly via the EventBus or RequestBus) then the user's application will deadlock (!!!).
 
-            _sqlObfuscator = SqlObfuscator.GetSqlObfuscator(_configuration.TransactionTracerEnabled, _configuration.TransactionTracerRecordSql);
+            _sqlObfuscator = SqlObfuscator.GetSqlObfuscator(_configuration.TransactionTracerRecordSql);
             _cache.SetCapacity(_configuration.DatabaseStatementCacheCapcity);
         }
     }

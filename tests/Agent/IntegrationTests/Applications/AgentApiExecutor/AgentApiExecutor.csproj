@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>net451</TargetFramework>
+    <TargetFramework>net462</TargetFramework>
     <AssemblyName>NewRelic.Agent.IntegrationTests.Applications.AgentApiExecutor</AssemblyName>
     <RootNamespace>NewRelic.Agent.IntegrationTests.Applications.AgentApiExecutor</RootNamespace>
     <OutputType>exe</OutputType>
@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="NewRelic.Agent.Api" Version="8.15.455" />
+    <PackageReference Include="NewRelic.Agent.Api" Version="8.41.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
 using NewRelic.Testing.Assertions;
@@ -19,17 +20,18 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
     /// Files: Integration.Testing.RenameOriginalXmlFileTest.xml, Integration.Testing.RenameTargetXmlFileTest.xml
     /// </summary>
     [NetCoreTest]
-    public class RejitRenameFile : IClassFixture<AspNetCoreReJitMvcApplicationFixture>
+    public abstract class RejitRenameFileBase<TFixture> : NewRelicIntegrationTest<TFixture>
+        where TFixture:AspNetCoreReJitMvcApplicationFixture
     {
         private readonly AspNetCoreReJitMvcApplicationFixture _fixture;
 
         private readonly string _renameOriginalFileFilePath;
 
-        public RejitRenameFile(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+        protected RejitRenameFileBase(TFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
 
-            _renameOriginalFileFilePath = _fixture.RemoteApplication.DestinationExtensionsDirectoryPath + @"\Integration.Testing.RenameOriginalXmlFileTest.xml";
+            _renameOriginalFileFilePath = Path.Combine(_fixture.RemoteApplication.DestinationExtensionsDirectoryPath, "Integration.Testing.RenameOriginalXmlFileTest.xml");
 
             _fixture.TestLogger = output;
             _fixture.Actions(
@@ -46,7 +48,7 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
                     _fixture.InitializeApp();
 
                     _fixture.TestRenameFile();
-                    var renameTargetFileFilePath = _fixture.RemoteApplication.DestinationExtensionsDirectoryPath + @"\Integration.Testing.RenameTargetXmlFileTest.xml";
+                    var renameTargetFileFilePath = Path.Combine(_fixture.RemoteApplication.DestinationExtensionsDirectoryPath, "Integration.Testing.RenameTargetXmlFileTest.xml");
                     CommonUtils.RenameFile(_renameOriginalFileFilePath, renameTargetFileFilePath, TimeSpan.FromSeconds(5));
                     _fixture.AgentLog.WaitForLogLine(AgentLogBase.InstrumentationRefreshFileWatcherComplete, TimeSpan.FromMinutes(1));
                     _fixture.TestRenameFile();
@@ -60,27 +62,27 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
+                //transactions
+                new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"WebTransaction/Custom/MyCustomRenameMetricName", callCount = 2 },
 
-				// Unscoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
+                // Unscoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomRenameMetricName", callCount = 2 },
                 new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetRenameFile", callCount = 2},
 
-				// Scoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
+                // Scoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomRenameMetricName", metricScope = "WebTransaction/Custom/MyCustomRenameMetricName", callCount = 2 }
             };
 
             var notExpectedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/RejitController/GetRenameFile" },
+                //transactions
+                new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/RejitController/GetRenameFile" },
 
-				// Scoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetRenameFile", metricScope = "WebTransaction/MVC/RejitController/GetRenameFile" }
+                // Scoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetRenameFile", metricScope = "WebTransaction/MVC/RejitController/GetRenameFile" }
             };
 
             var metrics = CommonUtils.GetMetrics(_fixture.AgentLog);
@@ -93,7 +95,15 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         }
     }
 
-    public class RejitRenameFileWithTieredCompilation : RejitRenameFile, IClassFixture<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
+    public class RejitRenameFile : RejitRenameFileBase<AspNetCoreReJitMvcApplicationFixture>
+    {
+        public RejitRenameFile(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+            : base(fixture, output)
+        {
+        }
+    }
+
+    public class RejitRenameFileWithTieredCompilation : RejitRenameFileBase<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
     {
         public RejitRenameFileWithTieredCompilation(AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation fixture, ITestOutputHelper output)
             : base(fixture, output)

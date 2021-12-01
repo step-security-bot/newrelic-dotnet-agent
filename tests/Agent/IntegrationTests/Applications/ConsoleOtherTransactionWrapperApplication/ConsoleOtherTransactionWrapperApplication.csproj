@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleOtherTransactionWrapperApplication</RootNamespace>
     <AssemblyName>ConsoleOtherTransactionWrapperApplication</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NewRelic.Agent.Api">
-      <Version>8.14.222</Version>
+      <Version>8.41.1</Version>
     </PackageReference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

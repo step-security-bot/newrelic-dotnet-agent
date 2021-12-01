@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Net;
 using System.Reflection;
 using System.Threading;
@@ -15,7 +16,8 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
     public enum ApplicationType
     {
         Bounded,
-        Unbounded
+        Unbounded,
+        Shared
     }
 
     public abstract class RemoteApplication : IDisposable
@@ -26,7 +28,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         private static readonly string RepositoryRootPath = Path.GetFullPath(Path.Combine(AssemblyBinPath, "..", "..", "..", "..", "..","..",".."));
 
-        protected static readonly string SourceIntegrationTestsSolutionDirectoryPath = Path.Combine(RepositoryRootPath, "tests\\Agent\\IntegrationTests");
+        protected static readonly string SourceIntegrationTestsSolutionDirectoryPath = Path.Combine(RepositoryRootPath, "tests", "Agent", "IntegrationTests");
 
         public readonly string SourceApplicationsDirectoryPath;
 
@@ -43,7 +45,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 var homeRootPath = Environment.GetEnvironmentVariable("NR_DEV_HOMEROOT");
                 if (!string.IsNullOrWhiteSpace(homeRootPath) && Directory.Exists(homeRootPath))
                 {
-                    _sourceNewRelicHomeDirectoryPath = $@"{homeRootPath}\newrelichome_x64";
+                    _sourceNewRelicHomeDirectoryPath = Path.Combine(homeRootPath, "newrelichome_x64");
                     return _sourceNewRelicHomeDirectoryPath;
                 }
 
@@ -67,13 +69,15 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 }
 
                 var homeRootPath = Environment.GetEnvironmentVariable("NR_DEV_HOMEROOT");
+
+                var homeDirName = Utilities.RuntimeHomeDirName;
                 if (!string.IsNullOrWhiteSpace(homeRootPath) && Directory.Exists(homeRootPath))
                 {
-                    _sourceNewRelicHomeCoreClrDirectoryPath = $@"{homeRootPath}\newrelichome_x64_coreclr";
+                    _sourceNewRelicHomeCoreClrDirectoryPath = Path.Combine(homeRootPath, homeDirName);
                     return _sourceNewRelicHomeCoreClrDirectoryPath;
                 }
 
-                _sourceNewRelicHomeCoreClrDirectoryPath = Path.Combine(RepositoryRootPath, "src", "Agent", "newrelichome_x64_coreclr");
+                _sourceNewRelicHomeCoreClrDirectoryPath = Path.Combine(RepositoryRootPath, "src", "Agent", homeDirName);
                 return _sourceNewRelicHomeCoreClrDirectoryPath;
             }
             set
@@ -88,7 +92,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         private static string DestinationWorkingDirectoryRemotePath { get { return EnvironmentVariables.DestinationWorkingDirectoryRemotePath ?? DestinationWorkingDirectoryRemoteDefault; } }
 
-        private static readonly string DestinationWorkingDirectoryRemoteDefault = @"C:\IntegrationTestWorkingDirectory";
+        private static readonly string DestinationWorkingDirectoryRemoteDefault = Utilities.IsLinux ? "/tmp/IntegrationTestWorkingDirectory" : @"C:\IntegrationTestWorkingDirectory";
 
         #endregion
 
@@ -105,11 +109,11 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
             }
         }
 
-        private string DefaultLogFileDirectoryPath
+        public string DefaultLogFileDirectoryPath
         {
             get
             {
-                return Path.Combine(DestinationNewRelicHomeDirectoryPath, "Logs");
+                return Path.Combine(DestinationNewRelicHomeDirectoryPath, Utilities.IsLinux ? "logs" : "Logs");
             }
         }
 
@@ -125,7 +129,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
         /// actual process to the fixture.  This ensures that the remote application
         /// is managed internally.
         /// </summary>
-
+        ///
         protected abstract string ApplicationDirectoryName { get; }
 
         protected abstract string SourceApplicationDirectoryPath { get; }
@@ -135,6 +139,14 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
         public abstract void Start(string commandLineArguments, bool captureStandardOutput = false, bool doProfile = true);
 
         #endregion
+
+        private Type _testClassType;
+        public RemoteApplication SetTestClassType(Type testClassType)
+        {
+            _testClassType = testClassType;
+            return this;
+        }
+
 
         protected IDictionary<string, string> AdditionalEnvironmentVariables;
         public RemoteApplication SetAdditionalEnvironmentVariable(string key, string value)
@@ -164,11 +176,11 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
         {
             get
             {
-                return _uniqueFolderName ?? (_uniqueFolderName = ApplicationDirectoryName + "_" + Guid.NewGuid().ToString());
+                return _uniqueFolderName ?? (_uniqueFolderName = (_testClassType?.Name ?? ApplicationDirectoryName) + "_" + Guid.NewGuid().ToString());
             }
         }
 
-        protected const string HostedWebCoreTargetFramework = "net451";
+        protected const string HostedWebCoreTargetFramework = "net462";
 
         public bool UseTieredCompilation { get; set; } = false;
 
@@ -201,13 +213,9 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         public string DestinationNewRelicExtensionsDirectoryPath { get { return Path.Combine(DestinationNewRelicHomeDirectoryPath, "extensions"); } }
 
-        public AgentLogFile AgentLog
-        {
-            get
-            {
-                return new AgentLogFile(DestinationNewRelicLogFileDirectoryPath, AgentLogFileName, Timing.TimeToConnect);
-            }
-        }
+        private AgentLogFile _agentLogFile;
+
+        public AgentLogFile AgentLog => _agentLogFile ?? (_agentLogFile = new AgentLogFile(DestinationNewRelicLogFileDirectoryPath, AgentLogFileName, Timing.TimeToConnect));
 
         public ProfilerLogFile ProfilerLog { get { return new ProfilerLogFile(DefaultLogFileDirectoryPath, Timing.TimeToConnect); } }
 
@@ -230,13 +238,22 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         protected RemoteApplication(ApplicationType applicationType, bool isCoreApp = false)
         {
-            var applicationsFolder = applicationType == ApplicationType.Bounded
-                ? "Applications"
-                : "UnboundedApplications";
+            string applicationsFolder;
+            switch (applicationType)
+            {
+                case ApplicationType.Unbounded:
+                    applicationsFolder = "UnboundedApplications";
+                    break;
+                case ApplicationType.Shared:
+                    applicationsFolder = "SharedApplications";
+                    break;
+                default:
+                    applicationsFolder = "Applications";
+                    break;
+            }
             SourceApplicationsDirectoryPath = Path.Combine(SourceIntegrationTestsSolutionDirectoryPath, applicationsFolder);
             IsCoreApp = isCoreApp;
-            var keepWorkingDirEnvVarValue = 0;
-            if (int.TryParse(Environment.GetEnvironmentVariable("NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY"), out keepWorkingDirEnvVarValue))
+            if (int.TryParse(Environment.GetEnvironmentVariable("NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY"), out var keepWorkingDirEnvVarValue))
             {
                 KeepWorkingDirectory = (keepWorkingDirEnvVarValue == 1);
             }
@@ -266,8 +283,21 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
             ? RemoteProcess.ExitCode
             : (int?)null;
 
-        public bool IsRunning => (!RemoteProcess?.HasExited) ?? false;
-
+        public bool IsRunning
+        {
+            get 
+            {
+                try
+                {
+                    return (!RemoteProcess?.HasExited) ?? false;
+                }
+                catch (InvalidOperationException)
+                {
+                    // handles Linux behavior where the process info gets cleaned up as soon as the process exits
+                    return false;
+                }
+            }
+        }   
 
         /// <summary>
         /// Determines if the process' standard input will be exposed and thus be manipulated.
@@ -293,20 +323,47 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 return;
             }
 
-            var expectedWaitHandle = "app_server_wait_for_all_request_done_" + Port;
+            var shutdownChannelName = "app_server_wait_for_all_request_done_" + Port;
+            
+            TestLogger?.WriteLine($"[RemoteApplication] Sending shutdown signal to {ApplicationDirectoryName}.");
 
-            try
+            if (Utilities.IsLinux)
             {
-                TestLogger?.WriteLine($"[RemoteApplication] Sending shutdown signal to {ApplicationDirectoryName}.");
-                //The test runner opens an event created by the app server and set it to signal the app server that the test has finished. 
-                var remoteAppEvent = EventWaitHandle.OpenExisting(expectedWaitHandle);
-                remoteAppEvent.Set();
+                using (NamedPipeClientStream pipeClient =
+                    new NamedPipeClientStream(".", shutdownChannelName, PipeDirection.Out))
+                {
+                    try
+                    {
+                        pipeClient.Connect(1000); // 1 second connect timeout
+
+                        using (StreamWriter sw = new StreamWriter(pipeClient))
+                        {
+                            sw.AutoFlush = true;
+                            sw.WriteLine("Okay to shut down now");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TestLogger?.WriteLine($"[RemoteApplication] FAILED sending shutdown signal to named pipe \"{shutdownChannelName}\": {ex}.");
+                        RemoteProcess.Kill();
+                    }
+                }
             }
-            catch (Exception ex)
+            else
             {
-                TestLogger?.WriteLine($"[RemoteApplication] FAILED sending shutdown signal to wait handle \"{expectedWaitHandle}\": {ex}.");
-                RemoteProcess.Kill();
+                try
+                {
+                    //The test runner opens an event created by the app server and set it to signal the app server that the test has finished. 
+                    var remoteAppEvent = EventWaitHandle.OpenExisting(shutdownChannelName);
+                    remoteAppEvent.Set();
+                }
+                catch (Exception ex)
+                {
+                    TestLogger?.WriteLine($"[RemoteApplication] FAILED sending shutdown signal to wait handle \"{shutdownChannelName}\": {ex}.");
+                    RemoteProcess.Kill();
+                }
             }
+
         }
 
         public virtual void Dispose()

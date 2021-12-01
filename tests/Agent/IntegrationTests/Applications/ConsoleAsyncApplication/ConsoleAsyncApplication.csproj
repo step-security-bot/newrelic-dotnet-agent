@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleAsyncApplication</RootNamespace>
     <AssemblyName>ConsoleAsyncApplication</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NewRelic.Agent.Api">
-      <Version>8.2.216</Version>
+      <Version>8.41.1</Version>
     </PackageReference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

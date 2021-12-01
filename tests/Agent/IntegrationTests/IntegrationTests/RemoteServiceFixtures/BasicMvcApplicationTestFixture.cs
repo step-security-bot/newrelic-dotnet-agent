@@ -109,9 +109,9 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
             DownloadStringAndAssertEqual(address, "Worked");
         }
 
-        public void Get404()
+        public void Get404(string Path = "DoesNotExist")
         {
-            var address = $"http://{DestinationServerName}:{Port}/DoesNotExist";
+            var address = $"http://{DestinationServerName}:{Port}/{Path}";
             var webClient = new WebClient();
 
             try
@@ -173,6 +173,10 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
             GetWithHeaders(Enumerable.Empty<KeyValuePair<string, string>>(), "HandleThisRequestInGlobalAsax", $"?statusCode={statusCode}");
         }
 
+        public void Request(HttpMethod method, string action = "Index")
+        {
+            RequestWithHeaders(method, null, Enumerable.Empty<KeyValuePair<string, string>>(), action);
+        }
 
         public string Get()
         {
@@ -210,21 +214,40 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
             return result;
         }
 
-
-        public HttpResponseHeaders GetWithHeaders(IEnumerable<KeyValuePair<string, string>> headers, string action = null, string queryString = null)
+        public HttpResponseHeaders RequestWithHeaders(HttpMethod method, string content, IEnumerable<KeyValuePair<string, string>> headers, string action = null, string queryString = null)
         {
             var address = $"http://{DestinationServerName}:{Port}/Default/{action}{queryString}";
 
             using (var httpClient = new HttpClient())
             {
-                var httpRequestMessage = new HttpRequestMessage { RequestUri = new Uri(address), Method = HttpMethod.Get };
+                var httpRequestMessage = new HttpRequestMessage { RequestUri = new Uri(address), Method = method };
                 foreach (var header in headers)
                     httpRequestMessage.Headers.Add(header.Key, header.Value);
+
+                if (content != null)
+                    httpRequestMessage.Content = new StringContent(content);
 
                 return Task.Run(() => httpClient.SendAsync(httpRequestMessage)).Result.Headers;
             }
         }
 
+        public HttpResponseHeaders GetWithHeaders(IEnumerable<KeyValuePair<string, string>> headers, string action = null, string queryString = null)
+        {
+            return RequestWithHeaders(HttpMethod.Get, null, headers, action, queryString);
+        }
+
+        public HttpResponseHeaders PostWithTestHeaders(IEnumerable<KeyValuePair<string, string>> additionalHeaders = null)
+        {
+            var headers = new Dictionary<string, string>
+            {
+                { "Referer", "http://example.com/" },
+                { "Accept", "text/html" },
+                { "Host", "fakehost" },
+                { "User-Agent", "FakeUserAgent" }
+            };
+
+            return RequestWithHeaders(HttpMethod.Post, "Hello", headers.Concat(additionalHeaders ?? Enumerable.Empty<KeyValuePair<string, string>>()));
+        }
 
         public HttpResponseHeaders GetWithCatHeader(bool includeCrossProcessIdHeader = true, CrossApplicationRequestData requestData = null)
         {
@@ -304,14 +327,14 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
         public void GetCustomAttributes(string key1, string value1, string key2, string value2)
         {
             var address = $"http://{DestinationServerName}:{Port}/Default/CustomParameters?key1={key1}&value1={value1}&key2={key2}&value2={value2}";
-            ResponseBody = DownloadStringAndAssertContains(address, "<html>");
+            ResponseBody = DownloadStringAndAssertContains(address, "Worked");
 
         }
 
         public void StartAgent()
         {
             var address = $"http://{DestinationServerName}:{Port}/Default/StartAgent";
-            ResponseBody = DownloadStringAndAssertContains(address, "<html>");
+            ResponseBody = DownloadStringAndAssertContains(address, "Worked");
         }
 
         private string GetXNewRelicId()
@@ -368,7 +391,7 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
         public void SimulateLostTransaction()
         {
             var address = $"http://{DestinationServerName}:{Port}/Default/SimulateLostTransaction";
-            DownloadStringAndAssertContains(address, "<html>");
+            DownloadStringAndAssertContains(address, "Worked");
         }
 
         public void GetRedis()
@@ -427,8 +450,16 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
 
         public void GetBackgroundThreadWithError()
         {
-            var address = $"http://{DestinationServerName}:{Port}/CustomInstrumentationAsync/GetBackgroundThreadWithError";
-            DownloadStringAndAssertEqual(address, "Worked");
+            try
+            {
+                var address = $"http://{DestinationServerName}:{Port}/CustomInstrumentationAsync/GetBackgroundThreadWithError";
+                DownloadStringAndAssertEqual(address, "Worked");
+            }
+            catch (WebException)
+            {
+                // This is expected behavior.  We need to catch and swallow this exception here to
+                // keep it from bubbling up to the test framework and failing the test.
+            }
         }
 
         public string GetBrowserTimingHeader()
@@ -443,7 +474,7 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
         public string GetHtmlWithCallToGetBrowserTimingHeader()
         {
             var address = $"http://{DestinationServerName}:{Port}/Default/GetHtmlWithCallToGetBrowserTimingHeader";
-            ResponseBody = DownloadStringAndAssertContains(address, "NREUM");
+            ResponseBody = DownloadStringAndAssertContains(address, "Worked");
 
             return ResponseBody;
         }

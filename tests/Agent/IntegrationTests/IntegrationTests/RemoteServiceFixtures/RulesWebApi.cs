@@ -16,7 +16,7 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
     {
         private const string ApplicationDirectoryName = @"Owin2WebApi";
         private const string ExecutableName = @"Owin2WebApi.exe";
-        private const string TargetFramework = "net451";
+        private const string TargetFramework = "net462";
 
         public RulesWebApi()
             : base(new RemoteService(ApplicationDirectoryName, ExecutableName, TargetFramework, ApplicationType.Bounded))
@@ -27,10 +27,10 @@ namespace NewRelic.Agent.IntegrationTests.RemoteServiceFixtures
                 {
                     var newRelicConfigFilePath = DestinationNewRelicConfigFilePath;
                     var configModifier = new NewRelicConfigModifier(newRelicConfigFilePath);
+                    configModifier.AddAttributesInclude("request.parameters.*");
 
                     CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(newRelicConfigFilePath, new[] { "configuration", "log" }, "level", "debug");
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(newRelicConfigFilePath, new[] { "configuration", "requestParameters" }, "enabled", "true");
-
+                    
                     var appConfigFilePath = Path.Combine(RemoteApplication.DestinationApplicationDirectoryPath, ExecutableName) + ".config";
                     CommonUtils.SetAppNameInAppConfig(appConfigFilePath, "RulesWebApi");
                 },

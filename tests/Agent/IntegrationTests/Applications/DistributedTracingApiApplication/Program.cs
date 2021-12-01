@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using CommandLine;
 using NewRelic.Api.Agent;
@@ -20,9 +21,9 @@ namespace NewRelic.Agent.IntegrationTests.Applications.DistributedTracingApiAppl
 
         private static IAgent _agent = null;
 
-        private static List<KeyValuePair<string, string>> _carrier = new List<KeyValuePair<string, string>>();
+        private static readonly List<KeyValuePair<string, string>> _carrier = new List<KeyValuePair<string, string>>();
 
-        private static Action<List<KeyValuePair<string, string>>, string, string> _setHeaders = new Action<List<KeyValuePair<string, string>>, string, string>((carrier, key, value) =>
+        private static readonly Action<List<KeyValuePair<string, string>>, string, string> _setHeaders = new Action<List<KeyValuePair<string, string>>, string, string>((carrier, key, value) =>
         {
             carrier.Add(new KeyValuePair<string, string>(key, value));
         });
@@ -73,20 +74,29 @@ namespace NewRelic.Agent.IntegrationTests.Applications.DistributedTracingApiAppl
         }
 
         [Transaction]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static IDistributedTracePayload CallCreateDTPayload()
         {
             var currentTransaction = _agent.CurrentTransaction;
+            // As long as this deprecated API is still shipping, we still need to test it
+#pragma warning disable CS0618 // Type or member is obsolete
             return currentTransaction.CreateDistributedTracePayload();
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         [Transaction]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void CallAcceptDTPayload(IDistributedTracePayload payload)
         {
             var currentTransaction = _agent.CurrentTransaction;
+            // As long as this deprecated API is still shipping, we still need to test it
+#pragma warning disable CS0618 // Type or member is obsolete
             currentTransaction.AcceptDistributedTracePayload(payload.HttpSafe());
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         [Transaction]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void CallInsertDTHeaders()
         {
             var currentTransaction = _agent.CurrentTransaction;
@@ -94,6 +104,7 @@ namespace NewRelic.Agent.IntegrationTests.Applications.DistributedTracingApiAppl
         }
 
         [Transaction]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static void CallAcceptDTHeaders()
         {
             var currentTransaction = _agent.CurrentTransaction;

@@ -1,27 +1,26 @@
 // Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-using NewRelic.Agent.Core.DataTransport;
-using NewRelic.Agent.Core.Segments;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq;
-using Telerik.JustMock;
-using Grpc.Core;
-using System.Threading;
-using NewRelic.Testing.Assertions;
 using System;
 using System.Collections.Concurrent;
-using NewRelic.Agent.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Grpc.Core;
+using NewRelic.Agent.Configuration;
 using NewRelic.Agent.Core.AgentHealth;
-using NewRelic.Agent.Extensions.Providers.Wrapper;
-using NewRelic.Agent.Core.Utilities;
-using NewRelic.Collections;
-using NewRelic.Agent.Core.WireModels;
+using NewRelic.Agent.Core.DataTransport;
+using NewRelic.Agent.Core.Segments;
 using NewRelic.Agent.Core.Time;
+using NewRelic.Agent.Core.Utilities;
+using NewRelic.Agent.Core.WireModels;
+using NewRelic.Agent.Extensions.Providers.Wrapper;
+using NewRelic.Collections;
 using NewRelic.SystemInterfaces;
-using NewRelic.Agent.Core.SharedInterfaces;
+using NewRelic.Testing.Assertions;
+using NUnit.Framework;
+using Telerik.JustMock;
 
 namespace NewRelic.Agent.Core.Spans.Tests
 {
@@ -259,34 +258,34 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             _streamingSvc = GetService(_delayer, _grpcWrapper, _configSvc, _agentHealthReporter);
 
-			var signalIsDone = new ManualResetEventSlim();
-			var countSends = 0;
+            var signalIsDone = new ManualResetEventSlim();
+            var countSends = 0;
 
-			_grpcWrapper.WithIsConnectedImpl = () => isChannelConnected;
+            _grpcWrapper.WithIsConnectedImpl = () => isChannelConnected;
             _grpcWrapper.WithTrySendDataImpl = (requestStream, request, timeoutMs, CancellationToken) =>
             {
-				countSends++;
-				if(countSends > 1)
+                countSends++;
+                if(countSends > 1)
                 {
-					signalIsDone.Set();
+                    signalIsDone.Set();
                 }
 
-				return true;
+                return true;
             };
 
-			if(!isServiceEnabled || !isChannelConnected)
+            if(!isServiceEnabled || !isChannelConnected)
             {
-				signalIsDone.Set();
-			}
+                signalIsDone.Set();
+            }
 
             var collection = new PartitionedBlockingCollection<TRequest>(10, 3);
-			collection.TryAdd(GetRequestModel());
-			collection.TryAdd(GetRequestModel());
-			collection.TryAdd(GetRequestModel());
+            collection.TryAdd(GetRequestModel());
+            collection.TryAdd(GetRequestModel());
+            collection.TryAdd(GetRequestModel());
 
-			_streamingSvc.StartConsumingCollection(collection);
+            _streamingSvc.StartConsumingCollection(collection);
 
-			Assert.IsTrue(signalIsDone.Wait(TimeSpan.FromSeconds(5)));
+            Assert.IsTrue(signalIsDone.Wait(TimeSpan.FromSeconds(5)));
             Assert.AreEqual(expectedIsServiceAvailable, _streamingSvc.IsServiceAvailable, $"If IsServiceEnabled={isServiceEnabled} and IsGrpcChannelConnected={isChannelConnected}, IsServiceAvailable should be {expectedIsServiceAvailable}");
         }
 
@@ -340,14 +339,13 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             var countShutdowns = 0;
             var signalIsDone = new ManualResetEventSlim();
-            // When starting the service, a shutdown is issued as a means to restart.
-            // When starting the channel, this also occurs.
-            // Ignore these first two shutdowns in our determination of svc.stop
+            // When starting the channel, a shutdown is initiated to reset everything
+            // Ignore this in our determination of svc.stop
             _grpcWrapper.WithShutdownImpl = () =>
             {
                 countShutdowns++;
 
-                if (countShutdowns > 2)
+                if (countShutdowns > 1)
                 {
                     signalIsDone.Set();
                 }
@@ -577,14 +575,12 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             _streamingSvc.StartConsumingCollection(sourceCollection);
 
-            var expectedAttempts = new[] { item1, item1 };
+            //var expectedAttempts = new[] { item1, item1 };
+            var expectedAttempts = new List<TRequest>() { item1, item1 };
 
-            NrAssert.Multiple
-            (
-                () => Assert.IsTrue(waitForConsumptionTask.Wait(TimeSpan.FromSeconds(10)), "Task didn't complete"),
-                () => CollectionAssert.AreEqual(expectedAttempts, actualAttempts),
-                () => CollectionAssert.AreEqual(new[] { _expectedDelayAfterErrorSendingASpan }, actualDelays)
-            );
+            Assert.IsTrue(waitForConsumptionTask.Wait(TimeSpan.FromSeconds(10)), "Task didn't complete");
+            CollectionAssert.AreEqual(expectedAttempts, actualAttempts);
+            CollectionAssert.AreEqual(new[] { _expectedDelayAfterErrorSendingASpan }, actualDelays);
         }
 
         [Test]
@@ -720,6 +716,7 @@ namespace NewRelic.Agent.Core.Spans.Tests
         }
 
         [Test]
+        [Ignore("This test is flickering in our CI", Until = "2022-06-01 00:00:00Z")]
         public void ShuttingDownTheDataStreamingService_ShouldShutdownResponseStream()
         {
             var signalIsDone = new ManualResetEventSlim();
@@ -967,6 +964,7 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
 
         [Test]
+        [Ignore("This test is flickering in our CI", Until = "2022-06-01 00:00:00Z")]
         public void SupportabilityMetrics_ItemsSent_BatchSizeAndCount()
         {
             const int maxBatchSize = 17;
@@ -1180,14 +1178,13 @@ namespace NewRelic.Agent.Core.Spans.Tests
                 return true;
             };
 
-            // When starting the service, a shutdown is issued as a means to restart.
-            // When starting the channel, this also occurs.
-            // Ignore these first two shutdowns in our determination of svc.stop
+            // When starting the channel, a shutdown is initiated to reset everything
+            // Ignore this in our determination of svc.stop
             _grpcWrapper.WithShutdownImpl = () =>
             {
                 countShutdowns++;
 
-                if (countShutdowns > 2)
+                if (countShutdowns > 1)
                 {
                     signalIsDone.Set();
                 }
@@ -1243,14 +1240,13 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             var countShutdowns = 0;
             var signalIsDone = new ManualResetEventSlim();
-            // When starting the service, a shutdown is issued as a means to restart.
-            // When starting the channel, this also occurs.
-            // Ignore these first two shutdowns in our determination of svc.stop
+            // When starting the channel, a shutdown is initiated to reset everything
+            // Ignore this in our determination of svc.stop
             _grpcWrapper.WithShutdownImpl = () =>
             {
                 countShutdowns++;
 
-                if (countShutdowns > 2)
+                if (countShutdowns > 1)
                 {
                     signalIsDone.Set();
                 }
@@ -1260,12 +1256,9 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             _streamingSvc.StartConsumingCollection(sourceCollection);
 
-            NrAssert.Multiple
-            (
-                () => Assert.IsTrue(signalIsDone.Wait(TimeSpan.FromSeconds(10)), "Signal didn't fire"),
-                () => Assert.AreEqual(expectedCountGrpcErrors, actualCountGrpcErrors, "gRPC Error Count"),
-                () => Assert.AreEqual(expectedCountGeneralErrors, actualCountGeneralErrors, "General Error Count")
-            );
+            Assert.IsTrue(signalIsDone.Wait(TimeSpan.FromSeconds(10)), "Signal didn't fire");
+            Assert.AreEqual(expectedCountGrpcErrors, actualCountGrpcErrors, "gRPC Error Count");
+            Assert.AreEqual(expectedCountGeneralErrors, actualCountGeneralErrors, "General Error Count");
         }
 
         [Test]
@@ -1299,14 +1292,13 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
             var countShutdowns = 0;
             var signalIsDone = new ManualResetEventSlim();
-            // When starting the service, a shutdown is issued as a means to restart.
-            // When starting the channel, this also occurs.
-            // Ignore these first two shutdowns in our determination of svc.stop
+            // When starting the channel, a shutdown is initiated to reset everything
+            // Ignore this in our determination of svc.stop
             _grpcWrapper.WithShutdownImpl = () =>
             {
                 countShutdowns++;
 
-                if (countShutdowns > 2)
+                if (countShutdowns > 1)
                 {
                     signalIsDone.Set();
                 }
@@ -1324,8 +1316,9 @@ namespace NewRelic.Agent.Core.Spans.Tests
             );
         }
 
-        [Test]
-        public void GrpcUnavailableDuringTrySendDataRestartsService()
+        [TestCase(StatusCode.Unavailable)]
+        [TestCase(StatusCode.FailedPrecondition)]
+        public void GrpcUnavailableOrFailedPreconditionDuringTrySendDataRestartsService(StatusCode statusCode)
         {
             var actualCountGrpcErrors = 0;
             var actualCountGeneralErrors = 0;
@@ -1372,7 +1365,7 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
                 if (localInvocationId == 1)
                 {
-                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Unavailable, "Test gRPC Exception");
+                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(statusCode, "Test gRPC Exception");
                     return false;
                 }
 
@@ -1470,8 +1463,9 @@ namespace NewRelic.Agent.Core.Spans.Tests
             );
         }
 
-        [Test]
-        public void GrpcUnavailableDuringCreateStreamRestartsService()
+        [TestCase(StatusCode.Unavailable)]
+        [TestCase(StatusCode.FailedPrecondition)]
+        public void GrpcUnavailableOrFailedPreconditionDuringCreateStreamRestartsService(StatusCode grpcStatusCode)
         {
             var actualDelays = new List<int>();
 
@@ -1518,7 +1512,7 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
                 if (countCreateStreamsCalls == 1)
                 {
-                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Unavailable, "Test gRPC Exception");
+                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(grpcStatusCode, "Test gRPC Exception");
                     return null;
                 }
 
@@ -1550,8 +1544,9 @@ namespace NewRelic.Agent.Core.Spans.Tests
             );
         }
 
-        [Test]
-        public void GrpcOkDuringTrySendDataCreatesNewStreamImmediately()
+        [TestCase(StatusCode.OK)]
+        [TestCase(StatusCode.Internal)]
+        public void GrpcOkOrInternalDuringTrySendDataCreatesNewStreamImmediately(StatusCode statusCode)
         {
             var actualCountGrpcErrors = 0;
             var actualCountGeneralErrors = 0;
@@ -1598,13 +1593,13 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
                 if (localInvocationId < 2 || localInvocationId == 3)
                 {
-                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Internal, "Test gRPC Exception");
+                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Unknown, "Test gRPC Exception");
                     return false;
                 }
 
                 if (localInvocationId == 2)
                 {
-                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.OK, "Test gRPC Exception");
+                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(statusCode, "Test gRPC Exception");
                     return false;
                 }
 
@@ -1724,7 +1719,7 @@ namespace NewRelic.Agent.Core.Spans.Tests
 
                 if (countCreateStreamsCalls < 4 || countCreateStreamsCalls == 5)
                 {
-                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Internal, "Test gRPC Exception");
+                    MockGrpcWrapper<TRequest, TResponse>.ThrowGrpcWrapperException(StatusCode.Unknown, "Test gRPC Exception");
                     return null;
                 }
 

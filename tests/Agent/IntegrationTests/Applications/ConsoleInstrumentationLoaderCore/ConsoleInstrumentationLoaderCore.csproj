@@ -12,11 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NewRelic.Agent.Api" Version="8.14.222" />
+    <PackageReference Include="NewRelic.Agent.Api" Version="8.41.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApplicationHelperLibraries\ReflectionHelpers\ReflectionHelpers.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.csproj" />
   </ItemGroup>
 
 </Project>

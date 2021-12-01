@@ -2,9 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 
+#if NETFRAMEWORK
+using MultiFunctionApplicationHelpers;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTestHelpers.Models;
-using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,9 @@ namespace NewRelic.Agent.IntegrationTests.WCF
     /// </summary>
     public interface IWCFLogHelpers
     {
+        TransactionSample[] TrxSamples_Client { get; }
+        TransactionSample[] TrxSamples_Service { get; }
+
         TransactionEvent[] TrxEvents { get; }
         TransactionEvent[] TrxEvents_Client { get; }
         TransactionEvent[] TrxEvents_Service { get; }
@@ -33,8 +37,10 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         string[] TrxTripIDs_Client { get; }
 
         Metric[] MetricValues { get; }
+
         SpanEvent[] SpanEvents_Client { get; }
         SpanEvent[] SpanEvents_Service { get; }
+
         ConnectResponseData ConnectResponse_Client { get; }
         ConnectResponseData ConnectResponse_Service { get; }
 
@@ -44,10 +50,10 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
     public class WCFLogHelpers_IISHosted : IWCFLogHelpers
     {
-        private readonly ConsoleDynamicMethodFixtureFW _fixture;
+        private readonly ConsoleDynamicMethodFixture _fixture;
 
         private AgentLogFile _agentLog_Client;
-        protected AgentLogFile AgentLog_Client
+        public AgentLogFile AgentLog_Client
         {
             get
             {
@@ -67,7 +73,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         }
 
         private AgentLogFile _agentLog_Service;
-        protected AgentLogFile AgentLog_Service
+        public AgentLogFile AgentLog_Service
         {
             get
             {
@@ -93,6 +99,10 @@ namespace NewRelic.Agent.IntegrationTests.WCF
                 .Union(logFunction.Invoke(AgentLog_Service));
         }
 
+        public TransactionSample[] TrxSamples_Client => throw new NotImplementedException();
+
+        private TransactionSample[] _trxSamples_Service;
+        public TransactionSample[] TrxSamples_Service => _trxSamples_Service ?? (_trxSamples_Service = AgentLog_Service.GetTransactionSamples().ToArray());
 
         private TransactionEvent[] _trxEvents;
         public TransactionEvent[] TrxEvents => _trxEvents ?? (_trxEvents = AgentLog_Client.GetTransactionEvents().Union(AgentLog_Service.GetTransactionEvents()).ToArray());
@@ -165,9 +175,8 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
 
         private ErrorEventEvents[] _errorEvents;
-        public ErrorEventEvents[] ErrorEvents => _errorEvents ?? (_errorEvents = AgentLog_Client.GetErrorEvents().SelectMany(ec => ec.Events)
-                        .Union(AgentLog_Service.GetErrorEvents().SelectMany(ec => ec.Events))
-                        .ToArray());
+        public ErrorEventEvents[] ErrorEvents => _errorEvents ?? (_errorEvents = AgentLog_Client.GetErrorEvents()
+                        .Union(AgentLog_Service.GetErrorEvents()).ToArray());
 
 
 
@@ -193,7 +202,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         public ConnectResponseData ConnectResponse_Service => _connectResponse_Service ?? (_connectResponse_Service = AgentLog_Service.GetConnectResponseData());
 
 
-        public WCFLogHelpers_IISHosted(ConsoleDynamicMethodFixtureFW fixture)
+        public WCFLogHelpers_IISHosted(ConsoleDynamicMethodFixture fixture)
         {
             _fixture = fixture;
         }
@@ -202,17 +211,23 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
     public class WCFLogHelpers_SelfHosted : IWCFLogHelpers
     {
-        public WCFLogHelpers_SelfHosted(ConsoleDynamicMethodFixtureFW fixture)
+        public WCFLogHelpers_SelfHosted(ConsoleDynamicMethodFixture fixture)
         {
             _fixture = fixture;
         }
 
-        private readonly ConsoleDynamicMethodFixtureFW _fixture;
+        private readonly ConsoleDynamicMethodFixture _fixture;
 
         public IEnumerable<T> QueryLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
         {
             return logFunction.Invoke(_fixture.AgentLog);
         }
+
+        public TransactionSample[] TrxSamples_Client => throw new NotImplementedException();
+
+        private TransactionSample[] _trxSamples_Service;
+        public TransactionSample[] TrxSamples_Service => _trxSamples_Service ?? (_trxSamples_Service = _fixture.AgentLog.GetTransactionSamples().Where(ts => ts.Path.Contains("WcfService")).ToArray());
+
 
         private TransactionEvent[] _trxEvents;
         public TransactionEvent[] TrxEvents => _trxEvents ?? (_trxEvents = _fixture.AgentLog.GetTransactionEvents().ToArray());
@@ -259,7 +274,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
 
         private ErrorEventEvents[] _errorEvents;
-        public ErrorEventEvents[] ErrorEvents => _errorEvents ?? (_errorEvents = _fixture.AgentLog.GetErrorEvents().SelectMany(ec => ec.Events).ToArray());
+        public ErrorEventEvents[] ErrorEvents => _errorEvents ?? (_errorEvents = _fixture.AgentLog.GetErrorEvents().ToArray());
 
         private IntegrationTestHelpers.Models.ErrorTrace[] _errorTraces;
         public IntegrationTestHelpers.Models.ErrorTrace[] ErrorTraces => _errorTraces ?? (_errorTraces = _fixture.AgentLog.GetErrorTraces().ToArray());
@@ -287,3 +302,4 @@ namespace NewRelic.Agent.IntegrationTests.WCF
     }
 
 }
+#endif

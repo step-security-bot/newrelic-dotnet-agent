@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
 using NewRelic.Testing.Assertions;
@@ -20,11 +21,12 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
     /// Files: Integration.Testing.AddXmlFileTest.xml
     /// </summary>
     [NetCoreTest]
-    public class RejitAddFile : IClassFixture<AspNetCoreReJitMvcApplicationFixture>
+    public abstract class RejitAddFileBase<TFixture> : NewRelicIntegrationTest<TFixture>
+        where TFixture:AspNetCoreReJitMvcApplicationFixture
     {
         private readonly AspNetCoreReJitMvcApplicationFixture _fixture;
 
-        public RejitAddFile(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+        protected RejitAddFileBase(TFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
 
@@ -41,9 +43,9 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
                     _fixture.InitializeApp();
 
                     _fixture.TestAddFile();
-                    var createFilePath = _fixture.RemoteApplication.DestinationNewRelicHomeDirectoryPath + @"\Integration.Testing.AddXmlFileTest.xml";
+                    var createFilePath = Path.Combine(_fixture.RemoteApplication.DestinationNewRelicHomeDirectoryPath,  "Integration.Testing.AddXmlFileTest.xml");
                     CommonUtils.AddCustomInstrumentation(createFilePath, "AspNetCoreMvcRejitApplication", "RejitMvcApplication.Controllers.RejitController", "CustomMethodDefaultWrapperAddFile", "NewRelic.Agent.Core.Wrapper.DefaultWrapper", "MyCustomAddMetricName", 7);
-                    var destinationFilePath = _fixture.RemoteApplication.DestinationExtensionsDirectoryPath + @"\Integration.Testing.AddXmlFileTest.xml";
+                    var destinationFilePath = Path.Combine(_fixture.RemoteApplication.DestinationExtensionsDirectoryPath, "Integration.Testing.AddXmlFileTest.xml");
                     CommonUtils.MoveFile(createFilePath, destinationFilePath, TimeSpan.FromSeconds(5));
                     _fixture.AgentLog.WaitForLogLine(AgentLogBase.InstrumentationRefreshFileWatcherComplete, TimeSpan.FromMinutes(1));
                     _fixture.TestAddFile();
@@ -57,18 +59,18 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
+                //transactions
+                new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"WebTransaction/Custom/MyCustomAddMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Rejit/GetAddFile", callCount = 1 },
 
-				// Unscoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
+                // Unscoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetAddFile", callCount = 2 },
 
-				// Scoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
+                // Scoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddMetricName", metricScope = "WebTransaction/Custom/MyCustomAddMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetAddFile", metricScope = "WebTransaction/MVC/Rejit/GetAddFile", callCount = 1 }
             };
@@ -82,7 +84,15 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         }
     }
 
-    public class RejitAddFileWithTieredCompilation : RejitAddFile, IClassFixture<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
+    public class RejitAddFile : RejitAddFileBase<AspNetCoreReJitMvcApplicationFixture>
+    {
+        public RejitAddFile(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+            : base(fixture, output)
+        {
+        }
+    }
+
+    public class RejitAddFileWithTieredCompilation : RejitAddFileBase<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
     {
         public RejitAddFileWithTieredCompilation(AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation fixture, ITestOutputHelper output)
             : base(fixture, output)

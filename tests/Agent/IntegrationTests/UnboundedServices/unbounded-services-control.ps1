@@ -35,7 +35,7 @@ Function StopUnboundedServices([string] $scriptPath) {
 $scriptPath = Resolve-Path "$(Split-Path -Parent $PSCommandPath)"
 
 if ($Start) {
-    StartUnboundedServices($scriptPath)
+    StartUnboundedServices("$scriptPath")
 } elseif ($Stop) {
-    StopUnboundedServices($scriptPath)
+    StopUnboundedServices("$scriptPath")
 }

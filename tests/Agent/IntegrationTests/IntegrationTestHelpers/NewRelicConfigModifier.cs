@@ -4,8 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Messaging;
-using Couchbase.N1QL;
 
 namespace NewRelic.Agent.IntegrationTestHelpers
 {
@@ -36,16 +34,16 @@ namespace NewRelic.Agent.IntegrationTestHelpers
                 "enabled", value.ToString().ToLower());
         }
 
-        public void SetAttributesInclude(string includes)
+        public void AddAttributesInclude(string include)
         {
-            CommonUtils.ModifyOrCreateXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "attributes" }, "include",
-                includes);
+            CommonUtils.AddXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "attributes" }, "include",
+                include);
         }
 
-        public void SetEnableRequestParameters(bool value)
+        public void AddAttributesExclude(string exclude)
         {
-            CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath, new[] { "configuration", "requestParameters" },
-                "enabled", value.ToString().ToLower());
+            CommonUtils.AddXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "attributes" }, "exclude",
+                exclude);
         }
 
         public void SetAutoStart(bool value)
@@ -103,6 +101,19 @@ namespace NewRelic.Agent.IntegrationTestHelpers
         public NewRelicConfigModifier AddExpectedStatusCodes(string statusCodes)
         {
             CommonUtils.AddXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "errorCollector"}, "expectedStatusCodes", statusCodes );
+            return this;
+        }
+
+        public NewRelicConfigModifier EnableDistributedTrace()
+        {
+            SetOrDeleteDistributedTraceEnabled(true);
+            return this;
+        }
+
+        public NewRelicConfigModifier EnableInfinteTracing(string traceObserverUrl)
+        {
+            CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath,
+               new[] { "configuration", "infiniteTracing", "trace_observer" }, "host", traceObserverUrl);
             return this;
         }
 
@@ -210,6 +221,23 @@ namespace NewRelic.Agent.IntegrationTestHelpers
                 CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath, new[] { config, distributedTracing },
                     "enabled", enabled.Value ? "true" : "false");
             }
+        }
+
+        public NewRelicConfigModifier SetAllowAllHeaders(bool? enabled)
+        {
+            const string config = "configuration";
+            const string allowAllHeaders = "allowAllHeaders";
+            if (null == enabled)
+            {
+                CommonUtils.DeleteXmlNodeFromNewRelicConfig(_configFilePath, new[] { config }, allowAllHeaders);
+            }
+            else
+            {
+                CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath, new[] { config, allowAllHeaders },
+                    "enabled", enabled.Value ? "true" : "false");
+            }
+
+            return this;
         }
 
         public void SetOrDeleteSpanEventsEnabled(bool? enabled)

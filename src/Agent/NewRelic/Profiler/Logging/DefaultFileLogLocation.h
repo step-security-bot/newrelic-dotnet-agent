@@ -22,6 +22,9 @@ namespace NewRelic { namespace Profiler { namespace Logger
         // can throw on failure
         virtual xstring_t GetCommonAppDataFolderPath() = 0;
         virtual xstring_t GetNewRelicHomePath() = 0;
+        virtual std::unique_ptr<xstring_t> GetNewRelicProfilerLogDirectoryEnvironment() = 0;
+        virtual std::unique_ptr<xstring_t> GetNewRelicLogDirectoryEnvironment() = 0;
+        virtual std::unique_ptr<xstring_t> GetNewRelicLogLevelEnvironment() = 0;
     };
     typedef std::shared_ptr<IFileDestinationSystemCalls> IFileDestinationSystemCallsPtr;
 
@@ -49,8 +52,15 @@ namespace NewRelic { namespace Profiler { namespace Logger
         // returns path to an existing directory where the log file should be written
         xstring_t GetLogFilePath()
         {
-            // use the environment variable if it is set
-            auto logDirectory = _system->TryGetEnvironmentVariable(GetLogDirectoryEnvironmentVariableName());
+            // use the profiler environment variable if it is set
+            auto logDirectory = _system->GetNewRelicProfilerLogDirectoryEnvironment();
+            if (logDirectory)
+            {
+                return *logDirectory;
+            }
+
+            // use the general environment variable if it is set
+            logDirectory = _system->GetNewRelicLogDirectoryEnvironment();
             if (logDirectory)
             {
                 return *logDirectory;
@@ -82,7 +92,8 @@ namespace NewRelic { namespace Profiler { namespace Logger
         {
             auto home = _system->TryGetEnvironmentVariable(_X("HOME_EXPANDED"));
 
-            return home && StartsWith(*home, _X("C:\\DWASFiles\\Sites\\"));
+            // makes no assumption about drive letter (e.g. C:, D:)
+            return home && Contains(*home, _X(":\\DWASFiles\\Sites")); 
         }
 
         const xstring_t GetAzureWebSiteLogDirectory()
@@ -99,21 +110,16 @@ namespace NewRelic { namespace Profiler { namespace Logger
             return _system->GetCommonAppDataFolderPath() + PATH_SEPARATOR _X("New Relic") PATH_SEPARATOR _X(".NET Agent") PATH_SEPARATOR _X("Logs");
         }
 
-        static const xstring_t GetLogDirectoryEnvironmentVariableName()
+        bool Contains(xstring_t envVarValue, xstring_t searchValue)
         {
-            return _X("NEWRELIC_PROFILER_LOG_DIRECTORY");
-        }
-
-        bool StartsWith(xstring_t longerString, xstring_t shorterString)
-        {
-            // if the shorter string is not actually shorter then the longer string doesn't start with the shorter one
-            if (longerString.length() < shorterString.length())
+            // if the envVarValue is shorter than searchValue, then obviously it is not contained within
+            if (envVarValue.length() < searchValue.length())
             {
                 return false;
             }
 
-            // compare the strings up to the length of the shorter string, returning true if they are equal
-            return longerString.compare(0, shorterString.length(), shorterString) == 0;
+            // find the searchValue in the envVarValue
+            return envVarValue.find(searchValue) != std::string::npos;
         }
     };
 

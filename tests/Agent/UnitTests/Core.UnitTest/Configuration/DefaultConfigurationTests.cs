@@ -62,30 +62,15 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Assert.IsFalse(_defaultConfig.AgentEnabled);
         }
 
-        [TestCase(null, null, true, ExpectedResult = true)]
-        [TestCase(null, null, false, ExpectedResult = false)]
-        [TestCase(null, true, true, ExpectedResult = true)]
-        [TestCase(null, true, false, ExpectedResult = false)]
-        [TestCase(null, false, true, ExpectedResult = false)]
-        [TestCase(null, false, false, ExpectedResult = false)]
-        [TestCase(true, null, true, ExpectedResult = true)]
-        [TestCase(true, null, false, ExpectedResult = false)]
-        [TestCase(true, true, true, ExpectedResult = true)]
-        [TestCase(true, true, false, ExpectedResult = false)]
-        [TestCase(true, false, true, ExpectedResult = false)]
-        [TestCase(true, false, false, ExpectedResult = false)]
-        [TestCase(false, null, true, ExpectedResult = false)]
-        [TestCase(false, null, false, ExpectedResult = false)]
-        [TestCase(false, true, true, ExpectedResult = false)]
-        [TestCase(false, true, false, ExpectedResult = false)]
-        [TestCase(false, false, true, ExpectedResult = false)]
-        [TestCase(false, false, false, ExpectedResult = false)]
-        public bool TransactionEventsCanBeDisbledByServer(bool? server, bool? legacyLocal, bool local)
+        [TestCase(null, true, ExpectedResult = true)]
+        [TestCase(null, false, ExpectedResult = false)]
+        [TestCase(true, true, ExpectedResult = true)]
+        [TestCase(true, false, ExpectedResult = false)]
+        [TestCase(false, true, ExpectedResult = false)]
+        [TestCase(false, false, ExpectedResult = false)]
+        public bool TransactionEventsCanBeDisbledByServer(bool? server, bool local)
         {
             _localConfig.transactionEvents.enabled = local;
-
-            _localConfig.analyticsEvents.enabled = legacyLocal ?? default(bool);
-            _localConfig.analyticsEvents.enabledSpecified = legacyLocal.HasValue;
 
             _serverConfig.AnalyticsEventCollectionEnabled = server;
 
@@ -203,6 +188,35 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             };
 
             Assert.AreEqual(10, _defaultConfig.TransactionEventsMaximumSamplesStored);
+        }
+
+        [TestCase("10", 20, 30, ExpectedResult = 10)]
+        [TestCase("10", null, 30, ExpectedResult = 10)]
+        [TestCase("10", 20, null, ExpectedResult = 10)]
+        [TestCase("10", null, null, ExpectedResult = 10)]
+        [TestCase(null, 20, 30, ExpectedResult = 30)]
+        [TestCase(null, null, 30, ExpectedResult = 30)]
+        [TestCase(null, 20, null, ExpectedResult = 20)]
+        [TestCase(null, null, null, ExpectedResult = 10000)]
+        public int TransactionEventsMaxSamplesStoredOverriddenByEnvironment(string environmentSetting, int? localSetting, int? serverSetting)
+        {
+            Mock.Arrange(() => _environment.GetEnvironmentVariable("MAX_TRANSACTION_SAMPLES_STORED")).Returns(environmentSetting);
+
+            if (localSetting != null)
+            {
+                _localConfig.transactionEvents.maximumSamplesStored = (int)localSetting;
+            }
+
+            if (serverSetting != null)
+            {
+                _serverConfig.EventHarvestConfig = new EventHarvestConfig
+                {
+                    ReportPeriodMs = 5000,
+                    HarvestLimits = new Dictionary<string, int> { { EventHarvestConfig.TransactionEventHarvestLimitKey, (int)serverSetting } }
+                };
+            }
+
+            return _defaultConfig.TransactionEventsMaximumSamplesStored;
         }
 
         [Test]
@@ -371,15 +385,6 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
         [TestCase(true, ExpectedResult = true)]
         [TestCase(false, ExpectedResult = false)]
-        public bool TransactionTracerCaptureAttributesSetFromLocal(bool local)
-        {
-            _localConfig.transactionTracer.captureAttributes = local;
-
-            return _defaultConfig.CaptureTransactionTraceAttributes;
-        }
-
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
         public bool Property_DataTransmissionPutForDataSend_set_from_local(bool local)
         {
             _localConfig.dataTransmission.putForDataSend = local;
@@ -480,14 +485,6 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Assert.IsFalse(_defaultConfig.ErrorCollectorCaptureEvents);
         }
 
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool BrowserMonitoringCaptureAttributesSetFromLocal(bool local)
-        {
-            _localConfig.browserMonitoring.captureAttributes = local;
-
-            return _defaultConfig.CaptureBrowserMonitoringAttributes;
-        }
 
         [TestCase(true, null, ExpectedResult = true)]
         [TestCase(false, null, ExpectedResult = false)]
@@ -559,29 +556,6 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             _localConfig.transactionEvents.enabled = local;
 
             return _defaultConfig.TransactionEventsEnabled;
-        }
-
-        [TestCase(true, true, ExpectedResult = true)]
-        [TestCase(true, false, ExpectedResult = false)]
-        [TestCase(false, true, ExpectedResult = true)]
-        [TestCase(false, false, ExpectedResult = false)]
-        [TestCase(false, null, ExpectedResult = false)]
-        public bool CaptureParametersSetFromLocalServerOverrides(bool local, bool? server)
-        {
-            _serverConfig.RpmConfig.CaptureParametersEnabled = server;
-            _localConfig.transactionEvents.enabled = local;
-
-            return _defaultConfig.CaptureRequestParameters;
-        }
-
-        [TestCase(new[] { "local" }, new[] { "server" }, "request.parameters.server")]
-        [TestCase(new[] { "local" }, null, "request.parameters.local")]
-        public void RequestParametersToIgnoreSetFromLocalServerOverrides(string[] local, string[] server, string expected)
-        {
-            _serverConfig.RpmConfig.ParametersToIgnore = server;
-            _localConfig.requestParameters.ignore = new List<string>(local);
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains(expected));
         }
 
         [TestCase(false, configurationTransactionTracerRecordSql.obfuscated, null, ExpectedResult = "obfuscated")]
@@ -716,18 +690,6 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         [TestCase(true, false, ExpectedResult = false)]
         [TestCase(false, true, ExpectedResult = true)]
         [TestCase(false, false, ExpectedResult = false)]
-        public bool LegacyCaptureCustomParametersOverriddenByLocalHighSecurity(bool highSecurityEnabled, bool localEnabled)
-        {
-            _localConfig.highSecurity.enabled = highSecurityEnabled;
-            _localConfig.parameterGroups.customParameters.enabled = localEnabled;
-
-            return _defaultConfig.CaptureCustomParameters;
-        }
-
-        [TestCase(true, true, ExpectedResult = false)]
-        [TestCase(true, false, ExpectedResult = false)]
-        [TestCase(false, true, ExpectedResult = true)]
-        [TestCase(false, false, ExpectedResult = false)]
         public bool CaptureCustomParametersOverriddenByLocalHighSecurity(bool highSecurityEnabled, bool localEnabled)
         {
             _localConfig.highSecurity.enabled = highSecurityEnabled;
@@ -746,15 +708,6 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             _localConfig.customParameters.enabled = localEnabled;
 
             return _defaultConfig.CaptureCustomParameters;
-        }
-
-        [Test]
-        public void CaptureRequestParametersOverriddenByLocalHighSecurity()
-        {
-            _localConfig.highSecurity.enabled = true;
-            _localConfig.requestParameters.enabled = true;
-
-            Assert.IsFalse(_defaultConfig.CaptureRequestParameters);
         }
 
 
@@ -794,23 +747,14 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Assert.IsTrue(_defaultConfig.CaptureCustomParameters);
         }
 
-        [TestCase(false, true, true, false, false, ExpectedResult = true)]
-        [TestCase(false, true, false, false, false, ExpectedResult = false)]
-        [TestCase(false, false, true, true, true, ExpectedResult = true)]
-        [TestCase(false, false, true, true, false, ExpectedResult = false)]
-        [TestCase(false, true, true, true, false, ExpectedResult = false)]
-        [TestCase(true, false, true, true, true, ExpectedResult = false)]
-        [TestCase(true, true, true, false, true, ExpectedResult = false)]
-        [TestCase(true, true, true, true, true, ExpectedResult = false)]
-        public bool CaptureCustomParametersHsmDeprecatedAndNew(bool highSecurity, bool deprecatedCustomParametersSpecified, bool deprecatedCustomParametersEnabled, bool customParametersSpecified, bool customParametersEnabled)
+        [TestCase(false, false, false, ExpectedResult = true)]
+        [TestCase(false, true, false, ExpectedResult = false)]
+        [TestCase(false, true, true, ExpectedResult = true)]
+        [TestCase(true, false, true, ExpectedResult = false)]
+        [TestCase(true, true, true, ExpectedResult = false)]
+        public bool CaptureCustomParametersHsmAndLocal(bool highSecurity, bool customParametersSpecified, bool customParametersEnabled)
         {
             _localConfig.highSecurity.enabled = highSecurity;
-
-            if (deprecatedCustomParametersSpecified)
-            {
-                _localConfig.parameterGroups.customParameters.enabledSpecified = deprecatedCustomParametersSpecified;
-                _localConfig.parameterGroups.customParameters.enabled = deprecatedCustomParametersEnabled;
-            }
 
             if (customParametersSpecified)
             {
@@ -822,41 +766,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         }
 
         [Test]
-        public void CustomParametersToIgnoreSetFromLocal()
-        {
-            _localConfig.parameterGroups.customParameters.ignore = new List<string>() { "local" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("local"));
-        }
-
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool CaptureIdentityParametersSetFromLocal(bool isEnabled)
-        {
-            _localConfig.parameterGroups.identityParameters.enabled = isEnabled;
-            return _defaultConfig.CaptureErrorCollectorAttributesIncludes.Contains("identity.*");
-        }
-
-        [Test]
         public void CaptureIdentityParametersSetFromLocalDefaultsToFalse()
         {
             Assert.IsTrue(_defaultConfig.CaptureAttributesDefaultExcludes.Contains("identity.*"));
-        }
-
-        [Test]
-        public void IdentityParametersToIgnoreSetFromLocal()
-        {
-            _localConfig.parameterGroups.identityParameters.ignore = new List<string>() { "local" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("identity.local"));
-        }
-
-        [TestCase(true, ExpectedResult = false)]
-        [TestCase(false, ExpectedResult = true)]
-        public bool CaptureResponseHeaderParametersSetFromLocal(bool isEnabled)
-        {
-            _localConfig.parameterGroups.responseHeaderParameters.enabled = isEnabled;
-            return _defaultConfig.CaptureAttributesExcludes.Contains("response.headers.*");
         }
 
         [Test]
@@ -865,20 +777,12 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Assert.IsFalse(_defaultConfig.CaptureAttributesExcludes.Contains("response.headers.*"));
         }
 
-        [Test]
-        public void ResponseHeaderParametersToIgnoreSetFromLocal()
-        {
-            _localConfig.parameterGroups.responseHeaderParameters.ignore = new List<string>() { "local" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("response.headers.local"));
-        }
-
         [TestCase(new[] { "local" }, new[] { "server" }, ExpectedResult = "server")]
         [TestCase(new[] { "local" }, null, ExpectedResult = "local")]
         public string ExceptionsToIgnoreSetFromLocalAndServerOverrides(string[] local, string[] server)
         {
-            _serverConfig.RpmConfig.ErrorCollectorErrorsToIgnore = server;
-            _localConfig.errorCollector.ignoreErrors.exception = new List<string>(local);
+            _serverConfig.RpmConfig.ErrorCollectorIgnoreClasses = server;
+            _localConfig.errorCollector.ignoreClasses.errorClass = new List<string>(local);
 
             CreateDefaultConfiguration();
 
@@ -936,7 +840,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             _defaultConfig = new TestableDefaultConfiguration(_environment, localConfiguration, _serverConfig, _runTimeConfig, _securityPoliciesConfiguration, _processStatic, _httpRuntimeStatic, _configurationManagerStatic, _dnsStatic);
 
-            Assert.That(_defaultConfig.ExpectedErrorStatusCodesForAgentSettings == "404,500");
+            CollectionAssert.AreEquivalent(_defaultConfig.ExpectedErrorStatusCodesForAgentSettings, new[] { "404", "500" });
 
             var expectedMessages = _defaultConfig.ExpectedErrorsConfiguration;
 
@@ -984,7 +888,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         }
 
         [TestCase(new[] { "Class1", "Class2" }, new[] { "Class1" }, ExpectedResult = "Class1,Class2")]
-        [TestCase(new[] { "Class1" }, new[] { "Class2" }, ExpectedResult = "Class1,Class2")]
+        [TestCase(new[] { "Class1" }, new[] { "Class2" }, ExpectedResult = "Class1")]
         public string IgnoreErrorsAndIgnoreClassesCombineTests(string[] ignoreClasses, string[] ignoreErrors)
         {
             _localConfig.errorCollector.ignoreClasses.errorClass = new List<string>(ignoreClasses);
@@ -994,9 +898,10 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             return string.Join(",", _defaultConfig.IgnoreErrorsConfiguration.Keys);
         }
 
-        [TestCase("401", "405", ExpectedResult = "405")]
-        [TestCase("401", null, ExpectedResult = "401")]
-        public string ExpectedStatusCodesSetFromLocalAndServerOverrides(string local, string server)
+        [TestCase("401", new[] { "405" }, ExpectedResult = new[] { "405" })]
+        [TestCase("401", new string[0], ExpectedResult = new string[0])]
+        [TestCase("401", null, ExpectedResult = new[] { "401" })]
+        public IEnumerable<object> ExpectedStatusCodesSetFromLocalAndServerOverrides(string local, string[] server)
         {
             _serverConfig.RpmConfig.ErrorCollectorExpectedStatusCodes = server;
             _localConfig.errorCollector.expectedStatusCodes = (local);
@@ -1006,6 +911,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             return _defaultConfig.ExpectedErrorStatusCodesForAgentSettings;
         }
 
+        [TestCase("401-404", new string[] { "401.5", "402.3"}, new bool[] { false, false})] //does not support full status codes
         [TestCase("400,401,404", new string[]{"400", "401", "402", "403", "404"},  new bool[] { true, true, false, false, true })]
         [TestCase("400, 401 ,404", new string[] { "400", "401", "402", "403", "404" }, new bool[] { true, true, false, false, true })]
         [TestCase("400, 401,404, ", new string[] { "400", "401", "402", "403", "404" }, new bool[] { true, true, false, false, true })]
@@ -1014,6 +920,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         [TestCase("401.4,401", new string[] { "400", "401", "402", "403", "404" }, new bool[] { false, true, false, false, false })] //does not support full status codes
         [TestCase("404,401.4", new string[] { "400", "401", "402", "403", "404" }, new bool[] { false, false, false, false, true })]
         [TestCase("401.4-404.5", new string[] { "400", "401", "402", "403", "404" }, new bool[] { false, false, false, false, false })] //does not support full status codes
+        [TestCase("Foo,Bar,X-Y", new string[] { "400", "401" }, new bool[] { false, false })] //does not work with non status code values
         public void ExpectedStatusCodesParserTests(string local, string[] inputs, bool[] expected)
         {
             _localConfig.errorCollector.expectedStatusCodes = local;
@@ -1106,15 +1013,16 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             CreateDefaultConfiguration();
 
-            var expectedStatusCodes = "404,500";
+            var expectedStatusCodes = new string[] { "404", "500" };
             var expectedErrorClasses = new[] { "ErrorClass1", "ErrorClass2" };
             var expectedErrorMessages = new Dictionary<string, IEnumerable<string>>
             {
+                { "ErrorClass2", new[] { "error message 1 in ErrorClass2" }  },
                 { "ErrorClass3", new[] { "error message 1 in ErrorClass3", "error message 2 in ErrorClass3" } }
             };
 
             NrAssert.Multiple(
-                () => Assert.AreEqual(expectedStatusCodes, _defaultConfig.ExpectedErrorStatusCodesForAgentSettings),
+                () => CollectionAssert.AreEquivalent(expectedStatusCodes, _defaultConfig.ExpectedErrorStatusCodesForAgentSettings),
                 () => CollectionAssert.AreEquivalent(expectedErrorClasses, _defaultConfig.ExpectedErrorClassesForAgentSettings),
                 () => CollectionAssert.AreEquivalent(expectedErrorMessages, _defaultConfig.ExpectedErrorMessagesForAgentSettings)
             );
@@ -1244,155 +1152,34 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Assert.IsTrue(_defaultConfig.ThreadProfilingIgnoreMethods.Contains("System.Threading.WaitHandle:WaitAny"));
         }
 
-        [TestCase(true, false, ExpectedResult = true)]
-        [TestCase(true, true, ExpectedResult = true)]
-        [TestCase(false, false, ExpectedResult = false)]
-        [TestCase(false, true, ExpectedResult = false)]
-        public bool BrowserMonitoringOverridesDeprecatedValue(bool propertyEnabled, bool deprecatedEnabled)
-        {
-            _localConfig.browserMonitoring.captureAttributes = deprecatedEnabled;
-            _localConfig.browserMonitoring.attributes.enabled = propertyEnabled;
-
-            return _defaultConfig.CaptureBrowserMonitoringAttributes;
-        }
-
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool BrowserMonitoringDeprecatedValueOverridesDefault(bool deprecatedEnabled)
-        {
-            _localConfig.browserMonitoring.captureAttributesSpecified = false;
-            _localConfig.browserMonitoring.attributes.enabled = deprecatedEnabled;
-
-            return _defaultConfig.CaptureBrowserMonitoringAttributes;
-        }
-
         [Test]
-        public void BrowserMonitoringUsesDefaultWhenNoConfigValues()
+        public void BrowserMonitoringUsesDefaultWhenNoConfigValue()
         {
-            _localConfig.browserMonitoring.captureAttributesSpecified = false;
             _localConfig.browserMonitoring.attributes.enabledSpecified = false;
 
             Assert.IsFalse(_defaultConfig.CaptureBrowserMonitoringAttributes);
         }
 
-        [TestCase(true, false, ExpectedResult = true)]
-        [TestCase(true, true, ExpectedResult = true)]
-        [TestCase(false, false, ExpectedResult = false)]
-        [TestCase(false, true, ExpectedResult = false)]
-        public bool ErrorCollectorOverridesDeprecatedValue(bool propertyEnabled, bool deprecatedEnabled)
-        {
-            _localConfig.errorCollector.captureAttributes = deprecatedEnabled;
-            _localConfig.errorCollector.attributes.enabled = propertyEnabled;
-
-            return _defaultConfig.CaptureErrorCollectorAttributes;
-        }
-
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool ErrorCollectorDeprecatedValueOverridesDefault(bool deprecatedEnabled)
-        {
-            _localConfig.errorCollector.captureAttributesSpecified = false;
-            _localConfig.errorCollector.attributes.enabled = deprecatedEnabled;
-
-            return _defaultConfig.CaptureErrorCollectorAttributes;
-        }
-
         [Test]
-        public void ErrorCollectorUsesDefaultWhenNoConfigValues()
+        public void ErrorCollectorUsesDefaultWhenNoConfigValue()
         {
-            _localConfig.errorCollector.captureAttributesSpecified = false;
             _localConfig.errorCollector.attributes.enabledSpecified = false;
 
             Assert.IsTrue(_defaultConfig.CaptureErrorCollectorAttributes);
         }
 
-        [TestCase(true, false, ExpectedResult = true)]
-        [TestCase(true, true, ExpectedResult = true)]
-        [TestCase(false, false, ExpectedResult = false)]
-        [TestCase(false, true, ExpectedResult = false)]
-        public bool TransactionTracerOverridesDeprecatedValue(bool propertyEnabled, bool deprecatedEnabled)
-        {
-            _localConfig.transactionTracer.captureAttributes = deprecatedEnabled;
-            _localConfig.transactionTracer.attributes.enabled = propertyEnabled;
-
-            return _defaultConfig.CaptureTransactionTraceAttributes;
-        }
-
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool TransactionTracerDeprecatedValueOverridesDefault(bool deprecatedEnabled)
-        {
-            _localConfig.transactionTracer.captureAttributesSpecified = false;
-            _localConfig.transactionTracer.attributes.enabled = deprecatedEnabled;
-
-            return _defaultConfig.CaptureTransactionTraceAttributes;
-        }
-
         [Test]
-        public void TransactionTracerUsesDefaultWhenNoConfigValues()
+        public void TransactionTracerUsesDefaultWhenNoConfigValue()
         {
-            _localConfig.transactionTracer.captureAttributesSpecified = false;
             _localConfig.transactionTracer.attributes.enabledSpecified = false;
 
             Assert.IsTrue(_defaultConfig.CaptureTransactionTraceAttributes);
         }
 
-        [TestCase(true, ExpectedResult = true)]
-        [TestCase(false, ExpectedResult = false)]
-        public bool AnalyticsEventDeprecatedValueOverridesDefault(bool deprecatedEnabled)
-        {
-            _localConfig.analyticsEvents.captureAttributesSpecified = false;
-            _localConfig.transactionEvents.attributes.enabled = deprecatedEnabled;
-
-            return _defaultConfig.TransactionEventsAttributesEnabled;
-        }
-
         [Test]
         public void TransactionEventUsesDefaultWhenNoConfigValues()
         {
-            _localConfig.analyticsEvents.captureAttributesSpecified = false;
-
             Assert.IsTrue(_defaultConfig.TransactionEventsAttributesEnabled);
-        }
-
-        [Test]
-        public void DeprecatedIgnoreIdentityParametersValueBecomesExclude()
-        {
-            _localConfig.parameterGroups.identityParameters.ignore = new List<string>() { "foo" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("identity.foo"));
-        }
-
-        [Test]
-        public void DeprecatedIgnoreCustomParametersValueBecomesExclude()
-        {
-            _localConfig.parameterGroups.customParameters.ignore = new List<string>() { "foo" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("foo"));
-        }
-
-        [Test]
-        public void DeprecatedIgnoreResponseHeaderParametersValueBecomesExclude()
-        {
-            _localConfig.parameterGroups.responseHeaderParameters.ignore = new List<string>() { "foo" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("response.headers.foo"));
-        }
-
-        [Test]
-        public void DeprecatedIgnoreRequestHeaderParametersValueBecomesExclude()
-        {
-            _localConfig.parameterGroups.requestHeaderParameters.ignore = new List<string>() { "foo" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("request.headers.foo"));
-        }
-
-        [Test]
-        public void Property_deprecated_ignore_requestParameters_value_becomes_exclude()
-        {
-            _localConfig.requestParameters.ignore = new List<string>() { "foo" };
-
-            Assert.IsTrue(_defaultConfig.CaptureAttributesExcludes.Contains("request.parameters.foo"));
         }
 
         [TestCase(null, null, ExpectedResult = null)]
@@ -1781,8 +1568,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("API", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1799,8 +1587,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             NrAssert.Multiple(
                 () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault())
-                );
+                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1818,8 +1607,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1836,8 +1626,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             NrAssert.Multiple(
                 () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault())
-                );
+                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual("Environment Variable (IISEXPRESS_SITENAME)", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1855,8 +1646,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("Environment Variable (IISEXPRESS_SITENAME)", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1877,8 +1669,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             NrAssert.Multiple(
                 () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault())
-                );
+                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual("Environment Variable (RoleName)", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1900,8 +1693,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("Environment Variable (RoleName)", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1922,8 +1716,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("NewRelic Config", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1943,8 +1738,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             NrAssert.Multiple(
                 () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault())
-                );
+                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual("Application Pool", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
         [Test]
@@ -1965,17 +1761,18 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             NrAssert.Multiple(
                 () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
                 () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1))
-                );
+                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+                () => Assert.AreEqual("Application Pool", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
-        [TestCase("AppPoolId", "w3wp.exe -ap AppPoolId")]
-        [TestCase("AppPoolId", "w3wp.exe -ap \"AppPoolId\"")]
-        [TestCase("W3WP", "w3wp.exe -app \"NotAnAppPool\"")]
-        [TestCase("W3WP", "w3wp.exe -ap")]
-        [TestCase("W3WP", "w3wp.exe -ap ")]
-        [TestCase("AppPoolId", "w3wp.exe -firstArg -ap \"AppPoolId\" -thirdArg")]
-        public void ApplicationNamesPullsSingleNameFromAppPoolIdFromCommandLine(string expected, string commandLine)
+        [TestCase("AppPoolId", "w3wp.exe -ap AppPoolId", "Application Pool")]
+        [TestCase("AppPoolId", "w3wp.exe -ap \"AppPoolId\"", "Application Pool")]
+        [TestCase("W3WP", "w3wp.exe -app \"NotAnAppPool\"", "Process Name")]
+        [TestCase("W3WP", "w3wp.exe -ap", "Process Name")]
+        [TestCase("W3WP", "w3wp.exe -ap ", "Process Name")]
+        [TestCase("AppPoolId", "w3wp.exe -firstArg -ap \"AppPoolId\" -thirdArg", "Application Pool")]
+        public void ApplicationNamesPullsSingleNameFromAppPoolIdFromCommandLine(string expected, string commandLine, string expectedSource)
         {
             _runTimeConfig.ApplicationNames = new List<string>();
 
@@ -1990,7 +1787,8 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             Mock.Arrange(() => _processStatic.GetCurrentProcess().ProcessName).Returns("W3WP");
 
             NrAssert.Multiple(
-                () => Assert.AreEqual(expected, _defaultConfig.ApplicationNames.FirstOrDefault())
+                () => Assert.AreEqual(expected, _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual(expectedSource, _defaultConfig.ApplicationNamesSource)
             );
         }
 
@@ -2011,8 +1809,9 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             NrAssert.Multiple(
                 () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault())
-                );
+                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+                () => Assert.AreEqual("Process Name", _defaultConfig.ApplicationNamesSource)
+            );
         }
 
 
@@ -2229,27 +2028,32 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         }
 
         [Test]
-        public void SpanEventsMaxSamplesStoredOverriddenByEventHarvestConfig()
+        public void SpanEventsMaxSamplesStoredOverriddenBySpanEventHarvestConfig()
         {
-            _serverConfig.EventHarvestConfig = new EventHarvestConfig
+            _localConfig.spanEvents.maximumSamplesStored = 100;
+
+            Assert.AreEqual(100, _defaultConfig.SpanEventsMaxSamplesStored);
+
+            _serverConfig.SpanEventHarvestConfig = new SingleEventHarvestConfig
             {
                 ReportPeriodMs = 5000,
-                HarvestLimits = new Dictionary<string, int> { { EventHarvestConfig.SpanEventHarvestLimitKey, 10 } }
+                HarvestLimit = 10
             };
 
             Assert.AreEqual(10, _defaultConfig.SpanEventsMaxSamplesStored);
         }
 
         [Test]
-        public void SpanEventsHarvestCycleUsesDefaultOrEventHarvestConfig()
+        public void SpanEventsHarvestCycleUsesDefaultOrSpanEventHarvestConfig()
         {
             Assert.AreEqual(TimeSpan.FromMinutes(1), _defaultConfig.SpanEventsHarvestCycle);
 
-            _serverConfig.EventHarvestConfig = new EventHarvestConfig
+            _serverConfig.SpanEventHarvestConfig = new SingleEventHarvestConfig
             {
                 ReportPeriodMs = 5000,
-                HarvestLimits = new Dictionary<string, int> { { EventHarvestConfig.SpanEventHarvestLimitKey, 10 } }
+                HarvestLimit = 10
             };
+
             Assert.AreEqual(TimeSpan.FromSeconds(5), _defaultConfig.SpanEventsHarvestCycle);
         }
 
@@ -2599,6 +2403,30 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
         #region Capture Attributes
 
+        [TestCase(null, false)]
+        [TestCase(true, true)]
+        [TestCase(false, false)]
+        public void AllowAllHeadersConfigTests(bool? enabled, bool expectedResult)
+        {
+            if (enabled.HasValue)
+            {
+                _localConfig.allowAllHeaders.enabled = enabled.Value;
+            }
+
+            Assert.AreEqual(expectedResult, _defaultConfig.AllowAllRequestHeaders);
+        }
+
+        [TestCase(true, false)]
+        [TestCase(false, false)]
+        public void AllowAllHeaders_HighSecurityMode_Enabled_Tests(bool enabled, bool expectedResult)
+        {
+            _localConfig.allowAllHeaders.enabled = enabled;
+            _localConfig.highSecurity.enabled = true;
+        
+            Assert.AreEqual(expectedResult, _defaultConfig.AllowAllRequestHeaders);
+            Assert.AreEqual(0, _defaultConfig.CaptureAttributesIncludes.Count());
+        }
+
         [TestCase(true, true)]
         [TestCase(false, false)]
         public void CaptureAttributes(bool captureAttributes, bool expectedResult)
@@ -2836,6 +2664,36 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
 
             Assert.AreEqual(10, _defaultConfig.CustomEventsMaximumSamplesStored);
         }
+
+        [TestCase("10", 20, 30, ExpectedResult = 10)]
+        [TestCase("10", null, 30, ExpectedResult = 10)]
+        [TestCase("10", 20, null, ExpectedResult = 10)]
+        [TestCase("10", null, null, ExpectedResult = 10)]
+        [TestCase(null, 20, 30, ExpectedResult = 30)]
+        [TestCase(null, null, 30, ExpectedResult = 30)]
+        [TestCase(null, 20, null, ExpectedResult = 20)]
+        [TestCase(null, null, null, ExpectedResult = 10000)]
+        public int CustomEventsMaxSamplesStoredOverriddenByEnvironment(string environmentSetting, int? localSetting, int? serverSetting)
+        {
+            Mock.Arrange(() => _environment.GetEnvironmentVariable("MAX_EVENT_SAMPLES_STORED")).Returns(environmentSetting);
+
+            if (localSetting != null)
+            {
+                _localConfig.customEvents.maximumSamplesStored = (int)localSetting;
+            }
+
+            if (serverSetting != null)
+            {
+                _serverConfig.EventHarvestConfig = new EventHarvestConfig
+                {
+                    ReportPeriodMs = 5000,
+                    HarvestLimits = new Dictionary<string, int> { { EventHarvestConfig.CustomEventHarvestLimitKey, (int)serverSetting } }
+                };
+            }
+
+            return _defaultConfig.CustomEventsMaximumSamplesStored;
+        }
+
 
         [Test]
         public void CustomEventsHarvestCycleUsesDefaultOrEventHarvestConfig()

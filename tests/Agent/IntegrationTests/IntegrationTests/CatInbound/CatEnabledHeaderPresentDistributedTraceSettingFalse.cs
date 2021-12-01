@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.CatInbound
 {
     [NetFrameworkTest]
-    public class CatEnabledHeaderPresentDistributedTraceSettingFalse : IClassFixture<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
+    public class CatEnabledHeaderPresentDistributedTraceSettingFalse : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
 
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;
@@ -22,6 +22,7 @@ namespace NewRelic.Agent.IntegrationTests.CatInbound
         private HttpResponseHeaders _responseHeaders;
 
         public CatEnabledHeaderPresentDistributedTraceSettingFalse(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output)
+            : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -33,11 +34,8 @@ namespace NewRelic.Agent.IntegrationTests.CatInbound
                     var configModifier = new NewRelicConfigModifier(configPath);
 
                     configModifier.ForceTransactionTraces();
-
+                    configModifier.EnableCat();
                     configModifier.SetOrDeleteDistributedTraceEnabled(false);
-
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration" }, "crossApplicationTracingEnabled", "true");
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration", "crossApplicationTracer" }, "enabled", "true");
                 },
                 exerciseApplication: () =>
                 {

@@ -39,6 +39,8 @@ namespace NewRelic.Agent.Core.Config
         
         private configurationInstrumentation instrumentationField;
         
+        private configurationAllowAllHeaders allowAllHeadersField;
+        
         private configurationAttributes attributesField;
         
         private configurationParameterGroups parameterGroupsField;
@@ -135,6 +137,7 @@ namespace NewRelic.Agent.Core.Config
             this.requestParametersField = new configurationRequestParameters();
             this.parameterGroupsField = new configurationParameterGroups();
             this.attributesField = new configurationAttributes();
+            this.allowAllHeadersField = new configurationAllowAllHeaders();
             this.instrumentationField = new configurationInstrumentation();
             this.logField = new configurationLog();
             this.applicationField = new configurationApplication();
@@ -218,6 +221,18 @@ namespace NewRelic.Agent.Core.Config
             set
             {
                 this.instrumentationField = value;
+            }
+        }
+        
+        public configurationAllowAllHeaders allowAllHeaders
+        {
+            get
+            {
+                return this.allowAllHeadersField;
+            }
+            set
+            {
+                this.allowAllHeadersField = value;
             }
         }
         
@@ -1397,7 +1412,7 @@ namespace NewRelic.Agent.Core.Config
         public configurationInstrumentation()
         {
             this.applicationsField = new List<configurationInstrumentationApplication>();
-            this.logField = false;
+            this.logField = true;
         }
         
         [System.Xml.Serialization.XmlArrayItemAttribute("application", IsNullable=false)]
@@ -1414,7 +1429,7 @@ namespace NewRelic.Agent.Core.Config
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        [System.ComponentModel.DefaultValueAttribute(false)]
+        [System.ComponentModel.DefaultValueAttribute(true)]
         public bool log
         {
             get
@@ -1467,6 +1482,62 @@ namespace NewRelic.Agent.Core.Config
         public virtual configurationInstrumentationApplication Clone()
         {
             return ((configurationInstrumentationApplication)(this.MemberwiseClone()));
+        }
+        #endregion
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Xsd2Code", "3.6.0.20097")]
+    [System.SerializableAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="urn:newrelic-config")]
+    public partial class configurationAllowAllHeaders
+    {
+        
+        private System.Nullable<bool> enabledField;
+        
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        public bool enabled
+        {
+            get
+            {
+                if (this.enabledField.HasValue)
+                {
+                    return this.enabledField.Value;
+                }
+                else
+                {
+                    return default(bool);
+                }
+            }
+            set
+            {
+                this.enabledField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool enabledSpecified
+        {
+            get
+            {
+                return this.enabledField.HasValue;
+            }
+            set
+            {
+                if (value==false)
+                {
+                    this.enabledField = null;
+                }
+            }
+        }
+        
+        #region Clone method
+        /// <summary>
+        /// Create a clone of this configurationAllowAllHeaders object
+        /// </summary>
+        public virtual configurationAllowAllHeaders Clone()
+        {
+            return ((configurationAllowAllHeaders)(this.MemberwiseClone()));
         }
         #endregion
     }
@@ -2848,7 +2919,7 @@ namespace NewRelic.Agent.Core.Config
             this.explainThresholdField = ((float)(500F));
             this.enabledField = true;
             this.maxSegmentsField = 3000;
-            this.maxStackTraceField = 30;
+            this.maxStackTraceField = 0;
             this.maxExplainPlansField = 20;
         }
         
@@ -2963,7 +3034,7 @@ namespace NewRelic.Agent.Core.Config
         }
         
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        [System.ComponentModel.DefaultValueAttribute(30)]
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int maxStackTrace
         {
             get
@@ -3627,6 +3698,8 @@ namespace NewRelic.Agent.Core.Config
         
         private bool enabledField;
         
+        private int maximumSamplesStoredField;
+        
         /// <summary>
         /// configurationSpanEvents class constructor
         /// </summary>
@@ -3634,6 +3707,7 @@ namespace NewRelic.Agent.Core.Config
         {
             this.attributesField = new configurationSpanEventsAttributes();
             this.enabledField = true;
+            this.maximumSamplesStoredField = 2000;
         }
         
         public configurationSpanEventsAttributes attributes
@@ -3659,6 +3733,20 @@ namespace NewRelic.Agent.Core.Config
             set
             {
                 this.enabledField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [System.ComponentModel.DefaultValueAttribute(2000)]
+        public int maximumSamplesStored
+        {
+            get
+            {
+                return this.maximumSamplesStoredField;
+            }
+            set
+            {
+                this.maximumSamplesStoredField = value;
             }
         }
         

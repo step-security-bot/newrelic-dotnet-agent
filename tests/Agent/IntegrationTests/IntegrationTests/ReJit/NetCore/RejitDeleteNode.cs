@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
 using NewRelic.Testing.Assertions;
@@ -19,15 +20,16 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
     /// Files: Integration.Testing.DeleteNodeTest.xml 
     /// </summary>
     [NetCoreTest]
-    public class RejitDeleteNode : IClassFixture<AspNetCoreReJitMvcApplicationFixture>
+    public abstract class RejitDeleteNodeBase<TFixture> : NewRelicIntegrationTest<TFixture>
+        where TFixture : AspNetCoreReJitMvcApplicationFixture
     {
         private readonly AspNetCoreReJitMvcApplicationFixture _fixture;
 
-        public RejitDeleteNode(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+        protected RejitDeleteNodeBase(TFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
 
-            var deleteNodeFilePath = _fixture.RemoteApplication.DestinationExtensionsDirectoryPath + @"\Integration.Testing.DeleteNodeTest.xml";
+            var deleteNodeFilePath = Path.Combine(_fixture.RemoteApplication.DestinationExtensionsDirectoryPath, "Integration.Testing.DeleteNodeTest.xml");
 
             _fixture.TestLogger = output;
             _fixture.Actions(
@@ -71,18 +73,18 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric {metricName = @"WebTransaction/MVC/Home/Index", callCount = 1},
+                //transactions
+                new Assertions.ExpectedMetric {metricName = @"WebTransaction/MVC/Home/Index", callCount = 1},
                 new Assertions.ExpectedMetric {metricName = @"WebTransaction/Custom/MyCustomDeleteMetricName", callCount = 3},
                 new Assertions.ExpectedMetric {metricName = @"WebTransaction/MVC/Rejit/GetDeleteNode/{id}", callCount = 1},
 
-				// Unscoped
-				new Assertions.ExpectedMetric {metricName = @"DotNet/HomeController/Index", callCount = 1},
+                // Unscoped
+                new Assertions.ExpectedMetric {metricName = @"DotNet/HomeController/Index", callCount = 1},
                 new Assertions.ExpectedMetric {metricName = @"Custom/MyCustomDeleteMetricName", callCount = 3},
                 new Assertions.ExpectedMetric {metricName = @"DotNet/RejitController/GetDeleteNode", callCount = 4},
 
-				// Scoped
-				new Assertions.ExpectedMetric {metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1},
+                // Scoped
+                new Assertions.ExpectedMetric {metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1},
                 new Assertions.ExpectedMetric {metricName = @"Custom/MyCustomDeleteMetricName", metricScope = "WebTransaction/Custom/MyCustomDeleteMetricName", callCount = 3},
                 new Assertions.ExpectedMetric {metricName = @"DotNet/RejitController/GetDeleteNode", metricScope = "WebTransaction/MVC/Rejit/GetDeleteNode/{id}", callCount = 1}
             };
@@ -96,7 +98,15 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         }
     }
 
-    public class RejitDeleteNodeWithTieredCompilation : RejitDeleteNode, IClassFixture<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
+    public class RejitDeleteNode : RejitDeleteNodeBase<AspNetCoreReJitMvcApplicationFixture>
+    {
+        public RejitDeleteNode(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+            : base(fixture, output)
+        {
+        }
+    }
+
+    public class RejitDeleteNodeWithTieredCompilation : RejitDeleteNodeBase<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
     {
         public RejitDeleteNodeWithTieredCompilation(AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation fixture, ITestOutputHelper output)
             : base(fixture, output)

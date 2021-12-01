@@ -85,23 +85,30 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
                 _attribDefs.DatabaseCallCount.TrySetValue(attribValues, databaseData.Value0);
             }
 
-            if (_configurationService.Configuration.ErrorCollectorEnabled && immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.HasError)
+            if (_configurationService.Configuration.ErrorCollectorEnabled)
             {
-                var errorData = immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.ErrorData;
-
-                _attribDefs.GetTypeAttribute(TypeAttributeValue.TransactionError).TrySetDefault(attribValues);
-
-                _attribDefs.TimestampForError.TrySetValue(attribValues, errorData.NoticedAt);
-                _attribDefs.ErrorClass.TrySetValue(attribValues, errorData.ErrorTypeName);
-                _attribDefs.ErrorType.TrySetValue(attribValues, errorData.ErrorTypeName);
-                _attribDefs.ErrorMessage.TrySetValue(attribValues, errorData.ErrorMessage);
-                _attribDefs.ErrorDotMessage.TrySetValue(attribValues, errorData.ErrorMessage);
-                _attribDefs.IsError.TrySetValue(attribValues, true);
-                _attribDefs.ErrorEventSpanId.TrySetValue(attribValues, immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.ErrorDataSpanId);
-
-                if (errorData.IsExpected)
+                if (immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.HasError)
                 {
-                    _attribDefs.IsErrorExpected.TrySetValue(attribValues, true);
+                    var errorData = immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.ErrorData;
+
+                    _attribDefs.GetTypeAttribute(TypeAttributeValue.TransactionError).TrySetDefault(attribValues);
+
+                    _attribDefs.TimestampForError.TrySetValue(attribValues, errorData.NoticedAt);
+                    _attribDefs.ErrorClass.TrySetValue(attribValues, errorData.ErrorTypeName);
+                    _attribDefs.ErrorType.TrySetValue(attribValues, errorData.ErrorTypeName);
+                    _attribDefs.ErrorMessage.TrySetValue(attribValues, errorData.ErrorMessage);
+                    _attribDefs.ErrorDotMessage.TrySetValue(attribValues, errorData.ErrorMessage);
+                    _attribDefs.IsError.TrySetValue(attribValues, true);
+                    _attribDefs.ErrorEventSpanId.TrySetValue(attribValues, immutableTransaction.TransactionMetadata.ReadOnlyTransactionErrorState.ErrorDataSpanId);
+
+                    if (errorData.IsExpected)
+                    {
+                        _attribDefs.IsErrorExpected.TrySetValue(attribValues, true);
+                    }
+                }
+                else
+                {
+                    _attribDefs.IsError.TrySetValue(attribValues, false);
                 }
             }
 
@@ -177,6 +184,7 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
 
         public void SetUserAndAgentAttributes(IAttributeValueCollection attribValues, ITransactionAttributeMetadata metadata)
         {
+            _attribDefs.RequestMethod.TrySetValue(attribValues, metadata.RequestMethod);
             _attribDefs.RequestUri.TrySetValue(attribValues, metadata.Uri ?? "/Unknown");
 
             // original_url should only be generated if it is distinct from the current URI
@@ -192,16 +200,7 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
 
             _attribDefs.HostDisplayName.TrySetValue(attribValues, _configurationService.Configuration.ProcessHostDisplayName);
 
-            foreach(var reqParam in metadata.RequestParameters)
-            {
-                _attribDefs.GetRequestParameterAttribute(reqParam.Key).TrySetValue(attribValues, reqParam.Value);
-            }
-
-            foreach (var userAttrib in metadata.UserAttributes)
-            {
-                _attribDefs.GetCustomAttributeForTransaction(userAttrib.Key).TrySetValue(attribValues, userAttrib.Value);
-            }
-
+            
             if (_configurationService.Configuration.ErrorCollectorEnabled && metadata.ReadOnlyTransactionErrorState.HasError && metadata.ReadOnlyTransactionErrorState.ErrorData != null && metadata.ReadOnlyTransactionErrorState.ErrorData.CustomAttributes != null)
             {
                 foreach(var errAttrib in metadata.ReadOnlyTransactionErrorState.ErrorData.CustomAttributes)
@@ -210,6 +209,8 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
 
                 }
             }
+
+            attribValues.AddRange(metadata.UserAndRequestAttributes);
         }
 
         private static bool IsCatParticipant(ImmutableTransaction immutableTransaction)

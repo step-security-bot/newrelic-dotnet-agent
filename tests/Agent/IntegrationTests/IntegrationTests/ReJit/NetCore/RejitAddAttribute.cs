@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
 using NewRelic.Testing.Assertions;
@@ -20,15 +21,16 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
     /// Files: Integration.Testing.AddAttributeTest.xml
     /// </summary>
     [NetCoreTest]
-    public class RejitAddAttribute : IClassFixture<AspNetCoreReJitMvcApplicationFixture>
+    public abstract class RejitAddAttributeBase<TFixture> : NewRelicIntegrationTest<TFixture>
+        where TFixture: AspNetCoreReJitMvcApplicationFixture
     {
         private readonly AspNetCoreReJitMvcApplicationFixture _fixture;
 
-        public RejitAddAttribute(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+        protected RejitAddAttributeBase(TFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
 
-            var addAttributeFilePath = _fixture.RemoteApplication.DestinationExtensionsDirectoryPath + @"\Integration.Testing.AddAttributeTest.xml";
+            var addAttributeFilePath = Path.Combine(_fixture.RemoteApplication.DestinationExtensionsDirectoryPath, "Integration.Testing.AddAttributeTest.xml");
 
             _fixture.TestLogger = output;
             _fixture.Actions(
@@ -59,32 +61,32 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
+                //transactions
+                new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"WebTransaction/Custom/MyCustomAddAfterMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"WebTransaction/MVC/Rejit/GetAddAttribute", callCount = 1 },
 
-				// Unscoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
+                // Unscoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddAfterMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetAddAttribute", callCount = 2 },
 
-				// Scoped
-				new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
+                // Scoped
+                new Assertions.ExpectedMetric { metricName = @"DotNet/HomeController/Index", metricScope = "WebTransaction/MVC/Home/Index", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddAfterMetricName", metricScope = "WebTransaction/Custom/MyCustomAddAfterMetricName", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"DotNet/RejitController/GetAddAttribute", metricScope = "WebTransaction/MVC/Rejit/GetAddAttribute", callCount = 1 }
             };
 
             var notExpcetedMetrics = new List<Assertions.ExpectedMetric>
             {
-				//transactions
-				new Assertions.ExpectedMetric { metricName = @"WebTransaction/Custom/MyCustomAddBeforeMetricName", callCount = 1 },
+                //transactions
+                new Assertions.ExpectedMetric { metricName = @"WebTransaction/Custom/MyCustomAddBeforeMetricName", callCount = 1 },
 
-				// Unscoped
-				new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddBeforeMetricName", callCount = 1 },
+                // Unscoped
+                new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddBeforeMetricName", callCount = 1 },
 
-				// Scoped
-				new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddBeforeMetricName", metricScope = "WebTransaction/Custom/MyCustomAddBeforeMetricName", callCount = 1 }
+                // Scoped
+                new Assertions.ExpectedMetric { metricName = @"Custom/MyCustomAddBeforeMetricName", metricScope = "WebTransaction/Custom/MyCustomAddBeforeMetricName", callCount = 1 }
             };
 
             var metrics = CommonUtils.GetMetrics(_fixture.AgentLog);
@@ -97,7 +99,15 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetCore
         }
     }
 
-    public class RejitAddAttributeWithTieredCompilation : RejitAddAttribute, IClassFixture<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
+    public class RejitAddAttribute : RejitAddAttributeBase<AspNetCoreReJitMvcApplicationFixture>
+    {
+        public RejitAddAttribute(AspNetCoreReJitMvcApplicationFixture fixture, ITestOutputHelper output)
+            : base(fixture, output)
+        {
+        }
+    }
+
+    public class RejitAddAttributeWithTieredCompilation : RejitAddAttributeBase<AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation>
     {
         public RejitAddAttributeWithTieredCompilation(AspNetCoreReJitMvcApplicationFixtureWithTieredCompilation fixture, ITestOutputHelper output)
             : base(fixture, output)

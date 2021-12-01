@@ -34,9 +34,11 @@ namespace NewRelic.Providers.Wrapper.AspNetCore
             ITransaction transaction = null;
             ISegment segment = null;
 
-            if (context.Request.Method == "OPTIONS")
+            // Don't create a transaction in this case to avoid MGIs associated with CORS pre-flight requests
+            if ("OPTIONS".Equals(context.Request?.Method, StringComparison.OrdinalIgnoreCase))
             {
-                // Don't create a transaction in this case to avoid MGIs associated with CORS pre-flight requests
+                _agent.Logger.Log(Agent.Extensions.Logging.Level.Finest, "Skipping instrumenting incoming OPTIONS request.");
+
                 await _next(context);
                 return;
             }
@@ -48,6 +50,16 @@ namespace NewRelic.Providers.Wrapper.AspNetCore
                 transaction.DetachFromPrimary(); //Remove from thread-local type storage
 
                 segment = SetupSegment(transaction, context);
+                segment.AlwaysDeductChildDuration = true;
+
+                if (_agent.Configuration.AllowAllRequestHeaders)
+                {
+                    transaction.SetRequestHeaders(context.Request.Headers, context.Request.Headers.Keys, GetHeaderValue);
+                }
+                else
+                {
+                    transaction.SetRequestHeaders(context.Request.Headers, Agent.Extensions.Providers.Wrapper.Statics.DefaultCaptureHeaders, GetHeaderValue);
+                }
 
                 ProcessHeaders(context);
 
@@ -74,6 +86,11 @@ namespace NewRelic.Providers.Wrapper.AspNetCore
                 TryWriteResponseHeaders(context, transaction);
                 return Task.CompletedTask;
             }
+        }
+
+        private string GetHeaderValue(IHeaderDictionary headers, string key)
+        {
+            return headers[key];
         }
 
         private void EndTransaction(ISegment segment, ITransaction transaction, HttpContext context, Exception appException)
@@ -148,6 +165,7 @@ namespace NewRelic.Providers.Wrapper.AspNetCore
                 transactionDisplayName: path,
                 doNotTrackAsUnitOfWork: true);
 
+            transaction.SetRequestMethod(request.Method);
             transaction.SetUri(request.Path);
 
             if (request.QueryString.HasValue)

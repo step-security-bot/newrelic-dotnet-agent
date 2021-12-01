@@ -15,13 +15,13 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.CatOutbound
 {
     [NetFrameworkTest]
-    public class CatEnabledChainedAsyncAwaitRestSharp : IClassFixture<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
+    public class CatEnabledChainedAsyncAwaitRestSharp : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;
 
         private HttpResponseHeaders _responseHeaders;
 
-        public CatEnabledChainedAsyncAwaitRestSharp(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output)
+        public CatEnabledChainedAsyncAwaitRestSharp(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -30,11 +30,9 @@ namespace NewRelic.Agent.IntegrationTests.CatOutbound
                 {
                     var configPath = fixture.DestinationNewRelicConfigFilePath;
                     var configModifier = new NewRelicConfigModifier(configPath);
+
                     configModifier.ForceTransactionTraces();
-
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration" }, "crossApplicationTracingEnabled", "true");
-                    CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_fixture.DestinationNewRelicConfigFilePath, new[] { "configuration", "crossApplicationTracer" }, "enabled", "true");
-
+                    configModifier.EnableCat();
                 },
                 exerciseApplication: () =>
                 {

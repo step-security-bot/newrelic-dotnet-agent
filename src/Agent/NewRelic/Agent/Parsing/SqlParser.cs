@@ -3,6 +3,7 @@
 
 using NewRelic.Agent.Extensions.Parsing;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
+using NewRelic.Core.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -37,9 +38,10 @@ namespace NewRelic.Parsing
         private static readonly ConcurrentDictionary<DatastoreVendor, ParsedSqlStatement> _nullParsedStatementStore = new ConcurrentDictionary<DatastoreVendor, ParsedSqlStatement>();
 
         private const string SqlParamPrefix = "@";
+        private const char SemiColon = ';';
 
         // Regex Phrases
-        private const string SelectPhrase = @"(?=^\bset\b.*;\s*\bselect\b|^\bselect\b).*?\s+";
+        private const string SelectPhrase = @"^\bselect\b.*?\s+";
         private const string InsertPhrase = @"^insert\s+into\s+";
         private const string UpdatePhrase = @"^update\s+";
         private const string DeletePhrase = @"^delete\s+";
@@ -72,6 +74,7 @@ namespace NewRelic.Parsing
         private const string SingleSqlStatementPhrase = @"^[^;]*[\s;]*$";
 
         private const string CommentPhrase = @"/\*.*?\*/"; //The ? makes the searching lazy
+        private const string LeadingSetPhrase = @"^(?:\s*\bset\b.+?\;)+(?!(\s*\bset\b))";
         private const string StartObjectNameSeparator = @"[\s\(\[`\""]*";
         private const string EndObjectNameSeparator = @"[\s\)\]`\""]*";
         private const string ValidObjectName = @"([^,;\[\s\]\(\)`\""\.]*)";
@@ -94,6 +97,7 @@ namespace NewRelic.Parsing
         private const string DeclareString = DeclarePhrase + VariableNamePhrase;
 
         private static readonly Regex CommentPattern = new Regex(CommentPhrase, RegexOptions.Compiled | RegexOptions.Singleline);
+        private static readonly Regex LeadingSetPattern = new Regex(LeadingSetPhrase, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
         private static readonly Regex ValidMetricNameMatcher = new Regex(MetricNamePhrase, RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex SingleSqlStatementMatcher = new Regex(SingleSqlStatementPhrase, PatternSwitches);
         private static readonly Regex SelectRegex = new Regex(SelectString, PatternSwitches);
@@ -128,6 +132,16 @@ namespace NewRelic.Parsing
                 }
                 // Remove comments.
                 var statement = CommentPattern.Replace(commandText, string.Empty).TrimStart();
+
+                if (!IsSingleSqlStatement(statement))
+                {
+                    // Remove leading SET commands
+
+                    // Trimming any trailing semicolons is necessary to avoid having the LeadingSetPattern
+                    // match a SQL statement that ONLY contains SET commands, which would leave us with nothing
+                    statement = statement.TrimEnd(SemiColon);
+                    statement = LeadingSetPattern.Replace(statement, string.Empty).TrimStart();
+                }
 
                 return _statementParser(datastoreVendor, commandType, commandText, statement);
             }
@@ -344,66 +358,67 @@ namespace NewRelic.Parsing
         }
 
         /// <summary>
-        ///This method takes any parameters in the given command and plugs them back into the parameterized command text.
+        /// This method takes any parameters in the given command and plugs them back into the parameterized command text.
         /// </summary>
-        public static void FixParameterizedSql(IDbCommand command)
+        /// <param name="command">SQL command to parse</param>
+        /// <returns>True if the plan should be executed.  False if the plan should be aborted.</returns>
+        public static bool FixParameterizedSql(IDbCommand command)
         {
             if (command.Parameters.Count == 0)
             {
-                return;
+                return true; // no params, using raw sql statement.
             }
 
-            List<IDbDataParameter> dbParams = new List<IDbDataParameter>();
-            foreach (IDbDataParameter dbParam in command.Parameters)
+            var sql = command.CommandText;
+            foreach (object parameter in command.Parameters)
             {
-                dbParams.Add(dbParam);
-            }
-            command.Parameters.Clear();
-
-            dbParams.Sort(new ParameterComparer());
-
-            string sql = command.CommandText;
-            foreach (object parameter in dbParams)
-            {
-                IDbDataParameter dbParam = (IDbDataParameter)parameter;
+                var dbParam = (IDbDataParameter)parameter;
                 //DebugParam(dbParam, sqlObfuscator);
-                DbType type = dbParam.DbType;
+
+                // Binary: We cannot determine exactly what is in the binary so the out could be invalid for SQL.
+                // Object: Object could be almost anything so there is no easy way ToString it that just works without trying to detect all the differnt objects
+                // It is safer, less error prone, and more efficient to short-circuit on these types than to try and parse them out.
+                var type = dbParam.DbType;
+                if (type == DbType.Binary)
+                {
+                    Log.DebugFormat("Not executing explain plan since DbType is Binary.");
+                    return false;
+                }
+                else if (type == DbType.Object)
+                {
+                    Log.DebugFormat("Not executing explain plan since DbType is Object.");
+                    return false;
+                }
+                
+                // Parameter names can be supplied with the prefix @ or without
+                // if is supplied, remove the @ to the beginning of the param name
+                // This is to deal with regex issues, see below
+                var paramName = dbParam.ParameterName;
+                if (paramName.StartsWith(SqlParamPrefix))
+                {
+                    paramName = paramName.Replace(SqlParamPrefix, ""); ;
+                }
+
+                // The following should be handled by a defualt .ToString() to get the numbers as a string
+                // Byte, Decimal, Double, Int16, Int32, Int64, SByte, Single, UInt16, UInt32, UInt64, VarNumeric, Currency
                 object value = dbParam.Value;
                 if (quotableTypes.Contains(type.ToString()))  // the TypeCode for Strings is Int32 for some reason
                 {
                     value = QuoteString(value.ToString());
                 }
-                else if (value is bool)
+                else if (type == DbType.Boolean)  // value must be type bool
                 {
                     value = ((bool)value) ? 1 : 0;
                 }
 
-                // Parameter names can be supplied with the prefix @ or without
-                // if not supplied, add the @ to the beginning of the param name
-                var paramName = dbParam.ParameterName;
-                if (!paramName.StartsWith(SqlParamPrefix))
-                {
-                    paramName = SqlParamPrefix + paramName;
-                }
-
-                sql = sql.Replace(paramName, value.ToString());
+                // Regex doesn't consider the @ to be a word so we have to add the @ before the word boundery match "\b"
+                // This is why we strip the @ from the param before using it in the regex.
+                sql = Regex.Replace(sql, $@"@\b{paramName}\b", value.ToString());
             }
 
+            command.Parameters.Clear();
             command.CommandText = sql;
-        }
-
-        /// <summary>
-        /// Sort parameters so that longer parameter names are sorted to the top.  We want to make sure
-        /// that if one parameter name contains another parameter name, the longer name is replaced first.
-        /// For example, if two params @Name and @Namespace are given, we want to replace the @Namespace 
-        /// values before the @Name values.
-        /// </summary>
-        private class ParameterComparer : IComparer<IDbDataParameter>
-        {
-            public int Compare(IDbDataParameter x, IDbDataParameter y)
-            {
-                return y.ParameterName.Length - x.ParameterName.Length;
-            }
+            return true;
         }
 
         private static readonly List<string> quotableTypes = new List<string>() {
@@ -417,6 +432,7 @@ namespace NewRelic.Parsing
             "AnsiStringFixedLength",
             "Xml",
             "Guid",
+            "DateTimeOffset",
         };
 
         private static string QuoteString(string str)

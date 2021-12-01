@@ -12,13 +12,13 @@ namespace NewRelic.Providers.Wrapper.RabbitMq
 {
     public class HandleBasicDeliverWrapper : IWrapper
     {
+        private const string WrapperName = "HandleBasicDeliverWrapper";
+
         public bool IsTransactionRequired => false;
 
         public CanWrapResponse CanWrap(InstrumentedMethodInfo methodInfo)
         {
-            var method = methodInfo.Method;
-            var canWrap = method.MatchesAny(assemblyName: RabbitMqHelper.AssemblyName, typeName: "RabbitMQ.Client.Events.EventingBasicConsumer", methodName: "HandleBasicDeliver");
-            return new CanWrapResponse(canWrap);
+            return new CanWrapResponse(WrapperName.Equals(methodInfo.RequestedWrapperName));
         }
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, ITransaction transaction)
@@ -36,8 +36,8 @@ namespace NewRelic.Providers.Wrapper.RabbitMq
             // ATTENTION: We have validated that the use of dynamic here is appropriate based on the visibility of the data we're working with.
             // If we implement newer versions of the API or new methods we'll need to re-evaluate.
             // basicProperties is never null (framework supplies it), though the Headers property could be
-            var basicProperties = instrumentedMethodCall.MethodCall.MethodArguments.ExtractAs<dynamic>(5);
-            var headers = (Dictionary<string, object>)basicProperties.Headers;
+            var basicProperties = instrumentedMethodCall.MethodCall.MethodArguments.ExtractAs<object>(5);
+            var headers = RabbitMqHelper.GetHeaders(basicProperties);
 
             agent.CurrentTransaction.AcceptDistributedTraceHeaders(headers, GetHeaderValue, TransportType.AMQP);
 
@@ -51,7 +51,7 @@ namespace NewRelic.Providers.Wrapper.RabbitMq
                     transaction.End();
                 });
 
-            IEnumerable<string> GetHeaderValue(Dictionary<string, object> carrier, string key)
+            IEnumerable<string> GetHeaderValue(IDictionary<string, object> carrier, string key)
             {
                 if (headers != null)
                 {

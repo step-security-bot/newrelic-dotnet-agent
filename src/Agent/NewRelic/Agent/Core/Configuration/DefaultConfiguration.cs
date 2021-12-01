@@ -14,7 +14,6 @@ using NewRelic.SystemInterfaces;
 using NewRelic.SystemInterfaces.Web;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -43,7 +42,6 @@ namespace NewRelic.Agent.Core.Configuration
         private const int MaxIgnoreErrorConfigEntries = 50;
 
         private static long _currentConfigurationVersion;
-        private const int DefaultSpanEventsMaxSamplesStored = 1000;
         private readonly IEnvironment _environment = new EnvironmentMock();
         private readonly IProcessStatic _processStatic = new ProcessStatic();
         private readonly IHttpRuntimeStatic _httpRuntimeStatic = new HttpRuntimeStatic();
@@ -102,7 +100,7 @@ namespace NewRelic.Agent.Core.Configuration
                 _securityPoliciesConfiguration = securityPoliciesConfiguration;
             }
 
-            LogDeprecationWarnings();
+            LogDisabledWarnings();
 
             _newRelicAppSettings = TransformAppSettings();
 
@@ -217,12 +215,17 @@ namespace NewRelic.Agent.Core.Configuration
         private IEnumerable<string> _applicationNames;
         public virtual IEnumerable<string> ApplicationNames { get { return _applicationNames ?? (_applicationNames = GetApplicationNames()); } }
 
+        private string _applicationNamesSource;
+        public virtual string ApplicationNamesSource => _applicationNamesSource;
+
         private IEnumerable<string> GetApplicationNames()
         {
             var runtimeAppNames = _runTimeConfiguration.ApplicationNames.ToList();
             if (runtimeAppNames.Any())
             {
                 Log.Info("Application name from SetApplicationName API.");
+                _applicationNamesSource = "API";
+
                 return runtimeAppNames;
             }
 
@@ -230,6 +233,8 @@ namespace NewRelic.Agent.Core.Configuration
             if (appName != null)
             {
                 Log.Info("Application name from web.config or app.config.");
+                _applicationNamesSource = "Application Config";
+
                 return appName.Split(StringSeparators.Comma);
             }
 
@@ -237,6 +242,8 @@ namespace NewRelic.Agent.Core.Configuration
             if (appName != null)
             {
                 Log.Info("Application name from IISEXPRESS_SITENAME Environment Variable.");
+                _applicationNamesSource = "Environment Variable (IISEXPRESS_SITENAME)";
+
                 return appName.Split(StringSeparators.Comma);
             }
 
@@ -244,6 +251,8 @@ namespace NewRelic.Agent.Core.Configuration
             if (appName != null)
             {
                 Log.Info("Application name from NEW_RELIC_APP_NAME Environment Variable.");
+                _applicationNamesSource = "Environment Variable (NEW_RELIC_APP_NAME)";
+
                 return appName.Split(StringSeparators.Comma);
             }
 
@@ -251,12 +260,16 @@ namespace NewRelic.Agent.Core.Configuration
             if (appName != null)
             {
                 Log.Info("Application name from RoleName Environment Variable.");
+                _applicationNamesSource = "Environment Variable (RoleName)";
+
                 return appName.Split(StringSeparators.Comma);
             }
 
             if (_localConfiguration.application.name.Count > 0)
             {
                 Log.Info("Application name from newrelic.config.");
+                _applicationNamesSource = "NewRelic Config";
+
                 return _localConfiguration.application.name;
             }
 
@@ -264,12 +277,16 @@ namespace NewRelic.Agent.Core.Configuration
             if (!string.IsNullOrWhiteSpace(appName))
             {
                 Log.Info("Application name from Application Pool name.");
+                _applicationNamesSource = "Application Pool";
+
                 return appName.Split(StringSeparators.Comma);
             }
 
             if (_httpRuntimeStatic.AppDomainAppVirtualPath == null)
             {
                 Log.Info("Application name from process name.");
+                _applicationNamesSource = "Process Name";
+
                 return new List<string> { _processStatic.GetCurrentProcess().ProcessName };
             }
 
@@ -361,6 +378,8 @@ namespace NewRelic.Agent.Core.Configuration
             }
         }
 
+        public bool AllowAllRequestHeaders => HighSecurityModeOverrides(false, _localConfiguration.allowAllHeaders.enabled);
+
         #region Attributes
 
         public virtual bool CaptureAttributes => _localConfiguration.attributes.enabled;
@@ -433,13 +452,7 @@ namespace NewRelic.Agent.Core.Configuration
                 return Memoizer.Memoize(ref _captureAttributesExcludes, () =>
                 {
                     var configExcludes = _localConfiguration.attributes.exclude;
-                    var deprecatedDisabledExcludes = GetDeprecatedExplicitlyDisabledParameters();
-                    var deprecatedIgnoredExcludes = GetDeprecatedIgnoreParameters();
-                    var allExcludes = configExcludes
-                        .Concat(deprecatedDisabledExcludes)
-                        .Concat(deprecatedIgnoredExcludes);
-
-                    return new HashSet<string>(allExcludes);
+                    return new HashSet<string>(configExcludes);
                 });
             }
         }
@@ -469,10 +482,7 @@ namespace NewRelic.Agent.Core.Configuration
             }
         }
 
-        public virtual bool TransactionEventsAttributesEnabled =>
-            CaptureAttributes
-            && _localConfiguration.transactionEvents.attributes.enabled
-            && (!_localConfiguration.analyticsEvents.captureAttributesSpecified || _localConfiguration.analyticsEvents.captureAttributes);
+        public virtual bool TransactionEventsAttributesEnabled => CaptureAttributes && _localConfiguration.transactionEvents.attributes.enabled;
 
         private HashSet<string> _transactionEventsAttributesInclude;
         public HashSet<string> TransactionEventsAttributesInclude
@@ -518,11 +528,6 @@ namespace NewRelic.Agent.Core.Configuration
                 return _localConfiguration.transactionTracer.attributes.enabled;
             }
 
-            if (_localConfiguration.transactionTracer.captureAttributesSpecified)
-            {
-                return _localConfiguration.transactionTracer.captureAttributes;
-            }
-
             return CaptureTransactionTraceAttributesDefault;
         }
 
@@ -538,15 +543,6 @@ namespace NewRelic.Agent.Core.Configuration
                     {
                         var includes = new HashSet<string>(_localConfiguration.transactionTracer.attributes.include);
 
-                        if (CaptureRequestParameters)
-                        {
-                            includes.Add("request.parameters.*");
-                        }
-
-                        if (DeprecatedCaptureIdentityParameters)
-                        {
-                            includes.Add("identity.*");
-                        }
 
                         return includes;
                     });
@@ -592,11 +588,6 @@ namespace NewRelic.Agent.Core.Configuration
                 return _localConfiguration.errorCollector.attributes.enabled;
             }
 
-            if (_localConfiguration.errorCollector.captureAttributesSpecified)
-            {
-                return _localConfiguration.errorCollector.captureAttributes;
-            }
-
             return CaptureErrorCollectorAttributesDefault;
         }
 
@@ -613,15 +604,6 @@ namespace NewRelic.Agent.Core.Configuration
                     {
                         var includes = new HashSet<string>(_localConfiguration.errorCollector.attributes.include);
 
-                        if (CaptureRequestParameters)
-                        {
-                            includes.Add("request.parameters.*");
-                        }
-
-                        if (DeprecatedCaptureIdentityParameters)
-                        {
-                            includes.Add("identity.*");
-                        }
 
                         return includes;
                     });
@@ -665,11 +647,6 @@ namespace NewRelic.Agent.Core.Configuration
             if (_localConfiguration.browserMonitoring.attributes.enabledSpecified)
             {
                 return _localConfiguration.browserMonitoring.attributes.enabled;
-            }
-
-            if (_localConfiguration.browserMonitoring.captureAttributesSpecified)
-            {
-                return _localConfiguration.browserMonitoring.captureAttributes;
             }
 
             return CaptureBrowserMonitoringAttributesDefault;
@@ -758,48 +735,9 @@ namespace NewRelic.Agent.Core.Configuration
             return new BoolConfigurationItem(localConfigValue, LocalConfigSource);
         }
 
-        /// This method combines logic for the deprecated parameterGroups.customParameters and the 
-        /// newer customParameters added for implementation of Language Agent Security Policies (LASP). 
-        /// parameterGroups.customParameters will be removed with a future major version release, but customParameters 
-        /// must remain in order maintain the requirements of LASP and High Security Mode (HSM).  
         private bool GetLocalShouldCaptureCustomParameters()
         {
-            var deprecatedSpecified = _localConfiguration.parameterGroups.customParameters.enabledSpecified;
-
-            if ((_localConfiguration.customParameters.enabledSpecified == false)
-                && (deprecatedSpecified == false))
-            {
-                return CaptureCustomParametersAttributesDefault;
-            }
-
-            var localConfigValue = true;
-            if (_localConfiguration.customParameters.enabledSpecified)
-            {
-                localConfigValue = _localConfiguration.customParameters.enabled;
-            }
-
-            if (_localConfiguration.parameterGroups.customParameters.enabledSpecified)
-            {
-                LogDeprecatedPropertyUse("parameterGroups.customParameters", "customParameters");
-                localConfigValue = localConfigValue && _localConfiguration.parameterGroups.customParameters.enabled;
-            }
-
-            return localConfigValue;
-        }
-
-        public virtual bool CaptureRequestParameters
-        {
-            get
-            {
-                var localAttributeValue = false;
-                if (_localConfiguration.requestParameters.enabledSpecified)
-                {
-                    localAttributeValue = _localConfiguration.requestParameters.enabled;
-                }
-                var serverAttributeValue = _serverConfiguration.RpmConfig.CaptureParametersEnabled;
-                var enabled = HighSecurityModeOverrides(false, ServerOverrides(serverAttributeValue, localAttributeValue));
-                return enabled;
-            }
+            return _localConfiguration.customParameters.enabledSpecified ? _localConfiguration.customParameters.enabled : CaptureCustomParametersAttributesDefault;
         }
 
         #endregion
@@ -867,13 +805,7 @@ namespace NewRelic.Agent.Core.Configuration
             }
         }
 
-        public TimeSpan SpanEventsHarvestCycle
-        {
-            get
-            {
-                return ServerOverrides(_serverConfiguration.EventHarvestConfig?.SpanEventHarvestCycle(), TimeSpan.FromMinutes(1));
-            }
-        }
+        public TimeSpan SpanEventsHarvestCycle => ServerOverrides(_serverConfiguration.SpanEventHarvestConfig?.HarvestCycle, TimeSpan.FromMinutes(1));
 
         public bool SpanEventsAttributesEnabled => CaptureAttributes && _localConfiguration.spanEvents.attributes.enabled;
 
@@ -927,7 +859,9 @@ namespace NewRelic.Agent.Core.Configuration
 
         public int? SamplingTarget => _serverConfiguration.SamplingTarget;
 
-        public int SpanEventsMaxSamplesStored => ServerOverrides(_serverConfiguration.EventHarvestConfig?.SpanEventHarvestLimit(), DefaultSpanEventsMaxSamplesStored);
+        public int SpanEventsMaxSamplesStored => ServerOverrides(_serverConfiguration.SpanEventHarvestConfig?.HarvestLimit,
+           EnvironmentOverrides(_localConfiguration.spanEvents.maximumSamplesStored, "NEW_RELIC_SPAN_EVENTS_MAX_SAMPLES_STORED").GetValueOrDefault());
+
         public int? SamplingTargetPeriodInSeconds => _serverConfiguration.SamplingTargetPeriodInSeconds;
 
         public bool PayloadSuccessMetricsEnabled => _localConfiguration.distributedTracing.enableSuccessMetrics;
@@ -947,6 +881,15 @@ namespace NewRelic.Agent.Core.Configuration
             ?? (_infiniteTracingTimeoutMsSendData = EnvironmentOverrides(
                 TryGetAppSettingAsIntWithDefault("InfiniteTracingTimeoutSend", 10000)
                 , "NEW_RELIC_INFINITE_TRACING_TIMEOUT_SEND")).Value);
+
+        private int? _infiniteTracingExitTimeoutMs = null;
+        public int InfiniteTracingExitTimeoutMs => GetInfiniteTracingExitTimeoutMs();
+        private int GetInfiniteTracingExitTimeoutMs()
+        {
+            const int infiniteTracingExitTimeoutMsDefault = 5000;
+            return _infiniteTracingExitTimeoutMs
+                ?? (_infiniteTracingExitTimeoutMs = EnvironmentOverrides(TryGetAppSettingAsIntWithDefault("InfiniteTracingExitTimeout", infiniteTracingExitTimeoutMsDefault), "NEW_RELIC_INFINITE_TRACING_EXIT_TIMEOUT")).GetValueOrDefault();
+        }
 
         private int? _infiniteTracingCountWorkers = null;
         public int InfiniteTracingTraceCountConsumers => GetInfiniteTracingCountWorkers();
@@ -1052,6 +995,15 @@ namespace NewRelic.Agent.Core.Configuration
                 _infiniteTracingObserverTestFlaky = TryGetAppSettingAsFloat("InfiniteTracingSpanEventsTestFlaky");
             }
 
+            if (int.TryParse(_environment.GetEnvironmentVariable("NEW_RELIC_INFINITE_TRACING_SPAN_EVENTS_TEST_FLAKY_CODE"), out var flakyCodeVal))
+            {
+                _infiniteTracingObserverTestFlakyCode = flakyCodeVal;
+            }
+            else
+            {
+                _infiniteTracingObserverTestFlakyCode = TryGetAppSettingAsInt("InfiniteTracingSpanEventsTestFlakyCode");
+            }
+
             if (int.TryParse(_environment.GetEnvironmentVariable("NEW_RELIC_INFINITE_TRACING_SPAN_EVENTS_TEST_DELAY"), out var delayVal))
             {
                 _infiniteTracingObserverTestDelayMs = delayVal;
@@ -1075,6 +1027,20 @@ namespace NewRelic.Agent.Core.Configuration
                 }
 
                 return _infiniteTracingObserverTestFlaky;
+            }
+        }
+
+        private int? _infiniteTracingObserverTestFlakyCode;
+        public int? InfiniteTracingTraceObserverTestFlakyCode
+        {
+            get
+            {
+                if (!_infiniteTracingObtainedSettingsForTest)
+                {
+                    GetInfiniteTracingFlakyAndDelayTestSettings();
+                }
+
+                return _infiniteTracingObserverTestFlakyCode;
             }
         }
 
@@ -1138,53 +1104,52 @@ namespace NewRelic.Agent.Core.Configuration
 
         public virtual uint ErrorsMaximumPerPeriod { get { return 20; } }
 
-        public virtual IEnumerable<string> IgnoreErrorsForAgentSettings { get; private set; }
-
         public IDictionary<string, IEnumerable<string>> IgnoreErrorsConfiguration { get; private set; }
         public IEnumerable<string> IgnoreErrorClassesForAgentSettings { get; private set; }
         public IDictionary<string, IEnumerable<string>> IgnoreErrorMessagesForAgentSettings { get; private set; }
 
-        private IEnumerable<MatchRule> ParseExpectedStatusCodesString(string expectedStatusCodesString)
+        private IEnumerable<MatchRule> ParseExpectedStatusCodesArray(IEnumerable<string> expectedStatusCodeArray)
         {
             var expectedStatusCodes = new List<MatchRule>();
 
-            var expectedStatusCodeArray = expectedStatusCodesString.Split(StringSeparators.Comma, StringSplitOptions.RemoveEmptyEntries);
+            if (expectedStatusCodeArray == null)
+            {
+                return expectedStatusCodes;
+            }
+
             foreach (var singleCodeOrRange in expectedStatusCodeArray)
             {
+                MatchRule matchRule;
                 var index = singleCodeOrRange.IndexOf(HyphenChar);
                 if (index != -1)
                 {
                     var lowerBoundString = singleCodeOrRange.Substring(0, index).Trim();
-                    var upperBoundString = singleCodeOrRange.Substring(index + 1, singleCodeOrRange.Length - index - 1).Trim();
+                    var upperBoundString = singleCodeOrRange.Substring(index + 1).Trim();
 
-                    AddRule(StatusCodeInRangeMatchRule.GenerateRule(lowerBoundString, upperBoundString), singleCodeOrRange);
+                    matchRule = StatusCodeInRangeMatchRule.GenerateRule(lowerBoundString, upperBoundString);
                 }
                 else
                 {
-                    AddRule(StatusCodeExactMatchRule.GenerateRule(singleCodeOrRange), singleCodeOrRange);
+                    matchRule = StatusCodeExactMatchRule.GenerateRule(singleCodeOrRange);
                 }
+
+                if (matchRule == null)
+                {
+                    Log.Warn($"Cannot parse {singleCodeOrRange} status code. This status code format is not supported.");
+                    continue;
+                }
+
+                expectedStatusCodes.Add(matchRule);
             }
 
             return expectedStatusCodes;
-
-            void AddRule(MatchRule rule, string statusCode)
-            {
-                if (rule != null)
-                {
-                    expectedStatusCodes.Add(rule);
-                }
-                else
-                {
-                    Log.Warn($"Cannot parse {statusCode} status code. This status code format is not supported.");
-                }
-            }
         }
 
         public IDictionary<string, IEnumerable<string>> ExpectedErrorsConfiguration { get; private set; }
         public IEnumerable<MatchRule> ExpectedStatusCodes { get; private set; }
         public IEnumerable<string> ExpectedErrorClassesForAgentSettings { get; private set; }
         public IDictionary<string, IEnumerable<string>> ExpectedErrorMessagesForAgentSettings { get; private set; }
-        public string ExpectedErrorStatusCodesForAgentSettings { get; private set; }
+        public IEnumerable<string> ExpectedErrorStatusCodesForAgentSettings { get; private set; }
 
         #endregion
 
@@ -1337,7 +1302,7 @@ namespace NewRelic.Agent.Core.Configuration
 
                     if (hasObscuringKey && hasObfuscatedPassword)
                     {
-                         _proxyPassword = Strings.Base64Decode(_localConfiguration.service.proxy.passwordObfuscated, ObscuringKey);
+                        _proxyPassword = Strings.Base64Decode(_localConfiguration.service.proxy.passwordObfuscated, ObscuringKey);
                     }
                     else
                     {
@@ -1478,7 +1443,10 @@ namespace NewRelic.Agent.Core.Configuration
         {
             get
             {
-                return ServerOverrides(_serverConfiguration.EventHarvestConfig?.CustomEventHarvestLimit(), _localConfiguration.customEvents.maximumSamplesStored);
+                return (int)EnvironmentOverrides(
+                    ServerOverrides(_serverConfiguration.EventHarvestConfig?.CustomEventHarvestLimit(),
+                        _localConfiguration.customEvents.maximumSamplesStored),
+                    "MAX_EVENT_SAMPLES_STORED");
             }
         }
 
@@ -1538,8 +1506,7 @@ namespace NewRelic.Agent.Core.Configuration
             {
                 return TransactionEventsMaximumSamplesStored > 0 && ServerCanDisable(
                     _serverConfiguration.AnalyticsEventCollectionEnabled,
-                    _localConfiguration.transactionEvents.enabled
-                    && (!_localConfiguration.analyticsEvents.enabledSpecified || _localConfiguration.analyticsEvents.enabled));
+                    _localConfiguration.transactionEvents.enabled);
             }
         }
 
@@ -1548,12 +1515,9 @@ namespace NewRelic.Agent.Core.Configuration
             get
             {
                 var maxValue = _localConfiguration.transactionEvents.maximumSamplesStored;
-                if (_localConfiguration.analyticsEvents.maximumSamplesStoredSpecified)
-                {
-                    LogDeprecatedPropertyUse("analyticsEvents.maximumSamplesStored", "transactionEvents.maximumSamplesStored");
-                    maxValue = _localConfiguration.analyticsEvents.maximumSamplesStored;
-                }
-                return ServerOverrides(_serverConfiguration.EventHarvestConfig?.TransactionEventHarvestLimit(), maxValue);
+                return (int)EnvironmentOverrides(
+                    ServerOverrides(_serverConfiguration.EventHarvestConfig?.TransactionEventHarvestLimit(), maxValue),
+                    "MAX_TRANSACTION_SAMPLES_STORED");
             }
         }
 
@@ -1569,17 +1533,7 @@ namespace NewRelic.Agent.Core.Configuration
         {
             get
             {
-                var enabled = TransactionEventsTransactionsEnabledDefault;
-                if (_localConfiguration.transactionEvents.transactions.enabledSpecified)
-                {
-                    enabled = _localConfiguration.transactionEvents.transactions.enabled;
-                }
-                if (_localConfiguration.analyticsEvents.transactions.enabledSpecified)
-                {
-                    LogDeprecatedPropertyUse("analyticsEvents.transactions.enabled", "transactionEvents.transactions.enabled");
-                    enabled = _localConfiguration.analyticsEvents.transactions.enabled;
-                }
-                return enabled;
+                return _localConfiguration.transactionEvents.transactions.enabledSpecified ? _localConfiguration.transactionEvents.transactions.enabled : TransactionEventsTransactionsEnabledDefault;
             }
         }
 
@@ -1738,7 +1692,8 @@ namespace NewRelic.Agent.Core.Configuration
 
         #endregion Metric naming
 
-        public string NewRelicConfigFilePath { get { return _localConfiguration.ConfigurationFileName; } }
+        public string NewRelicConfigFilePath => _localConfiguration.ConfigurationFileName;
+        public string AppSettingsConfigFilePath => _configurationManagerStatic.AppSettingsFilePath;
 
         #region Utilization
 
@@ -1902,7 +1857,6 @@ namespace NewRelic.Agent.Core.Configuration
 
         private static T ServerOverrides<T>(T server, T local) where T : class
         {
-            Debug.Assert(local != null);
             return server ?? local;
         }
 
@@ -2044,19 +1998,18 @@ namespace NewRelic.Agent.Core.Configuration
 
         private void ParseExpectedErrorConfigurations()
         {
-            var localExpectedErrorMessages = new Dictionary<string, IEnumerable<string>>();
+            var expectedErrorInfo = _serverConfiguration.RpmConfig.ErrorCollectorExpectedMessages?.ToDictionary(IEnumerableExtensions.DuplicateKeyBehavior.KeepFirst);
 
-            foreach (var errorClass in _localConfiguration.errorCollector.expectedMessages)
+            if (expectedErrorInfo == null)
             {
-                var messages = errorClass.message;
-                if (messages != null)
-                {
-                    localExpectedErrorMessages.Add(errorClass.name, messages);
-                }
+                expectedErrorInfo = _localConfiguration.errorCollector.expectedMessages
+                .Where(x => x.message != null)
+                .Select(x => new KeyValuePair<string, IEnumerable<string>>(x.name, x.message))
+                .ToDictionary(IEnumerableExtensions.DuplicateKeyBehavior.KeepFirst);
             }
 
-            var expectedErrorInfo = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorExpectedMessages, localExpectedErrorMessages).ToDictionary();
-
+            //Keeping the original expected messages configuration for agent setting report on connect before
+            //the expectedErrorInfo dictionary gets mixed up between expected messages and expected classes configurations.
             var expectedMessages = new Dictionary<string, IEnumerable<string>>(expectedErrorInfo);
 
             var expectedClasses = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorExpectedClasses, _localConfiguration.errorCollector.expectedClasses.errorClass);
@@ -2068,48 +2021,50 @@ namespace NewRelic.Agent.Core.Configuration
                 if (expectedErrorInfo.ContainsKey(className))
                 {
                     expectedErrorInfo[className] = Enumerable.Empty<string>();
-                    Log.Warn($"{className} class is specified in both errorCollector.expectedClasses and errorCollector.expectedMessages configurations. Any errors of this class will be marked as expected.");
-                    expectedMessages.Remove(className);
+                    Log.Warn($"Expected Errors - {className} class is specified in both errorCollector.expectedClasses and errorCollector.expectedMessages configurations. Any errors of this class will be marked as expected.");
                 }
-                else if (count < MaxExptectedErrorConfigEntries)
+                else if (count >= MaxExptectedErrorConfigEntries)
                 {
-                    expectedErrorInfo.Add(className, Enumerable.Empty<string>());
+                    Log.Warn($"Expected Errors - {className} Exceeds the limit of {MaxExptectedErrorConfigEntries} and will be ignored.");
+                }
+                else
+                {
+                    expectedErrorInfo[className] = Enumerable.Empty<string>();
                     count++;
                 }
             }
 
-            var expectedStatusCodesString = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorExpectedStatusCodes, _localConfiguration.errorCollector.expectedStatusCodes);
+            var expectedStatusCodesArrayLocal = _localConfiguration.errorCollector.expectedStatusCodes?.Split(StringSeparators.Comma, StringSplitOptions.RemoveEmptyEntries);
+            var expectedStatusCodesArrayServer = _serverConfiguration.RpmConfig.ErrorCollectorExpectedStatusCodes;
 
-            ExpectedStatusCodes = ParseExpectedStatusCodesString(expectedStatusCodesString);
+            var expectedStatusCodesArray = ServerOverrides(expectedStatusCodesArrayServer, expectedStatusCodesArrayLocal);
+
+            ExpectedStatusCodes = ParseExpectedStatusCodesArray(expectedStatusCodesArray);
+            ExpectedErrorStatusCodesForAgentSettings = expectedStatusCodesArray ?? new string[0];
+
             ExpectedErrorsConfiguration = new ReadOnlyDictionary<string, IEnumerable<string>>(expectedErrorInfo);
             ExpectedErrorMessagesForAgentSettings = new ReadOnlyDictionary<string, IEnumerable<string>>(expectedMessages);
             ExpectedErrorClassesForAgentSettings = expectedClasses;
-            ExpectedErrorStatusCodesForAgentSettings = expectedStatusCodesString;
         }
 
         private void ParseIgnoreErrorConfigurations()
         {
-            var localIgnoreErrorMessages = new Dictionary<string, IEnumerable<string>>();
+            var ignoreErrorInfo = _serverConfiguration.RpmConfig.ErrorCollectorIgnoreMessages?
+                .ToDictionary(IEnumerableExtensions.DuplicateKeyBehavior.KeepFirst);
 
-            foreach (var errorClass in _localConfiguration.errorCollector.ignoreMessages)
+            if (ignoreErrorInfo == null)
             {
-                var messages = errorClass.message;
-                if (messages != null)
-                {
-                    localIgnoreErrorMessages.Add(errorClass.name, messages);
-                }
+                ignoreErrorInfo = _localConfiguration.errorCollector.ignoreMessages
+                .Where(x => x.message != null)
+                .Select(x => new KeyValuePair<string, IEnumerable<string>>(x.name, x.message))
+                .ToDictionary(IEnumerableExtensions.DuplicateKeyBehavior.KeepFirst);
             }
 
-            var ignoreErrorInfo = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorIgnoreMessages, localIgnoreErrorMessages).ToDictionary();
-
+            //Keeping the original ignore messages configuration for agent setting report on connect before
+            //the ignoreErrorInfo dictionary gets mixed up between ignore messages and ignore classes configurations.
             var ignoreMessages = new Dictionary<string, IEnumerable<string>>(ignoreErrorInfo);
 
-            var ignoreClassesFromErrorCollectorIgnoreErrorsConfig = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorErrorsToIgnore, _localConfiguration.errorCollector.ignoreErrors.exception);
-
-            IgnoreErrorsForAgentSettings = ignoreClassesFromErrorCollectorIgnoreErrorsConfig;
-
-            var ignoreClasses = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorIgnoreClasses, _localConfiguration.errorCollector.ignoreClasses.errorClass)
-                .Concat(ignoreClassesFromErrorCollectorIgnoreErrorsConfig);
+            var ignoreClasses = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorIgnoreClasses, _localConfiguration.errorCollector.ignoreClasses.errorClass);
 
             var count = ignoreErrorInfo.Count;
 
@@ -2118,23 +2073,26 @@ namespace NewRelic.Agent.Core.Configuration
                 if (ignoreErrorInfo.ContainsKey(className))
                 {
                     ignoreErrorInfo[className] = Enumerable.Empty<string>();
-                    Log.Warn($"{className} class is specified in both errorCollector.ignoreClasses and errorCollector.ingoreMessages configurations. Any errors of this class will be ignored.");
-                    ignoreMessages.Remove(className);
+                    Log.Warn($"Ignore Errors - {className} class is specified in both errorCollector.ignoreClasses and errorCollector.ingoreMessages configurations. Any errors of this class will be ignored.");
                 }
-                else if (count < MaxIgnoreErrorConfigEntries)
+                else if (count >= MaxIgnoreErrorConfigEntries)
+                {
+                    Log.Warn($"Ignore Errors - {className} Exceeds the limit of {MaxIgnoreErrorConfigEntries} and will be ignored.");
+                }
+                else
                 {
                     ignoreErrorInfo.Add(className, Enumerable.Empty<string>());
                     count++;
                 }
             }
 
-            var localStatusCodesToIgnore = new List<string>();
-            foreach (var localCode in _localConfiguration.errorCollector.ignoreStatusCodes.code)
+            var ignoreStatusCodes = _serverConfiguration.RpmConfig.ErrorCollectorStatusCodesToIgnore;
+            if (ignoreStatusCodes == null)
             {
-                localStatusCodesToIgnore.Add(localCode.ToString(CultureInfo.InvariantCulture));
+                ignoreStatusCodes = _localConfiguration.errorCollector.ignoreStatusCodes.code
+                    .Select(x => x.ToString(CultureInfo.InvariantCulture))
+                    .ToList();
             }
-
-            var ignoreStatusCodes = ServerOverrides(_serverConfiguration.RpmConfig.ErrorCollectorStatusCodesToIgnore, localStatusCodesToIgnore);
 
             foreach (var code in ignoreStatusCodes)
             {
@@ -2172,164 +2130,132 @@ namespace NewRelic.Agent.Core.Configuration
 
         #endregion
 
-        #region deprecated parameter group settings
+        #region deprecated/disabled parameter group settings
 
-        private void LogDeprecationWarnings()
+        private void LogDisabledWarnings()
         {
-            if (_localConfiguration.analyticsEvents.captureAttributesSpecified)
+            // analyticsEvents.*
+            if (_localConfiguration.analyticsEvents.transactions.enabledSpecified)
             {
-                LogDeprecatedPropertyUse("analyticsEvents.captureAttributes", "transaction_events.attributes.enabled");
-            }
-            if (_localConfiguration.transactionTracer.captureAttributesSpecified)
-            {
-                LogDeprecatedPropertyUse("transactionTracer.captureAttributes", "transactionTracer.attributes.enabled");
-            }
-            if (_localConfiguration.errorCollector.captureAttributesSpecified)
-            {
-                LogDeprecatedPropertyUse("errorCollector.captureAttributes", "errorCollector.attributes.enabled");
-            }
-            if (_localConfiguration.browserMonitoring.captureAttributesSpecified)
-            {
-                LogDeprecatedPropertyUse("browserMonitoring.captureAttributes", "browserMonitoring.attributes.enabled");
+                LogDisabledPropertyUse("analyticsEvents.transactions.enabled", "transactionEvents.transactions.enabled");
             }
             if (_localConfiguration.analyticsEvents.enabledSpecified)
             {
-                LogDeprecatedPropertyUse("analyticsEvents.enabled", "transactionEvents.enabled");
+                LogDisabledPropertyUse("analyticsEvents.enabled", "transactionEvents.enabled");
             }
-        }
-
-        private void LogDeprecatedPropertyUse(string deprecatedPropertyName, string newPropertyName)
-        {
-            Log.WarnFormat("Deprecated configuration property '{0}'.  Use '{1}'.  See http://docs.newrelic.com for details.", deprecatedPropertyName, newPropertyName);
-        }
-
-        private IEnumerable<string> GetDeprecatedExplicitlyDisabledParameters()
-        {
-            var disabledProperties = new List<string>();
-
-            if (_localConfiguration.parameterGroups != null)
+            if (_localConfiguration.analyticsEvents.captureAttributesSpecified)
             {
-                if (_localConfiguration.parameterGroups.responseHeaderParameters != null &&
-                    _localConfiguration.parameterGroups.responseHeaderParameters.enabledSpecified &&
-                    !_localConfiguration.parameterGroups.responseHeaderParameters.enabled)
-                {
-                    LogDeprecatedPropertyUse("parameterGroups.responseHeaderParameters.enabled", "attributes.exclude");
-                    disabledProperties.Add("response.headers.*");
-                }
-
-                // Log the deprecated parameter, disabling custom parameters is handled separately in AttributeService
-                if (_localConfiguration.parameterGroups.customParameters != null &&
-                    _localConfiguration.parameterGroups.customParameters.enabledSpecified &&
-                    !_localConfiguration.parameterGroups.customParameters.enabled)
-                {
-                    LogDeprecatedPropertyUse("parameterGroups.customParameters.enabled", "attributes.exclude");
-                }
-
-                if (_localConfiguration.parameterGroups.requestHeaderParameters != null &&
-                    _localConfiguration.parameterGroups.requestHeaderParameters.enabledSpecified &&
-                    !_localConfiguration.parameterGroups.requestHeaderParameters.enabled)
-                {
-                    LogDeprecatedPropertyUse("parameterGroups.requestHeaderParameters.enabled", "attributes.exclude");
-                    disabledProperties.Add("request.headers.*");
-                }
+                LogDisabledPropertyUse("analyticsEvents.captureAttributes", "transaction_events.attributes.enabled");
             }
-            return disabledProperties;
+            if (_localConfiguration.analyticsEvents.maximumSamplesStoredSpecified)
+            {
+                LogDisabledPropertyUse("analyticsEvents.maximumSamplesStored", "transaction_events.maximumSamplesStored");
+            }
+            if (_localConfiguration.analyticsEvents.maximumSamplesPerMinuteSpecified)
+            {
+                LogDisabledPropertyUse("analyticsEvents.maximumSamplesPerMinute");
+            }
+
+            // transactionEvents.maximumSamplesPerMinute
+            if (_localConfiguration.transactionEvents.maximumSamplesPerMinuteSpecified)
+            {
+                LogDisabledPropertyUse("transactionEvents.maximumSamplesPerMinute");
+            }
+
+            // parameterGroups.*
+            // parameterGroups.responseHeaderParameters.* has no replacement equivalent, the others
+            // are replaced with attributes.include/exclude
+            if (_localConfiguration.parameterGroups.identityParameters.enabledSpecified)
+            {
+                LogDisabledPropertyUse("parameterGroups.identityParameters.enabled", "attributes.include");
+            }
+            if (_localConfiguration.parameterGroups.identityParameters?.ignore?.Count > 0)
+            {
+                LogDisabledPropertyUse("parameterGroups.identityParameters.ignore", "attributes.exclude");
+            }
+            if (_localConfiguration.parameterGroups.responseHeaderParameters.enabledSpecified)
+            {
+                LogDisabledPropertyUse("parameterGroups.responseHeaderParameters.enabled");
+            }
+            if (_localConfiguration.parameterGroups.responseHeaderParameters?.ignore?.Count > 0)
+            {
+                LogDisabledPropertyUse("parameterGroups.responseHeaderParameters.ignore");
+            }
+            if (_localConfiguration.parameterGroups.customParameters.enabledSpecified)
+            {
+                LogDisabledPropertyUse("parameterGroups.customParameters.enabled", "attributes.include");
+            }
+            if (_localConfiguration.parameterGroups.customParameters?.ignore?.Count > 0)
+            {
+                LogDisabledPropertyUse("parameterGroups.customParameters.ignore", "attributes.exclude");
+            }
+            if (_localConfiguration.parameterGroups.requestHeaderParameters.enabledSpecified)
+            {
+                LogDisabledPropertyUse("parameterGroups.requestHeaderParameters.enabled", "attributes.include");
+            }
+            if (_localConfiguration.parameterGroups.requestHeaderParameters?.ignore?.Count > 0)
+            {
+                LogDisabledPropertyUse("parameterGroups.requestHeaderParameters.ignore", "attributes.exclude");
+            }
+
+            //requestParameters.*
+            //requestParameters.ignore
+            //requestParameters.enabled
+            if (_localConfiguration.requestParameters?.ignore?.Count > 0)
+            {
+                LogDisabledPropertyUse("requestParameters.ignore", "attributes.exclude");
+            }
+            if (_localConfiguration.requestParameters?.enabledSpecified == true)
+            {
+                LogDisabledPropertyUse("requestParameters.enabled", "request.parameters.* in attributes.include");
+            }
+
+
+            //transactionTracer.captureAttributes
+            if (_localConfiguration.transactionTracer.captureAttributesSpecified)
+            {
+                LogDisabledPropertyUse("transactionTracer.captureAttributes", "transactionTracer.attributes.enabled");
+            }
+            //errorCollector.captureAttributes
+            if (_localConfiguration.errorCollector.captureAttributesSpecified)
+            {
+                LogDisabledPropertyUse("errorCollector.captureAttributes", "errorCollector.attributes.enabled");
+            }
+            //browserMonitoring.captureAttributes
+            if (_localConfiguration.browserMonitoring.captureAttributesSpecified)
+            {
+                LogDisabledPropertyUse("browserMonitoring.captureAttributes", "browserMonitoring.attributes.enabled");
+            }
+
+            //errorColelctor.ignoreErrors
+            if (_localConfiguration.errorCollector.ignoreErrors?.exception?.Any() ?? false)
+            {
+                LogDisabledPropertyUse("errorCollector.ignoreErrors", "errorCollector.ignoreClasses");
+            }
         }
 
-        private bool DeprecatedCaptureIdentityParameters
+        // This method is now unused as all previously deprecated config properties have been fully disabled.
+        // However, we may wish to deprecate more config properties in the future, so it seems prudent to
+        // leave this code in here, commented out.
+        //private void LogDeprecatedPropertyUse(string deprecatedPropertyName, string newPropertyName)
+        //{
+        //    Log.WarnFormat("Deprecated configuration property '{0}'.  Use '{1}'.  See https://docs.newrelic.com/docs/agents/net-agent/configuration/net-agent-configuration/ for details.", deprecatedPropertyName, newPropertyName);
+        //}
+
+        private void LogDisabledPropertyUse(string disabledPropertyName, string newPropertyName = "")
         {
-            get
+            var replacementText = "No replacement is available";
+            if (newPropertyName != "")
             {
-                var localAttributeValue = false;
-                if (_localConfiguration.parameterGroups.identityParameters.enabledSpecified)
-                {
-                    localAttributeValue = _localConfiguration.parameterGroups.identityParameters.enabled;
-                }
-                return localAttributeValue;
+                replacementText = $"Use {newPropertyName} instead.";
             }
+            Log.WarnFormat("Configuration property '{0}' is disabled (unused) and will be removed from the config schema in a future release.  {1}  See https://docs.newrelic.com/docs/agents/net-agent/configuration/net-agent-configuration/ for details.", disabledPropertyName, replacementText);
         }
 
         int? _databaseStatementCacheCapcity = null;
 
         public int DatabaseStatementCacheCapcity => _databaseStatementCacheCapcity ?? (_databaseStatementCacheCapcity =
             TryGetAppSettingAsIntWithDefault("SqlStatementCacheCapacity", DefaultSqlStatementCacheCapacity)).Value;
-
-        private IEnumerable<string> GetDeprecatedIgnoreParameters()
-        {
-            var ignoreParameters = new List<string>();
-            ignoreParameters.AddRange(DeprecatedIgnoreCustomParameters());
-            ignoreParameters.AddRange(DeprecatedIgnoreIdentityParameters().Select(param => "identity." + param));
-            ignoreParameters.AddRange(DeprecatedIgnoreResponseHeaderParameters().Select(param => "response.headers." + param));
-            ignoreParameters.AddRange(DeprecatedIgnoreRequestHeaderParameters().Select(param => "request.headers." + param));
-            ignoreParameters.AddRange(DeprecatedIgnoreRequestParameters().Select(param => "request.parameters." + param));
-
-            return ignoreParameters.Distinct();
-        }
-
-        private IEnumerable<string> DeprecatedIgnoreCustomParameters()
-        {
-            if (_localConfiguration.parameterGroups != null
-                && _localConfiguration.parameterGroups.customParameters != null
-                && _localConfiguration.parameterGroups.customParameters.ignore != null
-                && _localConfiguration.parameterGroups.customParameters.ignore.Count > 0)
-            {
-                LogDeprecatedPropertyUse("parameterGroups.customParameters.ignore", "attributes.exclude");
-                return _localConfiguration.parameterGroups.customParameters.ignore;
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEnumerable<string> DeprecatedIgnoreIdentityParameters()
-        {
-            if (_localConfiguration.parameterGroups != null
-                && _localConfiguration.parameterGroups.identityParameters != null
-                && _localConfiguration.parameterGroups.identityParameters.ignore != null
-                && _localConfiguration.parameterGroups.identityParameters.ignore.Count > 0)
-            {
-                LogDeprecatedPropertyUse("parameterGroups.identityParameters.ignore", "attributes.exclude");
-                return _localConfiguration.parameterGroups.identityParameters.ignore;
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEnumerable<string> DeprecatedIgnoreResponseHeaderParameters()
-        {
-            if (_localConfiguration.parameterGroups != null
-                && _localConfiguration.parameterGroups.responseHeaderParameters != null
-                && _localConfiguration.parameterGroups.responseHeaderParameters.ignore != null
-                && _localConfiguration.parameterGroups.responseHeaderParameters.ignore.Count > 0)
-            {
-                LogDeprecatedPropertyUse("parameterGroups.responseHeaderParameters.ignore", "attributes.exclude");
-                return _localConfiguration.parameterGroups.responseHeaderParameters.ignore;
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEnumerable<string> DeprecatedIgnoreRequestHeaderParameters()
-        {
-            if (_localConfiguration.parameterGroups != null
-                && _localConfiguration.parameterGroups.requestHeaderParameters != null
-                && _localConfiguration.parameterGroups.requestHeaderParameters.ignore != null
-                && _localConfiguration.parameterGroups.requestHeaderParameters.ignore.Count > 0)
-            {
-                LogDeprecatedPropertyUse("parameterGroups.requestHeaderParameters.ignore", "attributes.exclude");
-                return _localConfiguration.parameterGroups.requestHeaderParameters.ignore;
-            }
-            return Enumerable.Empty<string>();
-        }
-
-        private IEnumerable<string> DeprecatedIgnoreRequestParameters()
-        {
-            if (_localConfiguration.requestParameters != null
-                && _localConfiguration.requestParameters.ignore != null
-                && _localConfiguration.requestParameters.ignore.Count > 0)
-            {
-                LogDeprecatedPropertyUse("requestParameters.ignore", "attributes.exclude");
-                var requestParams = ServerOverrides(_serverConfiguration.RpmConfig.ParametersToIgnore, _localConfiguration.requestParameters.ignore);
-                return requestParams;
-            }
-            return Enumerable.Empty<string>();
-        }
 
         #endregion
 

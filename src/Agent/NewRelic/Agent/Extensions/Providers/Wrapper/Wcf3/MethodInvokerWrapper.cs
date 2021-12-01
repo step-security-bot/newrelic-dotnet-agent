@@ -5,7 +5,6 @@ using NewRelic.Agent.Api;
 using NewRelic.Agent.Api.Experimental;
 using NewRelic.Agent.Extensions.Parsing;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
-using NewRelic.Core.Logging;
 using NewRelic.Reflection;
 using NewRelic.SystemExtensions;
 using System;
@@ -64,7 +63,7 @@ namespace NewRelic.Providers.Wrapper.Wcf3
         private const string InvokeBeginMethodName = "InvokeBegin";
         private const string InvokeEndMethodName = "InvokeEnd";
         private const string InvokeAsyncMethodName = "InvokeAsync";
-
+        private const string WrapperName = "MethodInvokerWrapper";
         /// <summary>
         /// Translates the method name to the type of invocation
         /// </summary>
@@ -85,14 +84,7 @@ namespace NewRelic.Providers.Wrapper.Wcf3
 
         public CanWrapResponse CanWrap(InstrumentedMethodInfo methodInfo)
         {
-            var method = methodInfo.Method;
-            var canWrap = method.MatchesAny
-            (
-                assemblyNames: new[] { AssemblyName },
-                typeNames: new[] { SyncTypeName, AsyncTypeName, TAPTypeName },
-                methodNames: new[] { SyncMethodName, InvokeBeginMethodName, InvokeEndMethodName, InvokeAsyncMethodName }
-            );
-            return new CanWrapResponse(canWrap);
+            return new CanWrapResponse(WrapperName.Equals(methodInfo.RequestedWrapperName));
         }
 
         private static IEnumerable<string> ExtractHeaderValue(OperationContext context, string key)
@@ -112,7 +104,11 @@ namespace NewRelic.Providers.Wrapper.Wcf3
             {
                 try
                 {
-                    headerValue = context.IncomingMessageHeaders.GetHeader<string>(key, string.Empty);
+                    var headerIdx = context.IncomingMessageHeaders.FindHeader(key, string.Empty);
+                    if (headerIdx != -1)
+                    {
+                        headerValue = context.IncomingMessageHeaders.GetHeader<string>(headerIdx);
+                    }
                 }
                 catch
                 {
@@ -127,7 +123,10 @@ namespace NewRelic.Providers.Wrapper.Wcf3
                             : null;
         }
 
-
+        private string GetHeaderValueFromWebHeaderCollection(System.Collections.Specialized.NameValueCollection headers, string key)
+        {
+            return headers[key];
+        }
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, ITransaction transaction)
         {
@@ -165,6 +164,8 @@ namespace NewRelic.Providers.Wrapper.Wcf3
                     doNotTrackAsUnitOfWork: false);
 
                 transaction.GetExperimentalApi().SetWrapperToken(_wrapperToken);
+
+                CaptureHttpRequestHeadersAndMethod(agent, transaction);
             }
 
             var requestPath = uri?.AbsolutePath;
@@ -177,6 +178,11 @@ namespace NewRelic.Providers.Wrapper.Wcf3
             // CAT or DT request information.
             if (shouldTryProcessInboundCatOrDT)
             {
+                if (instrumentedMethodCall.IsAsync)
+                {
+                    transaction.AttachToAsync();
+                }
+
                 transaction.SetWebTransactionName(WebTransactionType.WCF, transactionName, TransactionNamePriority.FrameworkHigh);
                 transaction.SetRequestParameters(parameters);
 
@@ -205,12 +211,16 @@ namespace NewRelic.Providers.Wrapper.Wcf3
             if (!isTAP || _methodNamesStart.Contains(instrumentedMethodName))
             {
                 segment = transaction.StartTransactionSegment(instrumentedMethodCall.MethodCall, transactionName);
+                if (isTAP)
+                {
+                    segment.AlwaysDeductChildDuration = true;
+                }
             }
 
             Guid? wrapperExecutionID = null;
             void WriteLogMessage(string message)
             {
-                if (agent.Logger.IsEnabledFor(Agent.Extensions.Logging.Level.Finest))
+                if (!agent.Logger.IsEnabledFor(Agent.Extensions.Logging.Level.Finest))
                 {
                     return;
                 }
@@ -309,6 +319,24 @@ namespace NewRelic.Providers.Wrapper.Wcf3
                         }
                     }
                 });
+        }
+
+        private void CaptureHttpRequestHeadersAndMethod(IAgent agent, ITransaction transaction)
+        {
+            var context = OperationContext.Current;
+            if (context.IncomingMessageProperties != null
+                && context.IncomingMessageProperties.TryGetValue(HttpRequestMessageProperty.Name, out var httpRequestMessageAsObject)
+                && httpRequestMessageAsObject is HttpRequestMessageProperty httpRequestMessage)
+            {
+                transaction.SetRequestMethod(httpRequestMessage.Method);
+
+                if (httpRequestMessage.Headers != null)
+                {
+                    var headersToCapture = agent.Configuration.AllowAllRequestHeaders ? httpRequestMessage.Headers.AllKeys : Agent.Extensions.Providers.Wrapper.Statics.DefaultCaptureHeaders;
+
+                    transaction.SetRequestHeaders(httpRequestMessage.Headers, headersToCapture, GetHeaderValueFromWebHeaderCollection);
+                }
+            }
         }
 
         /// <summary>

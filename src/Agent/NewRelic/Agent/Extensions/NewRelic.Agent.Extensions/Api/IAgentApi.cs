@@ -111,27 +111,6 @@ namespace NewRelic.Agent.Api
 
         void NoticeError(string message, IDictionary<string, object>? customAttributes, bool isExpected);
 
-        /// <summary> Add a key/value pair to the current transaction.  These are reported in errors and
-        /// transaction traces. Supports web applications only. </summary>
-        ///
-        /// <param name="key">   The key name to add to the transaction parameters. Only the first 1000
-        /// characters are retained. </param>
-        /// <param name="value"> The numeric value to add to the current transaction. If the value is a float
-        /// it is recorded as a number, otherwise, <paramref name="value"/> is converted to a string.
-        /// (via <c>value.ToString(CultureInfo.InvariantCulture);</c> </param>
-        [Obsolete("Will be dropped in a future version.  Use Transaction.AddCustomAttribute instead")]
-        void AddCustomParameter(string key, IConvertible value);
-
-        /// <summary> A Add a key/value pair to the current transaction.  These are reported in errors and
-        /// transaction traces. Supports web applications only. </summary>
-        ///
-        /// <param name="key">   The key name for the custom parameter.  Only the first 1000 characters
-        /// are retained. </param>
-        /// <param name="value"> The value associated with the custom parameter. Only the first 1000
-        /// characters are retained. </param>
-        [Obsolete("Will be dropped in a future version.  Use Transaction.AddCustomAttribute instead")]
-        void AddCustomParameter(string key, string value);
-
         /// <summary> Set the name of the current transaction. Supports web applications only. </summary>
         ///
         /// <exception cref="ArgumentNullException"> Thrown when <paramref name="key"/> is null. </exception>
@@ -181,11 +160,22 @@ namespace NewRelic.Agent.Api
         /// </code></example>
         string GetBrowserTimingHeader();
 
-        /// <summary> (This method is obsolete) gets browser timing footer. </summary>
+        /// <summary> Returns the HTML snippet to be inserted into the header of HTML pages to enable Real
+        /// User Monitoring. The HTML will instruct the browser to fetch a small JavaScript file and
+        /// start the page timer. Supports web applications only. </summary>
+        /// <param name="nonce">Cryptographic nonce used by a <c>Content-Security-Policy</c> <c>script-src</c> policy.</param>
         ///
-        /// <returns> An empty string. </returns>
-        [Obsolete]
-        string GetBrowserTimingFooter();
+        /// <returns> An HTML string to be embedded in a page header. </returns>
+        ///
+        /// <example> <code>
+        /// &lt;html&gt;
+        ///   &lt;head&gt;
+        ///     &lt;&#37;= NewRelic.Api.Agent.NewRelic.GetBrowserTimingHeader("random-nonce")&#37;&gt;
+        ///   &lt;/head&gt;
+        ///   &lt;body&gt;
+        ///   ...
+        /// </code></example>
+        string GetBrowserTimingHeader(string nonce);
 
         /// <summary> Disables the automatic instrumentation of browser monitoring hooks in individual
         /// pages Supports web applications only. </summary>

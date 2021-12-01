@@ -12,11 +12,11 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.DistributedTracing
 {
     [NetFrameworkTest]
-    public class DTSupportabilityMetricTests : IClassFixture<RemoteServiceFixtures.DTBasicMVCApplicationFixture>
+    public class DTSupportabilityMetricTests : NewRelicIntegrationTest<RemoteServiceFixtures.DTBasicMVCApplicationFixture>
     {
         readonly RemoteServiceFixtures.DTBasicMVCApplicationFixture _fixture;
 
-        public DTSupportabilityMetricTests(RemoteServiceFixtures.DTBasicMVCApplicationFixture fixture, ITestOutputHelper output)
+        public DTSupportabilityMetricTests(RemoteServiceFixtures.DTBasicMVCApplicationFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -27,7 +27,6 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
                 {
                     var configPath = fixture.DestinationNewRelicConfigFilePath;
                     var configModifier = new NewRelicConfigModifier(configPath);
-                    configModifier.SetOrDeleteDistributedTraceEnabled(true);
                     configModifier.ForceTransactionTraces();
                     configModifier.SetOrDeleteSpanEventsEnabled(true);
                 },
@@ -53,8 +52,8 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
                 new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/Ignored/MajorVersion", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/Ignored/Null", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/ParseException", callCount = 1 },
-				// The methods for GenerateAcceptSuccessMetric and GenerateCreateSuccesMetric result in AcceptPayload/Success metrics so we should look for two.
-				new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/Success", callCount = 2 },
+                // The methods for GenerateAcceptSuccessMetric and GenerateCreateSuccessMetric result in AcceptPayload/Success metrics so we should look for two.
+                new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/Success", callCount = 2 },
                 new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/AcceptPayload/Ignored/UntrustedAccount", callCount = 1 },
                 new Assertions.ExpectedMetric { metricName = @"Supportability/DistributedTrace/CreatePayload/Success", callCount = 1 },
             };

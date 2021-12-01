@@ -14,12 +14,12 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.DistributedTracing
 {
     [NetFrameworkTest]
-    public class InitiateDTAttributesTest : IClassFixture<RemoteServiceFixtures.DTBasicMVCApplicationFixture>
+    public class InitiateDTAttributesTest : NewRelicIntegrationTest<RemoteServiceFixtures.DTBasicMVCApplicationFixture>
     {
 
         private readonly RemoteServiceFixtures.DTBasicMVCApplicationFixture _fixture;
 
-        public InitiateDTAttributesTest(RemoteServiceFixtures.DTBasicMVCApplicationFixture fixture, ITestOutputHelper output)
+        public InitiateDTAttributesTest(RemoteServiceFixtures.DTBasicMVCApplicationFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             _fixture = fixture;
             _fixture.TestLogger = output;
@@ -30,7 +30,6 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
                 {
                     var configPath = fixture.DestinationNewRelicConfigFilePath;
                     var configModifier = new NewRelicConfigModifier(configPath);
-                    configModifier.SetOrDeleteDistributedTraceEnabled(true);
                     configModifier.ForceTransactionTraces();
                 },
                 exerciseApplication: () =>
@@ -53,7 +52,7 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing
             };
 
             var transactionEvent = _fixture.AgentLog.GetTransactionEvents().FirstOrDefault();
-            var errorEvent = _fixture.AgentLog.GetErrorEvents().First().Events.First();
+            var errorEvent = _fixture.AgentLog.GetErrorEvents().FirstOrDefault();
             var errorTrace = _fixture.AgentLog.GetErrorTraces().FirstOrDefault();
 
             var transactionSample = _fixture.AgentLog.GetTransactionSamples()

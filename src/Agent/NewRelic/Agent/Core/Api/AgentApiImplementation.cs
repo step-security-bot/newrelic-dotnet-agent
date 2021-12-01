@@ -371,7 +371,7 @@ namespace NewRelic.Agent.Core.Api
             if (_configurationService.Configuration.CaptureCustomParameters)
             {
                 var transaction = GetCurrentInternalTransaction();
-                transaction.TransactionMetadata.AddUserAttribute(key, value);
+                transaction.AddCustomAttribute(key, value);
             }
         }
 
@@ -449,15 +449,22 @@ namespace NewRelic.Agent.Core.Api
             {
                 if (_configurationService.Configuration.CaptureCustomParameters)
                 {
-                    var transactionMetadata = GetCurrentInternalTransaction().TransactionMetadata;
+                    //var transactionMetadata = GetCurrentInternalTransaction().TransactionMetadata;
+                    var transaction = GetCurrentInternalTransaction();
                     if (userName != null && !string.IsNullOrEmpty(userName))
-                        transactionMetadata.AddUserAttribute("user", userName.ToString(CultureInfo.InvariantCulture));
+                    {
+                        transaction.AddCustomAttribute("user", userName.ToString(CultureInfo.InvariantCulture));
+                    }
 
                     if (accountName != null && !string.IsNullOrEmpty(accountName))
-                        transactionMetadata.AddUserAttribute("account", accountName.ToString(CultureInfo.InvariantCulture));
+                    {
+                        transaction.AddCustomAttribute("account", accountName.ToString(CultureInfo.InvariantCulture));
+                    }
 
                     if (productName != null && !string.IsNullOrEmpty(productName))
-                        transactionMetadata.AddUserAttribute("product", productName.ToString(CultureInfo.InvariantCulture));
+                    {
+                        transaction.AddCustomAttribute("product", productName.ToString(CultureInfo.InvariantCulture));
+                    }
                 }
             }
         }
@@ -497,6 +504,25 @@ namespace NewRelic.Agent.Core.Api
         /// </code></example>
         public string GetBrowserTimingHeader()
         {
+            return GetBrowserTimingHeader(string.Empty);
+        }
+
+        /// <summary> Returns the HTML snippet to be inserted into the header of HTML pages to enable Real
+        /// User Monitoring. The HTML will instruct the browser to fetch a small JavaScript file and
+        /// start the page timer. Supports web applications only. </summary>
+        ///
+        /// <returns> An HTML string to be embedded in a page header. </returns>
+        ///
+        /// <example> <code>
+        /// &lt;html&gt;
+        ///   &lt;head&gt;
+        ///     &lt;&#37;= NewRelic.Api.Agent.NewRelic.GetBrowserTimingHeader("random-nonce")&#37;&gt;
+        ///   &lt;/head&gt;
+        ///   &lt;body&gt;
+        ///   ...
+        /// </code></example>
+        public string GetBrowserTimingHeader(string nonce)
+        {
             using (new IgnoreWork())
             {
                 var transaction = TryGetCurrentInternalTransaction();
@@ -512,19 +538,8 @@ namespace NewRelic.Agent.Core.Api
                 // The transaction's name must be frozen if we're going to generate a RUM script
                 transaction.CandidateTransactionName.Freeze(TransactionNameFreezeReason.ManualBrowserScriptInjection);
 
-                return _browserMonitoringScriptMaker.GetScript(transaction) ?? string.Empty;
+                return _browserMonitoringScriptMaker.GetScript(transaction, nonce) ?? string.Empty;
             }
-        }
-
-        /// <summary> (This method is obsolete) gets browser timing footer. </summary>
-        ///
-        /// <returns> An empty string. </returns>
-        [Obsolete]
-        [ToBeRemovedInFutureRelease()]
-        public string GetBrowserTimingFooter()
-        {
-            // This method is deprecated.
-            return string.Empty;
         }
 
         /// <summary> Disables the automatic instrumentation of browser monitoring hooks in individual
