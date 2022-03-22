@@ -23,6 +23,7 @@
 #include <string>
 #include <thread>
 #include <utility>
+#include "MethodCache.h"
 
 #ifdef PAL_STDCPP_COMPAT
 #include "UnixSystemCalls.h"
@@ -803,6 +804,14 @@ namespace NewRelic { namespace Profiler {
             return tid;
         }
 
+        HRESULT ConfirmAgentInitialized()
+        {
+            LogInfo("Agent initialization confirmed.");
+            NewRelic::Profiler::MethodCache::EnableCaching(_corProfilerInfo4);
+
+            return S_OK;
+        }
+
         // there is only one by convention, but that is not guaranteed anywhere
         static CorProfilerCallbackImpl*& GetSingletonish()
         {
@@ -1327,6 +1336,21 @@ namespace NewRelic { namespace Profiler {
         }
         // call into the ThreadProfiler singleton
         return profiler->RequestProfile(snapshots, length);
+    }
+
+    extern "C" __declspec(dllexport) HRESULT __cdecl ConfirmAgentInit() noexcept
+    {
+        auto profiler = CorProfilerCallbackImpl::GetSingletonish();
+        if (profiler == nullptr) {
+            LogError(L"ConfirmAgentInit: called before the profiler has been initialized");
+            return E_UNEXPECTED;
+        }
+
+        // can't call into certain profiler functions from this thread, so use new and block until finished
+        std::thread t1(&CorProfilerCallbackImpl::ConfirmAgentInitialized, profiler);
+        t1.join();
+
+        return S_OK;
     }
 
     // called by managed code to get function information from function IDs

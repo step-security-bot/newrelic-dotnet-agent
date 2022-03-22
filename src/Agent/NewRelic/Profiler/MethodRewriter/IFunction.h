@@ -5,6 +5,9 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <cor.h>
+#include <corprof.h>
+
 #include "../Common/CorStandIn.h"
 #include "../Common/Macros.h"
 #include "Exceptions.h"
@@ -20,11 +23,12 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
     public:
         virtual uintptr_t GetFunctionId() = 0;
         virtual xstring_t GetAssemblyName() = 0;
+        virtual ModuleID GetModuleID() = 0;
         virtual xstring_t GetModuleName() = 0;
         virtual xstring_t GetAppDomainName() = 0;
         virtual xstring_t GetTypeName() = 0;
         virtual xstring_t GetFunctionName() = 0;
-        virtual uint32_t GetMethodToken() = 0;
+        virtual mdToken GetMethodToken() = 0;
         virtual uint32_t GetTypeToken() = 0;
         virtual DWORD GetClassAttributes() = 0;
         virtual DWORD GetMethodAttributes() = 0;

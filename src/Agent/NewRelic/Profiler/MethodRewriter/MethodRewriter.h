@@ -104,7 +104,9 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter {
 
             InstrumentationSettingsPtr instrumentationSettings = std::make_shared<InstrumentationSettings>(_instrumentationConfiguration, _corePath);
 
-            if (_helperInstrumentor->Instrument(function, instrumentationSettings) || _apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {
+            // TODO: Use _helperInstrumentor based on config option?
+            //if (_helperInstrumentor->Instrument(function, instrumentationSettings) || _apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {
+            if (_apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {
             }
         }
 

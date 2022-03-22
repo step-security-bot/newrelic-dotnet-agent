@@ -1,9 +1,12 @@
 // Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+#pragma once
+
 #define LOGGER_DEFINE_STDLOG
 
 #include "ClassFactory.hpp"
+#include "MethodCache.h"
 
 const IID IID_IUnknown      = { 0x00000000, 0x0000, 0x0000, { 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46 } };
 

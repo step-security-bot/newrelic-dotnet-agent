@@ -153,7 +153,10 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
 
         void CallGetTracer(NewRelic::Profiler::Configuration::InstrumentationPointPtr instrumentationPoint)
         {
-            LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentShim"), _X("GetFinishTracerDelegate"), 0, nullptr, !_function->IsCoreClr());
+            // TODO: hide behind config option?
+            //LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentShim"), _X("GetFinishTracerDelegate"), 0, nullptr, !_function->IsCoreClr());
+            LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentShim"), _X("GetFinishTracerDelegate"), 0, nullptr, false);
+
               
             // tracer = delegates[0].Invoke(null, new object[] { tracerFactoryName, tracerFactoryArgs, metricName, assemblyName, type, typeName, functionName, argumentSignatureString, this, new object[], functionId });
             _instructions->Append(_X("ldnull"));

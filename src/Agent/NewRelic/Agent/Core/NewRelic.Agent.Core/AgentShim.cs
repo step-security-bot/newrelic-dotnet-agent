@@ -8,6 +8,29 @@ using NewRelic.Agent.Core.Tracer;
 
 namespace NewRelic.Agent.Core
 {
+    public static class MethodInformationCache
+    {
+        static readonly System.Collections.Concurrent.ConcurrentDictionary<string, System.Reflection.MethodInfo> cache = new System.Collections.Concurrent.ConcurrentDictionary<string, System.Reflection.MethodInfo>();
+
+        //_instructions->Append(CEE_CALL, _X("class [mscorlib]System.Reflection.MethodInfo [NewRelic.Agent.Core]System.CannotUnloadAppDomainException::GetMethodFromAppDomainStorageOrReflectionOrThrow(string,string,string,string,class [mscorlib]System.Type[])"));
+
+        public static System.Reflection.MethodInfo GetMethodInformation(string key, string assemblyPath, string className, string methodName, Type[] types)
+        {
+            return cache.GetOrAdd(key, k =>
+            {
+                var assembly = System.Reflection.Assembly.LoadFrom(assemblyPath);
+                var type = assembly.GetType(className);
+
+                var method = types != null ? type.GetMethod(methodName, types) : type.GetMethod(methodName);
+
+                //System.IO.File.AppendAllText(@"C:\Users\Bas\Source\Repos\newrelic-dotnet-agent\src\Agent\load.log", $"{className}.{methodName} loaded\r\n");
+
+                return method;
+            });
+        }
+    }
+
+
     /// <summary>
     /// The AgentShim is called by our injected bytecode.
     /// It exists to provide a layer of protection against deadlocks and such that can occur while the agent is initializing itself early on.

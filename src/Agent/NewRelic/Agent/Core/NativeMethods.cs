@@ -125,6 +125,11 @@ namespace NewRelic.Agent.Core
         [DllImport(DllName, EntryPoint = "RequestFunctionNames", CallingConvention = CallingConvention.Cdecl)]
         private static extern int ExternRequestFunctionNames(UIntPtr[] functionIds, int length, [Out] out IntPtr functionInfo);
 
+        [DllImport(DllName, EntryPoint = "ConfirmAgentInit", CallingConvention = CallingConvention.Cdecl)]
+        private static extern void ExternConfirmAgentInit();
+
+        public static void ConfirmAgentInit() => ExternConfirmAgentInit();
+
         public void ReleaseProfile()
         {
             ExternReleaseProfile();

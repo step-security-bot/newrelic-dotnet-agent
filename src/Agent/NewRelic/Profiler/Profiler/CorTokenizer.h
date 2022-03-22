@@ -223,31 +223,53 @@ namespace NewRelic { namespace Profiler
 
         virtual uint32_t GetAssemblyRefToken(const xstring_t& assemblyName) override
         {
-            // we only support calling methods in mscorlib
-            if (assemblyName != _X("mscorlib"))
-            {
-                LogError("Attempted to get an assembly ref token to something other than mscorlib. Since mscorlib can only call mscorlib, there are no other valid assemlbly refs available.  ", assemblyName);
-                throw AssemblyNotSupportedException(assemblyName);
-            }
-            if (mscorlibAssemblyRefToken != mdAssemblyRefNil)
-                return mscorlibAssemblyRefToken;
+            // NOTE: This is the same impl as .NET Core now
+            auto assemblyToken = CorTokenizer::GetAssemblyRefToken(assemblyName);
 
-            auto token = CorTokenizer::GetAssemblyRefToken(assemblyName);
-            if (token == S_FALSE)
+            if (assemblyToken == S_FALSE)
             {
-                token = CorTokenizer::GetAssemblyRefToken(_X("netstandard"));
-                if (token == S_FALSE)
+                // if the assembly wasn't in the existing references try to define a new one
+                ASSEMBLYMETADATA amd;
+                ZeroMemory(&amd, sizeof(amd));
+                amd.usMajorVersion = 9;
+                amd.usMinorVersion = 0;
+                amd.usBuildNumber = 0;
+                amd.usRevisionNumber = 0;
+                BYTE publicKey[] = { 0x06, 0x55, 0x2F, 0xCE, 0xD0, 0xB3, 0x3D, 0x87 };
+
+                if (SUCCEEDED(metaDataAssemblyEmit->DefineAssemblyRef(publicKey, sizeof(publicKey), assemblyName.c_str(), &amd, NULL, 0, 0, &assemblyToken)))
                 {
-                    token = CorTokenizer::GetAssemblyRefToken(_X("System.Runtime"));
+                    return assemblyToken;
                 }
             }
-            if (token != S_FALSE)
-            {
-                return token;
-            }
 
-            LogError(L"Unable to locate ", assemblyName, L" assembly reference in module.");
-            throw NewRelic::Profiler::MessageException(_X("Unable to locate assembly reference in module."));
+            return assemblyToken;
+
+            //// we only support calling methods in mscorlib
+            //if (assemblyName != _X("mscorlib"))
+            //{
+            //    LogError("Attempted to get an assembly ref token to something other than mscorlib. Since mscorlib can only call mscorlib, there are no other valid assemlbly refs available.  ", assemblyName);
+            //    throw AssemblyNotSupportedException(assemblyName);
+            //}
+            //if (mscorlibAssemblyRefToken != mdAssemblyRefNil)
+            //    return mscorlibAssemblyRefToken;
+
+            //auto token = CorTokenizer::GetAssemblyRefToken(assemblyName);
+            //if (token == S_FALSE)
+            //{
+            //    token = CorTokenizer::GetAssemblyRefToken(_X("netstandard"));
+            //    if (token == S_FALSE)
+            //    {
+            //        token = CorTokenizer::GetAssemblyRefToken(_X("System.Runtime"));
+            //    }
+            //}
+            //if (token != S_FALSE)
+            //{
+            //    return token;
+            //}
+
+            //LogError(L"Unable to locate ", assemblyName, L" assembly reference in module.");
+            //throw NewRelic::Profiler::MessageException(_X("Unable to locate assembly reference in module."));
         }
 
     private:

@@ -424,7 +424,7 @@ namespace NewRelic { namespace Profiler
             return _functionId;
         }
 
-        ModuleID GetModuleID()
+        virtual ModuleID GetModuleID() override
         {
             return _moduleId;
         }

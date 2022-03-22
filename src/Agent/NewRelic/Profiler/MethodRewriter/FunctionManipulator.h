@@ -21,6 +21,7 @@
 #include "../Sicily/codegen/ByteCodeGenerator.h"
 #include "../SignatureParser/SignatureParser.h"
 #include "IFunctionHeaderInfo.h"
+#include "../Profiler/MethodCache.h"
 
 namespace NewRelic { namespace Profiler { namespace MethodRewriter
 {
@@ -309,6 +310,29 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
         // The function id is used as a tie-breaker for overloaded methods when computing the key name for the app domain cache.
         void LoadMethodInfo(xstring_t assemblyPath, xstring_t className, xstring_t methodName, uintptr_t functionId, std::function<void()> argumentTypesLambda, bool useCache)
         {
+            LogError(L"INIT: ", NewRelic::Profiler::MethodCache::IsAgentInitialized(), L" METHOD: ", className + _X(".") + methodName + _X("_") + to_xstring((unsigned long)functionId));
+
+            if (NewRelic::Profiler::MethodCache::CanUseCache(_function))
+            {
+                auto keyName = className + _X(".") + methodName + _X("_") + to_xstring((unsigned long)functionId);
+                _instructions->AppendString(keyName);
+                _instructions->AppendString(assemblyPath);
+                _instructions->AppendString(className);
+                _instructions->AppendString(methodName);
+                if (argumentTypesLambda == NULL)
+                {
+                    _instructions->Append(CEE_LDNULL);
+                }
+                else
+                {
+                    argumentTypesLambda();
+                }
+
+                _instructions->Append(CEE_CALL, _X("class [mscorlib]System.Reflection.MethodInfo [NewRelic.Agent.Core]NewRelic.Agent.Core.Thingy::Do(string,string,string,string,class [mscorlib]System.Type[])"));
+
+                return;
+            }
+
             if (useCache)
             {
                 auto keyName = className + _X(".") + methodName + _X("_") + to_xstring((unsigned long)functionId);

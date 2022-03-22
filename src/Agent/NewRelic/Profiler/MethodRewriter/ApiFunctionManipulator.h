@@ -46,8 +46,11 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
                 [&]()
                 {
                     // delegate = System.CannotUnloadAppDomainException.GetMethodFromAppDomainStorageOrReflectionOrThrow("NewRelic_Delegate_API_<function name><function signature>", "C:\path\to\NewRelic.Agent.Core", "NewRelic.Core.AgentApi", "<function name>", new object[] { <method parameter types> })
-                    LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentApi"), _function->GetFunctionName(), _function->GetFunctionId(), GetArrayOfTypeParametersLamdba(), !_function->IsCoreClr());
-                    
+
+                    // TODO: control this via configuration option?
+                    //LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentApi"), _function->GetFunctionName(), _function->GetFunctionId(), GetArrayOfTypeParametersLamdba(), !_function->IsCoreClr());
+                    LoadMethodInfo(_instrumentationSettings->GetCorePath(), _X("NewRelic.Agent.Core.AgentApi"), _function->GetFunctionName(), _function->GetFunctionId(), GetArrayOfTypeParametersLamdba(), false);
+
                     _instructions->Append(_X("ldnull"));
                     BuildObjectArrayOfParameters();
 

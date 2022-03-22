@@ -92,6 +92,12 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter { namespace T
             return _functionId;
         }
 
+        ModuleID _moduleId;
+        virtual ModuleID GetModuleID() override
+        {
+            return _moduleId;
+        }
+
         std::wstring _assemblyName;
         virtual std::wstring GetAssemblyName() override
         {

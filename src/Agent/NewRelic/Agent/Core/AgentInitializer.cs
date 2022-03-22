@@ -26,6 +26,9 @@ namespace NewRelic.Agent.Core
         {
             static CallOnce()
             {
+                // TODO: What about linux?
+                WindowsNativeMethods.ConfirmAgentInit();
+
                 // we must ensure that we hook up to ProcessExit and DomainUnload *before* log4net.  Otherwise we can't log anything during OnExit.
                 AppDomain.CurrentDomain.ProcessExit += (sender, args) => OnExit(sender, args);
                 AppDomain.CurrentDomain.DomainUnload += (sender, args) => OnExit(sender, args);

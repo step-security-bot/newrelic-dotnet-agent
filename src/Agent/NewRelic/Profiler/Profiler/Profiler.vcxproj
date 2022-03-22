@@ -243,6 +243,7 @@
     <ClInclude Include="guids.h" />
     <ClInclude Include="CorProfilerCallbackImpl.h" />
     <ClInclude Include="CommonDefinitions.h" />
+    <ClInclude Include="MethodCache.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="OpCodes.h" />
     <ClInclude Include="stdafx.h" />
@@ -252,6 +253,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EntryPoint.cpp" />
+    <ClCompile Include="MethodCache.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
