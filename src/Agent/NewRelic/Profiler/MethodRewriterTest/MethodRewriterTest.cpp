@@ -14,6 +14,16 @@
 #include "MockSystemCalls.h"
 #include "UnreferencedFunctions.h"
 
+// TODO: This seems way wrong, but fixes the build...
+bool NewRelic::Profiler::MethodCache::_initialized = false;
+bool NewRelic::Profiler::MethodCache::_disabled = false;
+
+std::mutex NewRelic::Profiler::MethodCache::_lock;
+
+std::vector<ModuleID> NewRelic::Profiler::MethodCache::_modules;
+std::vector<mdMethodDef> NewRelic::Profiler::MethodCache::_methods;
+// TODO: This seems way wrong, but fixes the build...
+
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace NewRelic { namespace Profiler { namespace MethodRewriter {

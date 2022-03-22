@@ -22,7 +22,7 @@ namespace NewRelic
             static std::mutex _lock;
             static std::vector<ModuleID> _modules;
             static std::vector<mdMethodDef> _methods;
-
+                
             static const int MAX_METHOD_CACHE = 100;
 
         public:
@@ -34,6 +34,8 @@ namespace NewRelic
 
             static bool CanUseCache(NewRelic::Profiler::MethodRewriter::IFunctionPtr& function)
             {
+
+                // access violation? why check without lock, then with lock?
                 if (_disabled)      return false;
                 if (_initialized)   return true;
 

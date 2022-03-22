@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 #include "MethodCache.h"
-#include "../MethodRewriter/IFunction.h"
 
 bool NewRelic::Profiler::MethodCache::_initialized = false;
 bool NewRelic::Profiler::MethodCache::_disabled = false;
