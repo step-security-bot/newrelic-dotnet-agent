@@ -328,7 +328,7 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter
                     argumentTypesLambda();
                 }
 
-                _instructions->Append(CEE_CALL, _X("class [mscorlib]System.Reflection.MethodInfo [NewRelic.Agent.Core]NewRelic.Agent.Core.Thingy::Do(string,string,string,string,class [mscorlib]System.Type[])"));
+                _instructions->Append(CEE_CALL, _X("class [mscorlib]System.Reflection.MethodInfo [NewRelic.Agent.Core]NewRelic.Agent.Core.MethodInformationCache::GetMethodInformation(string,string,string,string,class [mscorlib]System.Type[])"));
 
                 return;
             }
