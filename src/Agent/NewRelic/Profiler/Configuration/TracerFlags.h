@@ -48,7 +48,10 @@ namespace NewRelic { namespace Profiler { namespace Configuration
 
         CombineMultipleInvocations = 1 << 9,
 
-        FullClassMatch = 1 << 8
-        // Bits 7..0 are unused(?).
+        FullClassMatch = 1 << 8,
+
+        ForceNewTransactionOnThread = 1 << 7
+
+        // Bits 6..0 are unused(?).
     };
 }}}

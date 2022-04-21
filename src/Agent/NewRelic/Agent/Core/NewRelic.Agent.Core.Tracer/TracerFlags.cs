@@ -26,8 +26,9 @@ namespace NewRelic.Agent.Core.Tracer
         GenerateUnscopedMetric = 1 << 11,
         TransactionTracerSegment = 1 << 10,
         CombineMultipleInvocations = 1 << 9,
-        FullClassMatch = 1 << 8 // Indicates that this tracer is associated with a matcher that matches all methods in a class.
-                                // Bits 7..0 are unused
+        FullClassMatch = 1 << 8, // Indicates that this tracer is associated with a matcher that matches all methods in a class.
+        ForceNewTransactionOnNewThread = 1 << 7
+            // Bits 6..0 are unused.. Tick Tock
     }
 
     /// <summary>

@@ -41,7 +41,7 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.Internal
         /// Synchronous method creating an Other transaction
         /// </summary>
         [LibraryMethod]
-        [Transaction]
+        [Transaction(Web = false)]
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public static void MakeOtherTransaction()
         {

@@ -206,31 +206,51 @@ namespace NewRelic { namespace Profiler
         // Check for the API Transaction and Trace attributes.
         static bool HasTransactionOrTraceAttribute(CComPtr<IMetaDataImport2> metaDataImport, mdToken metaDataToken, uint32_t& tracerFlags)
         {
-            const BYTE *pVal = NULL;
-            ULONG cbVal = 0;
+            const BYTE *pCustomAttributeInitializationMetadataRaw = NULL;
+            ULONG metadataArrayLength = 0;
 
-            HRESULT result = metaDataImport->GetCustomAttributeByName(metaDataToken, _X("NewRelic.Api.Agent.TransactionAttribute"), (const void**)&pVal, &cbVal);
-            // It is not safe to use the SUCCEEDED() macro to check result in this case. Contrary to the documentation, GetCustomAttributeByName sometimes
-            // returns S_FALSE (1), and we don't want to consider that a successful result in this case.
+            HRESULT result = metaDataImport->GetCustomAttributeByName(metaDataToken, _X("NewRelic.Api.Agent.TransactionAttribute"), (const void**)&pCustomAttributeInitializationMetadataRaw, &metadataArrayLength);
+
             if (result == S_OK) {
-                auto transactionFlag = NewRelic::Profiler::Configuration::TracerFlags::OtherTransaction;
-                //  11 huh?   Yeah, whatever dude.  I don't know how to properly deserialize the attribute
-                // properties, I just know that the last bit is a 1 or 0 reflecting the boolean "Web" value.
-                if (cbVal == 11)
+                // The metadata value blob that we got in pCustomAttributeInitializationMetadataRaw is effectively a list of
+                // constructor arguments for the custom attribute. 
+                //
+                // Based on reverse engineering, this has a lot of unknown values, but boolean parameters appear to be 
+                // represented as a string of the property name, followed by a 0/1 integer value...
+                //
+                // The strategy here is to search for attribute property names of interest in the metadata array of insanity,
+                // and get the value 
+
+                std::string rawDataAsString((const char*)pCustomAttributeInitializationMetadataRaw, metadataArrayLength);
+
+                // Handle Web attribute parameter
+                static const char* WebIdenfier = "Web";
+                auto positionOfWeb = rawDataAsString.find(WebIdenfier);
+                if (std::string::npos != positionOfWeb && (positionOfWeb + strlen(WebIdenfier)) < metadataArrayLength)
                 {
-                    bool isWeb = pVal[10] == 1;
+                    auto isWeb = pCustomAttributeInitializationMetadataRaw[positionOfWeb + strlen(WebIdenfier)] == 1;
                     if (isWeb)
                     {
-                        transactionFlag = NewRelic::Profiler::Configuration::TracerFlags::WebTransaction;
+                        tracerFlags |= NewRelic::Profiler::Configuration::TracerFlags::WebTransaction;
                     }
                 }
 
-                tracerFlags |= transactionFlag;
+                // Handle ForceNewTransactionOnNewThread attribute parameter
+                static const char* ForceTransactionIdenfier = "ForceNewTransactionOnNewThread";
+                auto positionOfForceTransaction = rawDataAsString.find(ForceTransactionIdenfier);
+                if (std::string::npos != positionOfForceTransaction && (positionOfForceTransaction + strlen(ForceTransactionIdenfier)) < metadataArrayLength)
+                {
+                    auto forceTransaction = pCustomAttributeInitializationMetadataRaw[positionOfForceTransaction + strlen(ForceTransactionIdenfier)] == 1;
+                    if (forceTransaction)
+                    {
+                        tracerFlags |= NewRelic::Profiler::Configuration::TracerFlags::ForceNewTransactionOnThread;
+                    }
+                }
 
                 return true;
             }
-            result = metaDataImport->GetCustomAttributeByName(metaDataToken, _X("NewRelic.Api.Agent.TraceAttribute"), (const void**)&pVal, &cbVal);
-            // Same as above, we can't use SUCCEEDED to check result in this case.
+            result = metaDataImport->GetCustomAttributeByName(metaDataToken, _X("NewRelic.Api.Agent.TraceAttribute"), (const void**)&pCustomAttributeInitializationMetadataRaw, &metadataArrayLength);
+            
             return result == S_OK;
         }
 
