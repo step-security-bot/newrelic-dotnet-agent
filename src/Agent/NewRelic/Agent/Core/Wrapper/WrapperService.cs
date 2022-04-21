@@ -189,6 +189,9 @@ namespace NewRelic.Agent.Core.Wrapper
                 if (TracerArgument.IsFlagSet(tracerArguments, TracerFlags.WebTransaction) ||
                     TracerArgument.IsFlagSet(tracerArguments, TracerFlags.OtherTransaction))
                 {
+
+                    // JOSH-TODO: Check if TracerFlags.ForceNewTransactionOnNewTHread is set and choose correct Wrapper(s)
+
                     return isAsync ?
                         "NewRelic.Providers.Wrapper.CustomInstrumentationAsync.OtherTransactionWrapperAsync" :
                         "NewRelic.Providers.Wrapper.CustomInstrumentation.OtherTransactionWrapper";
