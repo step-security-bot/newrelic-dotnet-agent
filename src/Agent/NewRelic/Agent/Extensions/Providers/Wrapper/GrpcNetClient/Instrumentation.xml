@@ -5,15 +5,15 @@ SPDX-License-Identifier: Apache-2.0
 -->
 <extension xmlns="urn:newrelic-extension">
 	<instrumentation>
-    <tracerFactory name="RunCallWrapper">
-      <match assemblyName="Grpc.Net.Client" className="Grpc.Net.Client.Internal.GrpcCall`2">
-        <exactMethodMatcher methodName="RunCall" parameters="System.Net.Http.HttpRequestMessage,System.Nullable`1[System.TimeSpan]" />
-      </match>
-    </tracerFactory>
-    <tracerFactory name="FinishCallWrapper">
-      <match assemblyName="Grpc.Net.Client" className="Grpc.Net.Client.Internal.GrpcCall`2">
-        <exactMethodMatcher methodName="FinishCall" parameters="System.Net.Http.HttpRequestMessage,System.Boolean,System.Diagnostics.Activity,Grpc.Core.Status" />
-      </match>
-    </tracerFactory>
+      <tracerFactory name="RunCallWrapper">
+        <match assemblyName="Grpc.Net.Client" className="Grpc.Net.Client.Internal.GrpcCall`2">
+          <exactMethodMatcher methodName="RunCall" parameters="System.Net.Http.HttpRequestMessage,System.Nullable`1[System.TimeSpan]" />
+        </match>
+      </tracerFactory>
+      <tracerFactory name="FinishCallWrapper">
+        <match assemblyName="Grpc.Net.Client" className="Grpc.Net.Client.Internal.GrpcCall`2">
+          <exactMethodMatcher methodName="FinishCall" parameters="System.Net.Http.HttpRequestMessage,System.Boolean,System.Diagnostics.Activity,Grpc.Core.Status" />
+        </match>
+      </tracerFactory>
 	</instrumentation>
 </extension>

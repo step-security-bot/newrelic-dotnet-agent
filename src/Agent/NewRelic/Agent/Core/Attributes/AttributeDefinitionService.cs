@@ -109,6 +109,8 @@ namespace NewRelic.Agent.Core.Attributes
         AttributeDefinition<string, string> TripId { get; }
         AttributeDefinition<string, string> TrustedParentId { get; }
         AttributeDefinition<TimeSpan, double> WebDuration { get; }
+        AttributeDefinition<long, long> GrpcStatusCode { get; }
+        AttributeDefinition<string, string> GrpcStatusMessage { get; }
 
         AttributeDefinition<object, object> GetCustomAttributeForCustomEvent(string name);
         AttributeDefinition<object, object> GetCustomAttributeForError(string name);
@@ -957,5 +959,25 @@ namespace NewRelic.Agent.Core.Attributes
             AttributeDefinitionBuilder.CreateString("type", AttributeClassification.Intrinsics)
                 .AppliesTo(AttributeDestinations.CustomEvent)
                 .Build(_attribFilter));
+
+        public AttributeDefinition<long, long> _grpcStatusCode;
+        public AttributeDefinition<long, long> GrpcStatusCode => _grpcStatusCode ??= AttributeDefinitionBuilder.CreateLong("grpc.statusCode", AttributeClassification.AgentAttributes)
+                .AppliesTo(AttributeDestinations.ErrorEvent)
+                .AppliesTo(AttributeDestinations.ErrorTrace)
+                .AppliesTo(AttributeDestinations.TransactionEvent)
+                .AppliesTo(AttributeDestinations.ErrorEvent)
+                .AppliesTo(AttributeDestinations.SpanEvent)
+                .AppliesTo(AttributeDestinations.TransactionTrace)
+                .Build(_attribFilter);
+
+        public AttributeDefinition<string, string> _grpcStatusMessage;
+        public AttributeDefinition<string, string> GrpcStatusMessage => _grpcStatusMessage ??= AttributeDefinitionBuilder.CreateString("grpc.statusMessage", AttributeClassification.AgentAttributes)
+        .AppliesTo(AttributeDestinations.ErrorEvent)
+        .AppliesTo(AttributeDestinations.ErrorTrace)
+        .AppliesTo(AttributeDestinations.TransactionEvent)
+        .AppliesTo(AttributeDestinations.ErrorEvent)
+        .AppliesTo(AttributeDestinations.SpanEvent)
+        .AppliesTo(AttributeDestinations.TransactionTrace)
+        .Build(_attribFilter);
     }
 }

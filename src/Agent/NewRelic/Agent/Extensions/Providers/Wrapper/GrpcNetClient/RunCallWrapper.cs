@@ -1,14 +1,14 @@
 ﻿// Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+using System;
 using System.Net.Http;
 using NewRelic.Agent.Api;
-using NewRelic.Agent.Api.Experimental;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 
-namespace NewRelic.Providers.Wrapper.AspNetCore.GrpcNetClient
+namespace NewRelic.Providers.Wrapper.GrpcNetClient
 {
-    public class RunCallWrapper
+    public class RunCallWrapper: IWrapper
     {
         public bool IsTransactionRequired => false;
 
@@ -28,15 +28,38 @@ namespace NewRelic.Providers.Wrapper.AspNetCore.GrpcNetClient
 
             var httpRequestMessage = instrumentedMethodCall.MethodCall.MethodArguments[0] as HttpRequestMessage;
 
-            var method = (httpRequestMessage.Method != null ? httpRequestMessage.Method.Method : "<unknown>") ?? "<unknown>";
+            var method = httpRequestMessage.RequestUri.PathAndQuery.Split('?')[0].Trim('/');
 
-            var transactionExperimental = transaction.GetExperimentalApi();
+            var port = httpRequestMessage.RequestUri.Port != -1 ? $":{httpRequestMessage.RequestUri.Port}" : string.Empty;
 
-            var externalSegmentData = transactionExperimental.CreateExternalSegmentData(httpRequestMessage.RequestUri, method);
-            var segment = transactionExperimental.StartSegment(instrumentedMethodCall.MethodCall);
-            segment.GetExperimentalApi().SetSegmentData(externalSegmentData);
+            var url = new Uri("grpc://" + httpRequestMessage.RequestUri.Host + port + "/" + method);
+            
+            transaction.StartExternalRequestSegment(instrumentedMethodCall.MethodCall, url, method, isLeaf: true);
+
+            transaction.Hold();
+
+            TryAttachHeadersToRequest(agent, httpRequestMessage);
 
             return Delegates.NoOp;
+        }
+
+        private static void TryAttachHeadersToRequest(IAgent agent, HttpRequestMessage httpRequestMessage)
+        {
+            var setHeaders = new Action<HttpRequestMessage, string, string>((carrier, key, value) =>
+            {
+                // "Add" will throw if value exists, so we must remove it first
+                carrier.Headers?.Remove(key);
+                carrier.Headers?.Add(key, value);
+            });
+
+            try
+            {
+                agent.CurrentTransaction.InsertDistributedTraceHeaders(httpRequestMessage, setHeaders);
+            }
+            catch (Exception ex)
+            {
+                agent.HandleWrapperException(ex);
+            }
         }
     }
 }

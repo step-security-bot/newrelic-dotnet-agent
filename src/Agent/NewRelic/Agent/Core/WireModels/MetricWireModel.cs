@@ -340,10 +340,10 @@ namespace NewRelic.Agent.Core.WireModels
                 txStats.MergeUnscopedStats(proposedName, data);
             }
 
-            public static void TryBuildExternalSegmentMetric(string host, string method, TimeSpan totalTime,
+            public static void TryBuildExternalSegmentMetric(Uri uri, string method, TimeSpan totalTime,
                 TimeSpan totalExclusiveTime, TransactionMetricStatsCollection txStats, bool unscopedOnly)
             {
-                var proposedName = MetricNames.GetExternalHost(host, "Stream", method);
+                var proposedName = MetricNames.GetExternalHost(uri.Host, uri.Scheme == "grpc" ? "gRPC" : "Stream", method);
                 var data = MetricDataWireModel.BuildTimingData(totalTime, totalExclusiveTime);
                 txStats.MergeUnscopedStats(proposedName, data);
                 if (!unscopedOnly)

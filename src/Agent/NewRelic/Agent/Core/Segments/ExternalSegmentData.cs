@@ -11,7 +11,6 @@ using NewRelic.Agent.Core.Metric;
 using static NewRelic.Agent.Core.WireModels.MetricWireModel;
 using NewRelic.Agent.Configuration;
 using NewRelic.Parsing;
-using NewRelic.Agent.Core.Attributes;
 using NewRelic.Agent.Core.Spans;
 
 namespace NewRelic.Agent.Core.Segments
@@ -21,6 +20,30 @@ namespace NewRelic.Agent.Core.Segments
         private const string TransactionGuidSegmentParameterKey = "transaction_guid";
 
         private int? _httpStatusCode;
+        private int _grpcStatusCode = -1;
+
+        private static string GetStatusCodeMessage(int grpcStatusCode)
+        => grpcStatusCode switch
+        {
+            0 => "OK",
+            1 => "Canceled",
+            2 => "Unknown",
+            3 => "InvalidArgument",
+            4 => "DeadlineExceeded",
+            5 => "NotFound",
+            6 => "AlreadyExists",
+            7 => "PermissionDenied",
+            8 => "ResourceExhausted",
+            9 => "FailedPrecondition",
+            10 => "Aborted",
+            11 => "OutOfRange",
+            12 => "Unimplemented",
+            13 => "Internal",
+            14 => "Unavailable",
+            15 => "DataLoss",
+            16 => "Unauthenticated",
+            _ => "Unknown"
+        };
 
         public override SpanCategory SpanCategory => SpanCategory.Http;
 
@@ -33,6 +56,11 @@ namespace NewRelic.Agent.Core.Segments
             Uri = uri;
             Method = method;
             CrossApplicationResponseData = crossApplicationResponseData;
+        }
+
+        public void SetGrpcStatusCode(int grpcStatusCode )
+        {
+            _grpcStatusCode = grpcStatusCode;
         }
 
         public CrossApplicationResponseData CrossApplicationResponseData { get; set; }
@@ -68,12 +96,12 @@ namespace NewRelic.Agent.Core.Segments
             if (CrossApplicationResponseData == null)
             {
                 // Generate scoped and unscoped external metrics as CAT not present.
-                MetricBuilder.TryBuildExternalSegmentMetric(Uri.Host, Method, duration, exclusiveDuration, txStats, false);
+                MetricBuilder.TryBuildExternalSegmentMetric(Uri, Method, duration, exclusiveDuration, txStats, false);
             }
             else
             {
                 // Only generate unscoped metric for response with CAT headers because segments should only produce a single scoped metric and the CAT metric is more interesting than the external segment metric.
-                MetricBuilder.TryBuildExternalSegmentMetric(Uri.Host, Method, duration, exclusiveDuration, txStats, true);
+                MetricBuilder.TryBuildExternalSegmentMetric(Uri, Method, duration, exclusiveDuration, txStats, true);
 
                 var externalCrossProcessId = CrossApplicationResponseData.CrossProcessId;
                 var externalTransactionName = CrossApplicationResponseData.TransactionName;
@@ -93,13 +121,18 @@ namespace NewRelic.Agent.Core.Segments
             AttribDefs.Component.TrySetValue(attribVals, _segmentState.TypeName);
             AttribDefs.SpanKind.TrySetDefault(attribVals);
             AttribDefs.HttpStatusCode.TrySetValue(attribVals, _httpStatusCode);   //Attrib handles null
+            if (_grpcStatusCode > -1)
+            {
+                AttribDefs.GrpcStatusCode.TrySetValue(attribVals, _grpcStatusCode);
+                AttribDefs.GrpcStatusMessage.TrySetValue(attribVals, GetStatusCodeMessage(_grpcStatusCode));
+            }
         }
 
         public override string GetTransactionTraceName()
         {
             // APM expects metric names to be used for external segment trace names
             var name = CrossApplicationResponseData == null
-                ? MetricNames.GetExternalHost(Uri.Host, "Stream", Method)
+                ? MetricNames.GetExternalHost(Uri.Host, Uri.Scheme == "grpc" ? "gRPC" : "Stream", Method)
                 : MetricNames.GetExternalTransaction(Uri.Host, CrossApplicationResponseData.CrossProcessId, CrossApplicationResponseData.TransactionName);
             return name.ToString();
         }
