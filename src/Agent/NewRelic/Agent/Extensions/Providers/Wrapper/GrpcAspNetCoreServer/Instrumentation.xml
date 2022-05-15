@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2020 New Relic Corporation. All rights reserved.
+SPDX-License-Identifier: Apache-2.0
+-->
+<extension xmlns="urn:newrelic-extension">
+	<instrumentation>
+      <tracerFactory name="HandleCallAsyncWrapper">
+        <match assemblyName="Grpc.AspNetCore.Server" className="Grpc.AspNetCore.Server.Internal.CallHandlers.ServerCallHandlerBase`3">
+          <exactMethodMatcher methodName="HandleCallAsync" parameters="Microsoft.AspNetCore.Http.HttpContext" />
+        </match>
+      </tracerFactory>
+	</instrumentation>
+</extension>
