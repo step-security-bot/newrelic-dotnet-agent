@@ -95,7 +95,16 @@ namespace NewRelic.Agent.Core.Segments
             AttribDefs.SpanCategory.TrySetValue(attribVals, SpanCategory.Http);
             AttribDefs.HttpUrl.TrySetValue(attribVals, Uri);
             AttribDefs.HttpMethod.TrySetValue(attribVals, Method);
-            AttribDefs.Component.TrySetValue(attribVals, _segmentState.TypeName);
+
+            if (Uri.Scheme == "grpc")
+            {
+                AttribDefs.Component.TrySetValue(attribVals, "gRPC");
+            }
+            else
+            {
+                AttribDefs.Component.TrySetValue(attribVals, _segmentState.TypeName);
+            }
+
             AttribDefs.SpanKind.TrySetDefault(attribVals);
             AttribDefs.HttpStatusCode.TrySetValue(attribVals, _httpStatusCode);   //Attrib handles null
             if (_grpcStatusCode.HasValue)

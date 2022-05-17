@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using NewRelic.Reflection;
@@ -10,9 +11,9 @@ using NewRelic.Reflection;
 namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 {
     /// <summary>
-    /// This wrapper is used to capture critical grpc error and status code.
+    /// This wrapper is used to capture non-critical grpc status code.
     /// </summary>
-    public class ProcessHandlerErrorWrapper : IWrapper
+    public class EndCallAsyncWrapper : IWrapper
     {
         private static PropertyInfo _statusCodeProperty;
 
@@ -21,7 +22,7 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
         public bool IsTransactionRequired => true;
 
-        private const string WrapperName = "ProcessHandlerErrorWrapper";
+        private const string WrapperName = "EndCallAsyncWrapper";
 
         public CanWrapResponse CanWrap(InstrumentedMethodInfo methodInfo)
         {
@@ -30,9 +31,8 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, ITransaction transaction)
         {
-            return Delegates.GetDelegateFor(onComplete: ()=>
+            return Delegates.GetDelegateFor<Task>(onComplete: () =>
             {
-
                 var status = GetStatusFunc(instrumentedMethodCall.MethodCall.InvocationTarget);
 
                 if (_statusCodeProperty == null)
@@ -44,11 +44,6 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
                 transaction.SetGrpcStatusCode((int)statusCode);
 
-                //Need a grpc error configuration to toggle on/off error captureing here. 
-
-                var ex = instrumentedMethodCall.MethodCall.MethodArguments[0] as Exception;
-
-                transaction.NoticeError(ex);
             });
         }
     }

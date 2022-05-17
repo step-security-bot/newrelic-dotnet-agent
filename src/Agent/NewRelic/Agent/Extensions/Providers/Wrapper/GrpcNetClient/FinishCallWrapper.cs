@@ -4,14 +4,18 @@
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using NewRelic.Agent.Core.Segments;
-using NewRelic.Reflection;
-using System;
 using System.Reflection;
 
 namespace NewRelic.Providers.Wrapper.GrpcNetClient
 {
+    /// <summary>
+    /// This wrapper is used to capture grpc request status code.
+    /// </summary>
     public class FinishCallWrapper:IWrapper
     {
+        //Theoratically, this wrapper does require a transaction; however, if IsTransactionRequired is set to true, this wrapper
+        //won't get called. This is not because no transaction, but due to the RunCallWrapper created a leaf segment (External segment) which prevents
+        //any nested intrumentation to occur.
         public bool IsTransactionRequired => false;
 
         private static PropertyInfo _statusCodeProperty;

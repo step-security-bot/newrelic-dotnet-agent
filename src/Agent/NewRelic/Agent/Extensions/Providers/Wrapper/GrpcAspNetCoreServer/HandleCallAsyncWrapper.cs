@@ -24,7 +24,9 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
             var httpContext = instrumentedMethodCall.MethodCall.MethodArguments[0] as HttpContext;
 
-            var segment = transaction.StartMethodSegment(instrumentedMethodCall.MethodCall, "gRPC", httpContext.Request.Path.Value.TrimStart('/'));
+            var methodName = httpContext.Request.Path.Value.TrimStart('/');
+
+            var segment = transaction.StartMethodSegment(instrumentedMethodCall.MethodCall, "gRPC", methodName);
 
             return Delegates.GetAsyncDelegateFor<Task>(agent, segment, TaskContinuationOptions.ExecuteSynchronously);
         }

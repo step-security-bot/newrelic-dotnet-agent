@@ -245,7 +245,7 @@ namespace NewRelic.Agent.Core.Transactions
         public int? HttpResponseStatusCode => _httpResponseStatusCode == int.MinValue ? default(int?) : _httpResponseStatusCode;
         public int? HttpResponseSubStatusCode => _httpResponseSubStatusCode == int.MinValue ? default(int?) : _httpResponseSubStatusCode;
 
-        public int? GrpcStatusCode => _grpcStatusCode == int.MinValue ? -1 : _grpcStatusCode;
+        public int? GrpcStatusCode => _grpcStatusCode == int.MinValue ? default(int?) : _grpcStatusCode;
 
         public IEnumerable<string> CrossApplicationAlternatePathHashes => _allCrossApplicationPathHashes
             .Except(new[] { _latestCrossApplicationPathHash })
