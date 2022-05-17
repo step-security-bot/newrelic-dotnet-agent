@@ -6,12 +6,15 @@ using NewRelic.Agent.Extensions.Providers.Wrapper;
 using NewRelic.Agent.Core.Segments;
 using NewRelic.Reflection;
 using System;
+using System.Reflection;
 
 namespace NewRelic.Providers.Wrapper.GrpcNetClient
 {
     public class FinishCallWrapper:IWrapper
     {
-        public bool IsTransactionRequired => true;
+        public bool IsTransactionRequired => false;
+
+        private static PropertyInfo _statusCodeProperty;
 
         private const string WrapperName = "FinishCallWrapper";
 
@@ -22,13 +25,18 @@ namespace NewRelic.Providers.Wrapper.GrpcNetClient
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, ITransaction transaction)
         {
-            var status = (Grpc.Core.Status)instrumentedMethodCall.MethodCall.MethodArguments[3];
+            var status = instrumentedMethodCall.MethodCall.MethodArguments[3];
+
+            if(_statusCodeProperty == null)
+                _statusCodeProperty = status.GetType().GetProperty("StatusCode");
+
+            var statusCode = _statusCodeProperty.GetValue(status);
 
             var segment = transaction.CurrentSegment as Segment;
 
             var externalData = segment.Data as ExternalSegmentData;
 
-            externalData.SetGrpcStatusCode((int)status.StatusCode);
+            externalData.SetGrpcStatusCode((int)statusCode);
 
             segment.End();
             transaction.Release();

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
+using System.Reflection;
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using NewRelic.Reflection;
@@ -10,8 +11,10 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 {
     public class ProcessHandlerErrorWrapper : IWrapper
     {
-        Func<object, Grpc.Core.Status> _getStatusFunc;
-        Func<object, Grpc.Core.Status> GetStatusFunc => _getStatusFunc ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<Grpc.Core.Status>("Grpc.AspNetCore.Server", "Grpc.AspNetCore.Server.Internal.HttpContextServerCallContext", "Status");
+        private static PropertyInfo _statusCodeProperty;
+
+        private static Func<object, object> _getStatusFunc;
+        public static Func<object, object> GetStatusFunc => _getStatusFunc ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<object>("Grpc.AspNetCore.Server", "Grpc.AspNetCore.Server.Internal.HttpContextServerCallContext", "Status");
 
         public bool IsTransactionRequired => true;
 
@@ -29,7 +32,14 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
                 var status = GetStatusFunc(instrumentedMethodCall.MethodCall.InvocationTarget);
 
-                transaction.SetGrpcStatusCode((int)status.StatusCode);
+                if (_statusCodeProperty == null)
+                {
+                    _statusCodeProperty = status.GetType().GetProperty("StatusCode");
+                }
+
+                var statusCode = _statusCodeProperty.GetValue(status);
+
+                transaction.SetGrpcStatusCode((int)statusCode);
 
                 var ex = instrumentedMethodCall.MethodCall.MethodArguments[0] as Exception;
 
