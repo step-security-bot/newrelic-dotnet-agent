@@ -1,7 +1,6 @@
 ﻿// Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using NewRelic.Agent.Api;
@@ -27,12 +26,7 @@ namespace NewRelic.Providers.Wrapper.GrpcAspNetCoreServer
 
             var segment = transaction.StartMethodSegment(instrumentedMethodCall.MethodCall, "gRPC", httpContext.Request.Path.Value.TrimStart('/'));
 
-            return Delegates.GetAsyncDelegateFor<Task>(agent, segment, false, (task) =>
-            {
-                var response = httpContext.Response;
-                var statusCode = response.Headers["grpc-status"];
-
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            return Delegates.GetAsyncDelegateFor<Task>(agent, segment, TaskContinuationOptions.ExecuteSynchronously);
         }
     }
 }

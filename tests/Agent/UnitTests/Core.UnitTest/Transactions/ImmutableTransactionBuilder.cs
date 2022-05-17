@@ -45,6 +45,9 @@ namespace NewRelic.Agent.Core.Transactions
 
         public int? HttpResponseSubStatusCode { get; }
 
+        public int? GrpcStatusCode { get; }
+
+
         public string SyntheticsResourceId { get; }
         public string SyntheticsJobId { get; }
         public string SyntheticsMonitorId { get; }

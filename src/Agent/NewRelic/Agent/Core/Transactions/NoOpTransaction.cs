@@ -277,5 +277,10 @@ namespace NewRelic.Agent.Core.Transactions
         {
             return this;
         }
+
+        public void SetGrpcStatusCode(int statusCode)
+        {
+            return;
+        }
     }
 }

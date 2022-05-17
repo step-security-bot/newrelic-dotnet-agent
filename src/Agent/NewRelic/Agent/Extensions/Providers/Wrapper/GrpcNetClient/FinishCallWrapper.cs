@@ -11,10 +11,7 @@ namespace NewRelic.Providers.Wrapper.GrpcNetClient
 {
     public class FinishCallWrapper:IWrapper
     {
-        Func<object, object> _getStatusFunc;
-        Func<object, object> GetStatusFunc => _getStatusFunc ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<object>("Grpc.Core.Api", "Grpc.Core.Status", "StatusCode");
-
-        public bool IsTransactionRequired => false;
+        public bool IsTransactionRequired => true;
 
         private const string WrapperName = "FinishCallWrapper";
 
@@ -25,15 +22,13 @@ namespace NewRelic.Providers.Wrapper.GrpcNetClient
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, ITransaction transaction)
         {
-            var status = instrumentedMethodCall.MethodCall.MethodArguments[3];
-
-            var statusCode = GetStatusFunc(status);
+            var status = (Grpc.Core.Status)instrumentedMethodCall.MethodCall.MethodArguments[3];
 
             var segment = transaction.CurrentSegment as Segment;
 
             var externalData = segment.Data as ExternalSegmentData;
 
-            externalData.SetGrpcStatusCode((int)statusCode);
+            externalData.SetGrpcStatusCode((int)status.StatusCode);
 
             segment.End();
             transaction.Release();

@@ -40,6 +40,8 @@ namespace NewRelic.Agent.Core.Transactions
         long GetCrossApplicationReferrerContentLength();
 
         ITransactionErrorState TransactionErrorState { get; }
+
+        void SetGrpcStatusCode(int statusCode);
     }
 
     /// <summary>
@@ -83,6 +85,9 @@ namespace NewRelic.Agent.Core.Transactions
 
         private volatile int _httpResponseStatusCode = int.MinValue;
         private volatile int _httpResponseSubStatusCode = int.MinValue;
+
+        private volatile int _grpcStatusCode = int.MinValue;
+
 
         private volatile string _requestMethod;
 
@@ -232,8 +237,15 @@ namespace NewRelic.Agent.Core.Transactions
 
         private TimeSpan? GetTimeSpan() => _timeSpanQueueTime?.Invoke();
 
+        public void SetGrpcStatusCode(int statusCode)
+        {
+            _grpcStatusCode = statusCode;
+        }
+
         public int? HttpResponseStatusCode => _httpResponseStatusCode == int.MinValue ? default(int?) : _httpResponseStatusCode;
         public int? HttpResponseSubStatusCode => _httpResponseSubStatusCode == int.MinValue ? default(int?) : _httpResponseSubStatusCode;
+
+        public int? GrpcStatusCode => _grpcStatusCode == int.MinValue ? -1 : _grpcStatusCode;
 
         public IEnumerable<string> CrossApplicationAlternatePathHashes => _allCrossApplicationPathHashes
             .Except(new[] { _latestCrossApplicationPathHash })

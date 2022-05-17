@@ -43,14 +43,14 @@ namespace NewRelic.Providers.Wrapper.Wcf3
         private static class Statics
         {
             //Supporting synchronous invoke
-            public static readonly Func<object, MethodInfo> GetSyncMethodInfo = VisibilityBypasser.Instance.GenerateFieldReadAccessor<MethodInfo>(AssemblyName, SyncTypeName, "method");
+            public static readonly Func<object, MethodInfo> GetSyncMethodInfo = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<MethodInfo>(AssemblyName, SyncTypeName, "method");
 
             //Supporting BeginInvoke/EndInvoke async Style
-            public static Func<object, MethodInfo> GetAsyncBeginMethodInfo = VisibilityBypasser.Instance.GenerateFieldReadAccessor<MethodInfo>(AssemblyName, AsyncTypeName, "beginMethod");
-            public static Func<object, MethodInfo> GetAsyncEndMethodInfo = VisibilityBypasser.Instance.GenerateFieldReadAccessor<MethodInfo>(AssemblyName, AsyncTypeName, "endMethod");
+            public static Func<object, MethodInfo> GetAsyncBeginMethodInfo = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<MethodInfo>(AssemblyName, AsyncTypeName, "beginMethod");
+            public static Func<object, MethodInfo> GetAsyncEndMethodInfo = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<MethodInfo>(AssemblyName, AsyncTypeName, "endMethod");
 
             //Supporting Task based Async style
-            public static Func<object, MethodInfo> GetTAPAsyncTaskMethodInfo = VisibilityBypasser.Instance.GenerateFieldReadAccessor<MethodInfo>(AssemblyName, TAPTypeName, "taskMethod");
+            public static Func<object, MethodInfo> GetTAPAsyncTaskMethodInfo = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<MethodInfo>(AssemblyName, TAPTypeName, "taskMethod");
         }
 
         private const string AssemblyName = "System.ServiceModel";

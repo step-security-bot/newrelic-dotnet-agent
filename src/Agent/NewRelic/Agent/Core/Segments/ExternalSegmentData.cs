@@ -20,30 +20,7 @@ namespace NewRelic.Agent.Core.Segments
         private const string TransactionGuidSegmentParameterKey = "transaction_guid";
 
         private int? _httpStatusCode;
-        private int _grpcStatusCode = -1;
-
-        private static string GetStatusCodeMessage(int grpcStatusCode)
-        => grpcStatusCode switch
-        {
-            0 => "OK",
-            1 => "Canceled",
-            2 => "Unknown",
-            3 => "InvalidArgument",
-            4 => "DeadlineExceeded",
-            5 => "NotFound",
-            6 => "AlreadyExists",
-            7 => "PermissionDenied",
-            8 => "ResourceExhausted",
-            9 => "FailedPrecondition",
-            10 => "Aborted",
-            11 => "OutOfRange",
-            12 => "Unimplemented",
-            13 => "Internal",
-            14 => "Unavailable",
-            15 => "DataLoss",
-            16 => "Unauthenticated",
-            _ => "Unknown"
-        };
+        private int? _grpcStatusCode;
 
         public override SpanCategory SpanCategory => SpanCategory.Http;
 
@@ -121,10 +98,10 @@ namespace NewRelic.Agent.Core.Segments
             AttribDefs.Component.TrySetValue(attribVals, _segmentState.TypeName);
             AttribDefs.SpanKind.TrySetDefault(attribVals);
             AttribDefs.HttpStatusCode.TrySetValue(attribVals, _httpStatusCode);   //Attrib handles null
-            if (_grpcStatusCode > -1)
+            if (_grpcStatusCode.HasValue)
             {
-                AttribDefs.GrpcStatusCode.TrySetValue(attribVals, _grpcStatusCode);
-                AttribDefs.GrpcStatusMessage.TrySetValue(attribVals, GetStatusCodeMessage(_grpcStatusCode));
+                AttribDefs.GrpcStatusCode.TrySetValue(attribVals, _grpcStatusCode.Value);
+                AttribDefs.GrpcStatusMessage.TrySetValue(attribVals, _grpcStatusCode.Value);
             }
         }
 

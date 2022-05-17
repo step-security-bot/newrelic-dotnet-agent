@@ -13,7 +13,7 @@ namespace NewRelic.Providers.Wrapper.Asp35.Shared
     {
         public const string WrapperName = "Asp35.CallHandlerTracer";
 
-        public Func<object, HttpApplication> GetHttpApplication { get { return _getHttpApplication ?? (_getHttpApplication = VisibilityBypasser.Instance.GenerateFieldReadAccessor<HttpApplication>("System.Web", "System.Web.HttpApplication+CallHandlerExecutionStep", "_application")); } }
+        public Func<object, HttpApplication> GetHttpApplication { get { return _getHttpApplication ?? (_getHttpApplication = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<HttpApplication>("System.Web", "System.Web.HttpApplication+CallHandlerExecutionStep", "_application")); } }
 
         public bool IsTransactionRequired => true;
 

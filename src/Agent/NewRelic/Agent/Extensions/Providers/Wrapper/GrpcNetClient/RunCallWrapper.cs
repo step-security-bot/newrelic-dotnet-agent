@@ -10,7 +10,7 @@ namespace NewRelic.Providers.Wrapper.GrpcNetClient
 {
     public class RunCallWrapper: IWrapper
     {
-        public bool IsTransactionRequired => false;
+        public bool IsTransactionRequired => true;
 
         private const string WrapperName = "RunCallWrapper";
 

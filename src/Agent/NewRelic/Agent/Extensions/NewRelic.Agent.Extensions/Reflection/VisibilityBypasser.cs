@@ -81,7 +81,7 @@ namespace NewRelic.Reflection
 
         #region Field Read Access
 
-        public Func<object, TResult> GenerateFieldReadAccessor<TResult>(string assemblyName, string typeName, string fieldName)
+        public Func<object, TResult> GeneratePropertyReadAccessor<TResult>(string assemblyName, string typeName, string fieldName)
         {
             if (assemblyName == null)
             {

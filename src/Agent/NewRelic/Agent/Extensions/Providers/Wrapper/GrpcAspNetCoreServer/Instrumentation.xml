@@ -10,5 +10,11 @@ SPDX-License-Identifier: Apache-2.0
           <exactMethodMatcher methodName="HandleCallAsync" parameters="Microsoft.AspNetCore.Http.HttpContext" />
         </match>
       </tracerFactory>
+
+    <tracerFactory name="ProcessHandlerErrorWrapper">
+      <match assemblyName="Grpc.AspNetCore.Server" className="Grpc.AspNetCore.Server.Internal.HttpContextServerCallContext">
+        <exactMethodMatcher methodName="ProcessHandlerError" parameters="System.Exception,System.String" />
+      </match>
+    </tracerFactory>
 	</instrumentation>
 </extension>

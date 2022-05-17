@@ -138,6 +138,12 @@ namespace NewRelic.Agent.Api
         void SetHttpResponseStatusCode(int statusCode, int? subStatusCode = null);
 
         /// <summary>
+        /// Sets the gRPC status code on the transaction.
+        /// </summary>
+        /// <param name="statusCode">The status code to set the transaction to.</param>
+        void SetGrpcStatusCode(int statusCode);
+
+        /// <summary>
         /// Attaches the transaction to async storage. Should only call this from async methods.
         /// </summary>
         void AttachToAsync();

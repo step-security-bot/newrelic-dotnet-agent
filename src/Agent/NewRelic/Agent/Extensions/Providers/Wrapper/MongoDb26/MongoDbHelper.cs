@@ -152,7 +152,7 @@ namespace NewRelic.Providers.Wrapper.MongoDb26
         {
             var clientGetter = _getClient ?? (_getClient = VisibilityBypasser.Instance.GeneratePropertyAccessor<object>("MongoDB.Driver", "MongoDB.Driver.MongoDatabaseImpl", "Client"));
             var settingsGetter = _getSettings ?? (_getSettings = VisibilityBypasser.Instance.GeneratePropertyAccessor<object>("MongoDB.Driver", "MongoDB.Driver.MongoClient", "Settings"));
-            var serversGetter = _getServers ?? (_getServers = VisibilityBypasser.Instance.GenerateFieldReadAccessor<IList>("MongoDB.Driver", "MongoDB.Driver.MongoClientSettings", "_servers"));
+            var serversGetter = _getServers ?? (_getServers = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<IList>("MongoDB.Driver", "MongoDB.Driver.MongoClientSettings", "_servers"));
 
             var client = clientGetter(database);
             var settings = settingsGetter(client);

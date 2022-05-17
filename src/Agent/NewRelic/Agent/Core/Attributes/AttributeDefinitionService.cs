@@ -109,8 +109,8 @@ namespace NewRelic.Agent.Core.Attributes
         AttributeDefinition<string, string> TripId { get; }
         AttributeDefinition<string, string> TrustedParentId { get; }
         AttributeDefinition<TimeSpan, double> WebDuration { get; }
-        AttributeDefinition<long, long> GrpcStatusCode { get; }
-        AttributeDefinition<string, string> GrpcStatusMessage { get; }
+        AttributeDefinition<int, int> GrpcStatusCode { get; }
+        AttributeDefinition<int, string> GrpcStatusMessage { get; }
 
         AttributeDefinition<object, object> GetCustomAttributeForCustomEvent(string name);
         AttributeDefinition<object, object> GetCustomAttributeForError(string name);
@@ -960,8 +960,8 @@ namespace NewRelic.Agent.Core.Attributes
                 .AppliesTo(AttributeDestinations.CustomEvent)
                 .Build(_attribFilter));
 
-        public AttributeDefinition<long, long> _grpcStatusCode;
-        public AttributeDefinition<long, long> GrpcStatusCode => _grpcStatusCode ??= AttributeDefinitionBuilder.CreateLong("grpc.statusCode", AttributeClassification.AgentAttributes)
+        public AttributeDefinition<int, int> _grpcStatusCode;
+        public AttributeDefinition<int, int> GrpcStatusCode => _grpcStatusCode ??= AttributeDefinitionBuilder.Create<int,int>("grpc.statusCode", AttributeClassification.AgentAttributes)
                 .AppliesTo(AttributeDestinations.ErrorEvent)
                 .AppliesTo(AttributeDestinations.ErrorTrace)
                 .AppliesTo(AttributeDestinations.TransactionEvent)
@@ -970,14 +970,39 @@ namespace NewRelic.Agent.Core.Attributes
                 .AppliesTo(AttributeDestinations.TransactionTrace)
                 .Build(_attribFilter);
 
-        public AttributeDefinition<string, string> _grpcStatusMessage;
-        public AttributeDefinition<string, string> GrpcStatusMessage => _grpcStatusMessage ??= AttributeDefinitionBuilder.CreateString("grpc.statusMessage", AttributeClassification.AgentAttributes)
+        public AttributeDefinition<int, string> _grpcStatusMessage;
+        public AttributeDefinition<int, string> GrpcStatusMessage => _grpcStatusMessage ??= AttributeDefinitionBuilder.CreateString<int>("grpc.statusMessage", AttributeClassification.AgentAttributes)
         .AppliesTo(AttributeDestinations.ErrorEvent)
         .AppliesTo(AttributeDestinations.ErrorTrace)
         .AppliesTo(AttributeDestinations.TransactionEvent)
         .AppliesTo(AttributeDestinations.ErrorEvent)
         .AppliesTo(AttributeDestinations.SpanEvent)
         .AppliesTo(AttributeDestinations.TransactionTrace)
+        .WithConvert((f) => GetStatusCodeMessage(f))
         .Build(_attribFilter);
+
+
+        public static string GetStatusCodeMessage(int grpcStatusCode)
+        => grpcStatusCode switch
+        {
+            0 => "OK",
+            1 => "Canceled",
+            2 => "Unknown",
+            3 => "InvalidArgument",
+            4 => "DeadlineExceeded",
+            5 => "NotFound",
+            6 => "AlreadyExists",
+            7 => "PermissionDenied",
+            8 => "ResourceExhausted",
+            9 => "FailedPrecondition",
+            10 => "Aborted",
+            11 => "OutOfRange",
+            12 => "Unimplemented",
+            13 => "Internal",
+            14 => "Unavailable",
+            15 => "DataLoss",
+            16 => "Unauthenticated",
+            _ => "Unknown"
+        };
     }
 }

@@ -661,6 +661,11 @@ namespace NewRelic.Agent.Core.Transactions
             TransactionMetadata.SetHttpResponseStatusCode(statusCode, subStatusCode, _errorService);
         }
 
+        public void SetGrpcStatusCode(int statusCode)
+        {
+            TransactionMetadata.SetGrpcStatusCode(statusCode);
+        }
+
         public void AttachToAsync()
         {
             var isAdded = Agent._transactionService.SetTransactionOnAsyncContext(this);

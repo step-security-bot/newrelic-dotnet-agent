@@ -63,9 +63,9 @@ namespace NewRelic.Providers.Wrapper.CosmosDb
 
             var queryGetter = _queryGetter ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<string>(AssemblyName, SqlQuerySpecFullTypeName, "QueryText");
 
-            var clientContextGetter = _getClientContextGetter ??= VisibilityBypasser.Instance.GenerateFieldReadAccessor<object>(AssemblyName, CosmosQueryClientCoreFullTypeName, "clientContext");
+            var clientContextGetter = _getClientContextGetter ??= VisibilityBypasser.Instance.GeneratePropertyReadAccessor<object>(AssemblyName, CosmosQueryClientCoreFullTypeName, "clientContext");
 
-            var clientGetter = _getClient ??= VisibilityBypasser.Instance.GenerateFieldReadAccessor<object>(AssemblyName, ClientContextCoreFullTypeName, "client");
+            var clientGetter = _getClient ??= VisibilityBypasser.Instance.GeneratePropertyReadAccessor<object>(AssemblyName, ClientContextCoreFullTypeName, "client");
 
             var endpointGetter =  _endpointGetter ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<Uri>(AssemblyName, CosmosClientFullTypeName, "Endpoint");
 

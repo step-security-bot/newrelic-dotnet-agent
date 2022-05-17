@@ -56,7 +56,7 @@ namespace NewRelic.Providers.Wrapper.CosmosDb
 
             var operation = $"{operationType}{resourceType}";
 
-            var clientGetter = _getClient ??= VisibilityBypasser.Instance.GenerateFieldReadAccessor<object>(AssemblyName, RequestInvokerHandlerFullTypeName, "client");
+            var clientGetter = _getClient ??= VisibilityBypasser.Instance.GeneratePropertyReadAccessor<object>(AssemblyName, RequestInvokerHandlerFullTypeName, "client");
 
             var endpointGetter =  _endpointGetter ??= VisibilityBypasser.Instance.GeneratePropertyAccessor<Uri>(AssemblyName, CosmosClientFullTypeName, "Endpoint");
 

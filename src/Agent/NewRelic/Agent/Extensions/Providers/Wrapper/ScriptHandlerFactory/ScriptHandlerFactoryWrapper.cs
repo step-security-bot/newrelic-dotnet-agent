@@ -14,9 +14,9 @@ namespace NewRelic.Providers.Wrapper.ScriptHandlerFactory
         // these must be lazily instatiated when the wrapper is actually used, not when the wrapper is first instantiated, so they sit in a nested class
         private static class Statics
         {
-            public static readonly Func<object, IHttpHandler> GetSyncHandlerOriginalHandler = VisibilityBypasser.Instance.GenerateFieldReadAccessor<IHttpHandler>(AssemblyName, SyncTypeName, "_originalHandler");
+            public static readonly Func<object, IHttpHandler> GetSyncHandlerOriginalHandler = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<IHttpHandler>(AssemblyName, SyncTypeName, "_originalHandler");
 
-            public static readonly Func<object, IHttpHandler> GetAsyncHandlerOriginalHandler = VisibilityBypasser.Instance.GenerateFieldReadAccessor<IHttpHandler>(AssemblyName, AsyncTypeName, "_originalHandler");
+            public static readonly Func<object, IHttpHandler> GetAsyncHandlerOriginalHandler = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<IHttpHandler>(AssemblyName, AsyncTypeName, "_originalHandler");
         }
 
 

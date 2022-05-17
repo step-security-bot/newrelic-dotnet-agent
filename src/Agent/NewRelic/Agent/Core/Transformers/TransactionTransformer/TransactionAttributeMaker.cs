@@ -198,6 +198,12 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
             _attribDefs.ResponseStatus.TrySetValue(attribValues, metadata.HttpResponseStatusCode);
             _attribDefs.HttpStatusCode.TrySetValue(attribValues, metadata.HttpResponseStatusCode);
 
+            if (metadata.GrpcStatusCode.HasValue)
+            {
+                _attribDefs.GrpcStatusCode.TrySetValue(attribValues, metadata.GrpcStatusCode.Value);
+                _attribDefs.GrpcStatusMessage.TrySetValue(attribValues, metadata.GrpcStatusCode.Value);
+            }
+
             _attribDefs.HostDisplayName.TrySetValue(attribValues, _configurationService.Configuration.ProcessHostDisplayName);
 
             

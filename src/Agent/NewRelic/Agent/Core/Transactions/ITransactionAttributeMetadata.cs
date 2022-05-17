@@ -26,6 +26,9 @@ namespace NewRelic.Agent.Core.Transactions
         string ReferrerUri { get; }
 
         int? HttpResponseStatusCode { get; }
+
+        int? GrpcStatusCode { get; }
+
         TimeSpan? QueueTime { get; }
     }
 }

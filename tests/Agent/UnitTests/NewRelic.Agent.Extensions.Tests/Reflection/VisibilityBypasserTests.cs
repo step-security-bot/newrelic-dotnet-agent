@@ -82,7 +82,7 @@ namespace NewRelic.Reflection.UnitTests
             var privateInner = PublicOuter.CreatePrivateInner();
             var expectedValue = 3;
 
-            var fieldAccessor = VisibilityBypasser.Instance.GenerateFieldReadAccessor<int>(assemblyName, typeName, fieldName);
+            var fieldAccessor = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<int>(assemblyName, typeName, fieldName);
             var actualValue = fieldAccessor(privateInner);
 
             Assert.AreEqual(expectedValue, actualValue);

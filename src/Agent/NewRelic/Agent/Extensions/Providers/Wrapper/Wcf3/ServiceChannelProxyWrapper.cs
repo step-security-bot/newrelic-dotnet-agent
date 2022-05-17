@@ -32,11 +32,11 @@ namespace NewRelic.Providers.Wrapper.Wcf3
 
         //Access to the channel to get the URI
         private Func<object, IServiceChannel> _getServiceChannel;
-        private Func<object, IServiceChannel> GetServiceChannel() { return _getServiceChannel ?? (_getServiceChannel = VisibilityBypasser.Instance.GenerateFieldReadAccessor<IServiceChannel>(ServiceModelAssembly, ServiceChannelProxyType, "serviceChannel")); }
+        private Func<object, IServiceChannel> GetServiceChannel() { return _getServiceChannel ?? (_getServiceChannel = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<IServiceChannel>(ServiceModelAssembly, ServiceChannelProxyType, "serviceChannel")); }
 
         //used to get the original AsyncCallback so that we can wrap it inside our own callback.
         private Func<object, AsyncCallback> _getAsyncCallbackReadAccessor;
-        private Func<object, AsyncCallback> GetAsyncCallbackReadAccessor() { return _getAsyncCallbackReadAccessor ?? (_getAsyncCallbackReadAccessor = VisibilityBypasser.Instance.GenerateFieldReadAccessor<AsyncCallback>(ServiceModelInternalsAssembly, AsyncResultType, "callback")); }
+        private Func<object, AsyncCallback> GetAsyncCallbackReadAccessor() { return _getAsyncCallbackReadAccessor ?? (_getAsyncCallbackReadAccessor = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<AsyncCallback>(ServiceModelInternalsAssembly, AsyncResultType, "callback")); }
 
         //Used to write our AsyncCallback wrapper back to the callback on the IAsyncResult.
         private Action<object, AsyncCallback> _setAsyncCallbackWriteAccessor;
@@ -44,7 +44,7 @@ namespace NewRelic.Providers.Wrapper.Wcf3
 
         //used to get the AsyncCallback exception so that we can log it.
         private Func<object, Exception> _getAsyncCallbackException;
-        private Func<object, Exception> GetAsyncCallbackException() { return _getAsyncCallbackException ?? (_getAsyncCallbackException = VisibilityBypasser.Instance.GenerateFieldReadAccessor<Exception>(ServiceModelInternalsAssembly, AsyncResultType, "exception")); }
+        private Func<object, Exception> GetAsyncCallbackException() { return _getAsyncCallbackException ?? (_getAsyncCallbackException = VisibilityBypasser.Instance.GeneratePropertyReadAccessor<Exception>(ServiceModelInternalsAssembly, AsyncResultType, "exception")); }
 
         // used to allow us to call System.ServiceModel.Channels.ServiceChannelProxy.GetMethodData to determine what type of call we are dealing with
         private Func<object, System.Runtime.Remoting.Messaging.IMethodCallMessage, object> _getMethodDataMethod;
