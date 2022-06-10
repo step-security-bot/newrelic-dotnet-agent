@@ -61,6 +61,8 @@ namespace NewRelic { namespace Profiler {
         USHORT minorVersion;
         USHORT buildNumber;
         USHORT qfeVersion;
+        WCHAR versionString[512];
+        ULONG versionStringLength;
     };
 
     typedef std::set<xstring_t> FilePaths;
@@ -194,8 +196,15 @@ namespace NewRelic { namespace Profiler {
 
                 // Need runtime information to determine CLR type
                 auto runtimeInfo = std::make_shared<RuntimeInfo>();
-                auto runtimeInfoResult = _corProfilerInfo4->GetRuntimeInformation(nullptr,
-                    &runtimeInfo->runtimeType, &runtimeInfo->majorVersion, &runtimeInfo->minorVersion, nullptr, nullptr, 0, nullptr, nullptr);
+                auto runtimeInfoResult = _corProfilerInfo4->GetRuntimeInformation(  nullptr,
+                                                                                    &runtimeInfo->runtimeType,
+                                                                                    &runtimeInfo->majorVersion,
+                                                                                    &runtimeInfo->minorVersion,
+                                                                                    &runtimeInfo->buildNumber,
+                                                                                    &runtimeInfo->qfeVersion,
+                                                                                    sizeof(runtimeInfo->versionString),
+                                                                                    &runtimeInfo->versionStringLength,
+                                                                                    runtimeInfo->versionString );
 
                 if (FAILED(runtimeInfoResult)) {
                     LogError(_X("Error retrieving runtime information: "), runtimeInfoResult);
@@ -212,6 +221,13 @@ namespace NewRelic { namespace Profiler {
                 {
                     return loggingInitResult;
                 }
+
+                LogError(_X("JOSH LOOK HERE!!! Type: "), runtimeInfo->runtimeType);
+                LogError(_X("JOSH LOOK HERE!!! Major: "), runtimeInfo->majorVersion);
+                LogError(_X("JOSH LOOK HERE!!! Minor: "), runtimeInfo->minorVersion);
+                LogError(_X("JOSH LOOK HERE!!! BuildNumber: "), runtimeInfo->buildNumber);
+                LogError(_X("JOSH LOOK HERE!!! QfeVersion: "), runtimeInfo->qfeVersion);
+                LogError(_X("JOSH LOOK HERE!!! VersionString: "), runtimeInfo->versionString);
 
                 LogTrace(_productName);
 
@@ -388,10 +404,11 @@ namespace NewRelic { namespace Profiler {
         {
             if (_isCoreClr)
             {
+                // TODO: This check will work, but needs to use ICorProfilerInfo11
                 CComPtr<ICorProfilerInfo8> temp;
                 HRESULT result = pICorProfilerInfoUnk->QueryInterface(__uuidof(ICorProfilerInfo8), (void**)&temp);
                 if (FAILED(result)) {
-                    LogError(_X(".NET Core 2.0 or greater required. Profiler not attaching."));
+                    LogError(_X(".NET Core 3.1 or greater required. Profiler not attaching."));
                     return CORPROF_E_PROFILER_CANCEL_ACTIVATION;
                 }
                 return S_OK;
