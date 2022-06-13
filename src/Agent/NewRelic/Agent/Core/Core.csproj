@@ -6,8 +6,8 @@
     <AssemblyName>NewRelic.Agent.Core</AssemblyName>
     <RootNamespace>NewRelic.Agent.Core</RootNamespace>
     <Description></Description>
-    <IntermediateOutputPath>$(MSBuildThisFileDirectory)\..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
-    <OutputPath>$(MSBuildThisFileDirectory)\..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\</OutputPath>
+    <IntermediateOutputPath>$(MSBuildThisFileDirectory)..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\</IntermediateOutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)..\..\..\..\_build\$(Platform)-$(Configuration)\$(AssemblyName)\</OutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
@@ -25,9 +25,8 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.20.0" />
-    <PackageReference Include="Grpc" Version="2.40.0" />
-    <PackageReference Include="Grpc.Core" Version="2.40.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.28.1">
+    <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.46.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -65,6 +64,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Management" />
     <Reference Include="System.Configuration" />
+    <PackageReference Include="System.Net.Http.WinHttpHandler" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,7 +86,8 @@
       <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'NewRelic.Parsing'" />
       <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'Google.Protobuf'" />
       <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'Grpc.Core.Api'" />
-      <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'Grpc.Core'" />
+      <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'Grpc.Net.Common'" />
+      <ILRepackInclude Include="@(PossibleRefsForILRepack)" Condition="'%(FileName)' == 'Grpc.Net.Client'" />
       
     </ItemGroup>
 
@@ -110,8 +111,8 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <ILRepackIncludeCount Condition="'$(TargetFramework)' == 'net462'">14</ILRepackIncludeCount>
-      <ILRepackIncludeCount Condition="'$(TargetFramework)' == 'netstandard2.0'">9</ILRepackIncludeCount>
+      <ILRepackIncludeCount Condition="'$(TargetFramework)' == 'net462'">15</ILRepackIncludeCount>
+      <ILRepackIncludeCount Condition="'$(TargetFramework)' == 'netstandard2.0'">10</ILRepackIncludeCount>
     </PropertyGroup>
 
     <Error Text="ILRepack of $(AssemblyName) ($(TargetFramework)) failed. A dependency is missing. Expected $(ILRepackIncludeCount) dependencies but found @(ILRepackInclude-&gt;Count())." Condition="@(ILRepackInclude-&gt;Count()) != $(ILRepackIncludeCount)" />

@@ -4,28 +4,30 @@
 using NewRelic.Agent.Core.Segments;
 using Grpc.Core;
 using System.Threading;
+using Grpc.Net.Client;
+using System;
 
 namespace NewRelic.Agent.Core.DataTransport
 {
     public class SpanGrpcWrapper : GrpcWrapper<Span, RecordStatus>, IGrpcWrapper<Span, RecordStatus>
     {
-        protected override AsyncDuplexStreamingCall<Span, RecordStatus> CreateStreamsImpl(Channel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
+        protected override AsyncDuplexStreamingCall<Span, RecordStatus> CreateStreamsImpl(GrpcChannel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
         {
             if (channel == null)
             {
                 throw new GrpcWrapperChannelNotAvailableException();
             }
 
-            if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
-            {
-                // Ensure channel connection attempt shutdown on timeout
-                channel.ShutdownAsync().Wait();
+            //if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
+            //{
+            //    // Ensure channel connection attempt shutdown on timeout
+            //    channel.ShutdownAsync().Wait();
 
-                throw new GrpcWrapperChannelNotAvailableException();
-            }
+            //    throw new GrpcWrapperChannelNotAvailableException();
+            //}
 
             var client = new IngestService.IngestServiceClient(channel);
-            var streams = client.RecordSpan(headers: headers, cancellationToken: cancellationToken);
+            var streams = client.RecordSpan(headers: headers, cancellationToken: cancellationToken, deadline: DateTime.UtcNow.AddMilliseconds(connectTimeoutMs));
 
             return streams;
         }
@@ -33,23 +35,23 @@ namespace NewRelic.Agent.Core.DataTransport
 
     public class SpanBatchGrpcWrapper : GrpcWrapper<SpanBatch, RecordStatus>, IGrpcWrapper<SpanBatch, RecordStatus>
     {
-        protected override AsyncDuplexStreamingCall<SpanBatch, RecordStatus> CreateStreamsImpl(Channel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
+        protected override AsyncDuplexStreamingCall<SpanBatch, RecordStatus> CreateStreamsImpl(GrpcChannel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
         {
             if (channel == null)
             {
                 throw new GrpcWrapperChannelNotAvailableException();
             }
 
-            if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
-            {
-                // Ensure channel connection attempt shutdown on timeout
-                channel.ShutdownAsync().Wait();
+            //if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
+            //{
+            //    // Ensure channel connection attempt shutdown on timeout
+            //    channel.ShutdownAsync().Wait();
 
-                throw new GrpcWrapperChannelNotAvailableException();
-            }
+            //    throw new GrpcWrapperChannelNotAvailableException();
+            //}
 
             var client = new IngestService.IngestServiceClient(channel);
-            var streams = client.RecordSpanBatch(headers: headers, cancellationToken: cancellationToken);
+            var streams = client.RecordSpanBatch(headers: headers, cancellationToken: cancellationToken, deadline: DateTime.UtcNow.AddMilliseconds(connectTimeoutMs));
 
             return streams;
         }

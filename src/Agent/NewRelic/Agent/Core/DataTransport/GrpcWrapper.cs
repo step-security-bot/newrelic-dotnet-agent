@@ -7,7 +7,9 @@ using System.Threading;
 using System.Collections.Generic;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using NewRelic.Core.Logging;
-using System.Threading.Tasks;
+using Grpc.Net.Client;
+using System.Net.Http;
+using NewRelic.Agent.Core.Segments;
 
 namespace NewRelic.Agent.Core.DataTransport
 {
@@ -60,17 +62,19 @@ namespace NewRelic.Agent.Core.DataTransport
 
     public abstract class GrpcWrapper<TRequest, TResponse> : IGrpcWrapper<TRequest, TResponse>
     {
-        private readonly List<ChannelState> _notConnectedStates = new List<ChannelState> { ChannelState.TransientFailure, ChannelState.Shutdown };
+        //private readonly List<ChannelState> _notConnectedStates = new List<ChannelState> { ChannelState.TransientFailure, ChannelState.Shutdown };
 
         protected GrpcWrapper()
         {
         }
 
-        private Channel _channel { get; set; }
+        private GrpcChannel _channel { get; set; }
 
-        protected abstract AsyncDuplexStreamingCall<TRequest, TResponse> CreateStreamsImpl(Channel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken);
+        protected abstract AsyncDuplexStreamingCall<TRequest, TResponse> CreateStreamsImpl(GrpcChannel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken);
 
-        public bool IsConnected => _channel != null && !_notConnectedStates.Contains(_channel.State);
+        //public bool IsConnected => _channel != null && !_notConnectedStates.Contains(_channel.State);
+        public bool IsConnected => _channel != null;
+
 
         public bool CreateChannel(string host, int port, bool ssl, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
         {
@@ -80,8 +84,27 @@ namespace NewRelic.Agent.Core.DataTransport
                 Shutdown();
 
                 var credentials = ssl ? new SslCredentials() : ChannelCredentials.Insecure;
-                var channel = new Channel(host, port, credentials);
 
+                var grpcChannelOptions = new GrpcChannelOptions();
+                grpcChannelOptions.Credentials = credentials;
+
+                var uriBuilder = new UriBuilder
+                {
+                    Scheme = "https",
+                    Host = host,
+                    Port = port
+                };
+
+
+#if NETFRAMEWORK
+                grpcChannelOptions.HttpHandler = new System.Net.Http.WinHttpHandler();
+#else
+                grpcChannelOptions.HttpClient = new HttpClient();
+                grpcChannelOptions.DisposeHttpClient = true;
+#endif
+
+
+                var channel = GrpcChannel.ForAddress(uriBuilder.Uri, grpcChannelOptions);
                 if (TestChannel(channel, headers, connectTimeoutMs, cancellationToken))
                 {
                     _channel = channel;
@@ -107,17 +130,20 @@ namespace NewRelic.Agent.Core.DataTransport
             }
         }
 
-        private bool TestChannel(Channel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
+        private bool TestChannel(GrpcChannel channel, Metadata headers, int connectTimeoutMs, CancellationToken cancellationToken)
         {
             try
             {
-                if (channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken) && !_notConnectedStates.Contains(channel.State))
-                {
-                    using (CreateStreamsImpl(channel, headers, connectTimeoutMs, cancellationToken))
-                    {
-                        return true;
-                    }
-                }
+                var client = new IngestService.IngestServiceClient(channel);
+                return true;
+
+                //if (channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken) && !_notConnectedStates.Contains(channel.State))
+                //{
+                //    using (CreateStreamsImpl(channel, headers, connectTimeoutMs, cancellationToken))
+                //    {
+                //        return true;
+                //    }
+                //}
             }
             catch (Exception) { }
 
