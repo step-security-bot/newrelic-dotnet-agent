@@ -18,16 +18,8 @@ namespace NewRelic.Agent.Core.DataTransport
                 throw new GrpcWrapperChannelNotAvailableException();
             }
 
-            //if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
-            //{
-            //    // Ensure channel connection attempt shutdown on timeout
-            //    channel.ShutdownAsync().Wait();
-
-            //    throw new GrpcWrapperChannelNotAvailableException();
-            //}
-
             var client = new IngestService.IngestServiceClient(channel);
-            var streams = client.RecordSpan(headers: headers, cancellationToken: cancellationToken, deadline: DateTime.UtcNow.AddMilliseconds(connectTimeoutMs));
+            var streams = client.RecordSpan(headers: headers, cancellationToken: cancellationToken);
 
             return streams;
         }
@@ -42,16 +34,8 @@ namespace NewRelic.Agent.Core.DataTransport
                 throw new GrpcWrapperChannelNotAvailableException();
             }
 
-            //if (!channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken))
-            //{
-            //    // Ensure channel connection attempt shutdown on timeout
-            //    channel.ShutdownAsync().Wait();
-
-            //    throw new GrpcWrapperChannelNotAvailableException();
-            //}
-
             var client = new IngestService.IngestServiceClient(channel);
-            var streams = client.RecordSpanBatch(headers: headers, cancellationToken: cancellationToken, deadline: DateTime.UtcNow.AddMilliseconds(connectTimeoutMs));
+            var streams = client.RecordSpanBatch(headers: headers, cancellationToken: cancellationToken);
 
             return streams;
         }

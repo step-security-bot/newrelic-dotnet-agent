@@ -99,10 +99,9 @@ namespace NewRelic.Agent.Core.DataTransport
 #if NETFRAMEWORK
                 grpcChannelOptions.HttpHandler = new System.Net.Http.WinHttpHandler();
 #else
-                grpcChannelOptions.HttpClient = new HttpClient();
-                grpcChannelOptions.DisposeHttpClient = true;
+                grpcChannelOptions.HttpHandler = new HttpClientHandler();
 #endif
-
+                grpcChannelOptions.DisposeHttpClient = true;
 
                 var channel = GrpcChannel.ForAddress(uriBuilder.Uri, grpcChannelOptions);
                 if (TestChannel(channel, headers, connectTimeoutMs, cancellationToken))
@@ -135,15 +134,10 @@ namespace NewRelic.Agent.Core.DataTransport
             try
             {
                 var client = new IngestService.IngestServiceClient(channel);
-                return true;
-
-                //if (channel.ConnectAsync().Wait(connectTimeoutMs, cancellationToken) && !_notConnectedStates.Contains(channel.State))
-                //{
-                //    using (CreateStreamsImpl(channel, headers, connectTimeoutMs, cancellationToken))
-                //    {
-                //        return true;
-                //    }
-                //}
+                using (client.RecordSpan(headers: headers, cancellationToken: cancellationToken, deadline: DateTime.UtcNow.AddMilliseconds(connectTimeoutMs)))
+                {
+                    return true;
+                }
             }
             catch (Exception) { }
 
