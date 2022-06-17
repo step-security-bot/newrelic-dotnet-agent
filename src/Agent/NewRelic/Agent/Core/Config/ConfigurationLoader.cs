@@ -9,6 +9,7 @@ using NewRelic.SystemInterfaces;
 using System;
 using System.Configuration;
 using System.IO;
+using System.Net;
 using System.Web;
 using System.Xml;
 using System.Xml.Schema;
@@ -543,8 +544,23 @@ namespace NewRelic.Agent.Core.Config
                 name = _processStatic.GetCurrentProcess().ProcessName;
             }
 #endif
+            var appendHostname = false;
+            var hostnameToAppend = string.Empty;
+            bool.TryParse(System.Environment.GetEnvironmentVariable("NEW_RELIC_LOG_APPEND_HOSTNAME"), out appendHostname);
 
-            return "newrelic_agent_" + Strings.SafeFileName(name) + ".log";
+            if (appendHostname)
+            {
+                try
+                {
+                    hostnameToAppend = "_" + Dns.GetHostName();
+                }
+                catch (Exception)
+                {
+                    hostnameToAppend = "_NoHostnameFound";
+                }
+            }
+
+            return "newrelic_agent_" + Strings.SafeFileName(name) + hostnameToAppend + ".log";
         }
 
         public bool FileLockingModelSpecified
