@@ -40,7 +40,7 @@ namespace NewRelic.Agent.Core.Config
         public static ValueWithProvenance<string> GetWebConfigAppSetting(string key)
         {
 #if NETSTANDARD2_0
-			return null;
+            return null;
 #else
             try
             {
@@ -68,11 +68,11 @@ namespace NewRelic.Agent.Core.Config
         {
             ValueWithProvenance<string> value = GetWebConfigAppSetting(key);
 #if NET45
-			if (value.Value == null)
-			{
-				value = new ValueWithProvenance<string>(ConfigurationManager.AppSettings[key],
-					"ConfigurationManager app setting");
-			}
+            if (value.Value == null)
+            {
+                value = new ValueWithProvenance<string>(ConfigurationManager.AppSettings[key],
+                    "ConfigurationManager app setting");
+            }
 #endif
             return value;
         }
@@ -100,21 +100,21 @@ namespace NewRelic.Agent.Core.Config
 
 #if NETSTANDARD2_0
 
-			try
-			{
-				var fileName = AppSettingsConfigResolveWhenUsed.GetAppSetting("NewRelic.ConfigFile");
-				if (!File.Exists(fileName))
-				{
-					return null;
-				}
+            try
+            {
+                var fileName = AppSettingsConfigResolveWhenUsed.GetAppSetting("NewRelic.ConfigFile");
+                if (!File.Exists(fileName))
+                {
+                    return null;
+                }
 
-				Log.InfoFormat("Configuration file found in path pointed to by NewRelic.ConfigFile appSetting: {0}", fileName);
-				return fileName;
-			}
-			catch (Exception)
-			{
-				return null;
-			}
+                Log.InfoFormat("Configuration file found in path pointed to by NewRelic.ConfigFile appSetting: {0}", fileName);
+                return fileName;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
 #else
             try
@@ -138,36 +138,36 @@ namespace NewRelic.Agent.Core.Config
         private static string TryGetAgentConfigFileFromAppRoot()
         {
 #if NETSTANDARD2_0
-			try
-			{
-				var filename = string.Empty;
+            try
+            {
+                var filename = string.Empty;
 
-				var entryAssembly = Assembly.GetEntryAssembly();
-				if (entryAssembly != null)
-				{
-					var directory = Path.GetDirectoryName(entryAssembly.Location);
-					filename = Path.Combine(directory, NewRelicConfigFileName);
-					if (File.Exists(filename))
-					{
-						Log.InfoFormat("Configuration file found in app/web root directory: {0}", filename);
-						return filename;
-					}
-				}
+                var entryAssembly = Assembly.GetEntryAssembly();
+                if (entryAssembly != null)
+                {
+                    var directory = Path.GetDirectoryName(entryAssembly.Location);
+                    filename = Path.Combine(directory, NewRelicConfigFileName);
+                    if (File.Exists(filename))
+                    {
+                        Log.InfoFormat("Configuration file found in app/web root directory: {0}", filename);
+                        return filename;
+                    }
+                }
 
-				var currentDirectory = Directory.GetCurrentDirectory();
-				filename = Path.Combine(currentDirectory, NewRelicConfigFileName);
-				if (File.Exists(filename))
-				{
-					Log.InfoFormat("Configuration file found in app/web root directory: {0}", filename);
-					return filename;
-				}
+                var currentDirectory = Directory.GetCurrentDirectory();
+                filename = Path.Combine(currentDirectory, NewRelicConfigFileName);
+                if (File.Exists(filename))
+                {
+                    Log.InfoFormat("Configuration file found in app/web root directory: {0}", filename);
+                    return filename;
+                }
 
-				return null;
-			}
-			catch (Exception)
-			{
-				return null;
-			}
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 #else
             try
             {
@@ -513,27 +513,27 @@ namespace NewRelic.Agent.Core.Config
 
         private string GetLogFileName()
         {
-            string name = System.Environment.GetEnvironmentVariable("NEW_RELIC_LOG");
-            if (name != null)
-            {
-                return Strings.SafeFileName(name);
-            }
+            // explicitly using string since both sides of the null-coalescing operator could be null
+            string name = System.Environment.GetEnvironmentVariable("NEW_RELIC_LOG") ?? fileName;
+            var shouldAppend = false;
+            bool.TryParse(System.Environment.GetEnvironmentVariable("NEW_RELIC_LOG_APPEND_HOSTNAME"), out shouldAppend);
 
-            name = fileName;
             if (name != null)
             {
-                return Strings.SafeFileName(name);
+                return Strings.SafeFileName(
+                    BuildFileNameUsingConfig(name, shouldAppend)
+                );
             }
 
 #if NETSTANDARD2_0
-			try
-			{
-				name = AppDomain.CurrentDomain.FriendlyName;
-			}
-			catch (Exception)
-			{
-				name = _processStatic.GetCurrentProcess().ProcessName;
-			}
+            try
+            {
+                name = AppDomain.CurrentDomain.FriendlyName;
+            }
+            catch (Exception)
+            {
+                name = _processStatic.GetCurrentProcess().ProcessName;
+            }
 #else
             if (HttpRuntime.AppDomainAppId != null)
             {
@@ -544,23 +544,40 @@ namespace NewRelic.Agent.Core.Config
                 name = _processStatic.GetCurrentProcess().ProcessName;
             }
 #endif
-            var appendHostname = false;
-            var hostnameToAppend = string.Empty;
-            bool.TryParse(System.Environment.GetEnvironmentVariable("NEW_RELIC_LOG_APPEND_HOSTNAME"), out appendHostname);
 
-            if (appendHostname)
+            return "newrelic_agent_" + Strings.SafeFileName(name) + GetHostnameToAppend(shouldAppend) + ".log";
+        }
+
+        private string GetHostnameToAppend(bool shouldAppend)
+        {
+            if (shouldAppend)
             {
                 try
                 {
-                    hostnameToAppend = "_" + Dns.GetHostName();
+                    return "_" + Dns.GetHostName();
                 }
                 catch (Exception)
                 {
-                    hostnameToAppend = "_NoHostnameFound";
+                    return "_NoHostnameFound";
                 }
             }
 
-            return "newrelic_agent_" + Strings.SafeFileName(name) + hostnameToAppend + ".log";
+            return string.Empty;
+        }
+
+        private string BuildFileNameUsingConfig(string baseName, bool shouldAppend)
+        {
+            // exit quickly so we don't create allocate strings unnecessarily 
+            if (shouldAppend)
+            {
+                var hostnameToAppend = GetHostnameToAppend(shouldAppend);
+                var fileNameNoExt = Path.GetFileNameWithoutExtension(baseName);
+                var fileExt = Path.GetExtension(baseName); // includes period
+
+                return fileNameNoExt + hostnameToAppend + fileExt;
+            }
+
+            return baseName;
         }
 
         public bool FileLockingModelSpecified
