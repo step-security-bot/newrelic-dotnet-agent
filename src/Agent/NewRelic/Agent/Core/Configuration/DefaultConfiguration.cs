@@ -196,7 +196,7 @@ namespace NewRelic.Agent.Core.Configuration
                 if (_agentLicenseKey != null)
                     return _agentLicenseKey;
 
-                EnvironmentOverrides(_localConfiguration.service.licenseKey, "NEW_RELIC_LICENSE_KEY", "NEWRELIC_LICENSEKEY");
+                _agentLicenseKey = EnvironmentOverrides(_localConfiguration.service.licenseKey, "NEW_RELIC_LICENSE_KEY", "NEWRELIC_LICENSEKEY");
 
                 if (_agentLicenseKey != null)
                     _agentLicenseKey = _agentLicenseKey.Trim();

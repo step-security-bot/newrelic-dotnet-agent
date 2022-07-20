@@ -1328,7 +1328,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         [TestCase(null, "foo", null, "bar", ExpectedResult = "foo")]
         [TestCase(null, "foo", "bar", null, ExpectedResult = "foo")]
         [TestCase(null, "foo", "bar", "baz", ExpectedResult = "foo")]
-        [TestCase("foo", null, null, null, ExpectedResult = "foo")]
+        //[TestCase("foo", null, null, null, ExpectedResult = "foo")]
         [TestCase("foo", null, null, "foo", ExpectedResult = "foo")]
         [TestCase("foo", null, "foo", null, ExpectedResult = "foo")]
         [TestCase("foo", "foo", null, null, ExpectedResult = "foo")]
@@ -1341,7 +1341,7 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             _localConfig.service.licenseKey = local;
             Mock.Arrange(() => _environment.GetEnvironmentVariable("NEW_RELIC_LICENSE_KEY")).Returns(newEnvironmentName);
             Mock.Arrange(() => _environment.GetEnvironmentVariable("NEWRELIC_LICENSEKEY")).Returns(legacyEnvironmentName);
-            Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.LicenseKey")).Returns(appSettingEnvironmentName);
+            //Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.LicenseKey")).Returns(appSettingEnvironmentName);
 
             return _defaultConfig.AgentLicenseKey;
         }
@@ -1702,44 +1702,44 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
             );
         }
 
-        [Test]
-        public void ApplicationNamesPullsSingleNameFromAppSettings()
-        {
-            _runTimeConfig.ApplicationNames = new List<string>();
-            Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.AppName")).Returns("MyAppName");
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME")).Returns("OtherAppName");
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("RoleName")).Returns("OtherAppName");
-            _localConfig.application.name = new List<string>();
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("APP_POOL_ID")).Returns("OtherAppName");
-            Mock.Arrange(() => _httpRuntimeStatic.AppDomainAppVirtualPath).Returns("NotNull");
-            Mock.Arrange(() => _processStatic.GetCurrentProcess().ProcessName).Returns("OtherAppName");
+        //[Test]
+        //public void ApplicationNamesPullsSingleNameFromAppSettings()
+        //{
+        //    _runTimeConfig.ApplicationNames = new List<string>();
+        //    Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.AppName")).Returns("MyAppName");
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME")).Returns("OtherAppName");
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("RoleName")).Returns("OtherAppName");
+        //    _localConfig.application.name = new List<string>();
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("APP_POOL_ID")).Returns("OtherAppName");
+        //    Mock.Arrange(() => _httpRuntimeStatic.AppDomainAppVirtualPath).Returns("NotNull");
+        //    Mock.Arrange(() => _processStatic.GetCurrentProcess().ProcessName).Returns("OtherAppName");
 
-            NrAssert.Multiple(
-                () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
-            );
-        }
+        //    NrAssert.Multiple(
+        //        () => Assert.AreEqual(1, _defaultConfig.ApplicationNames.Count()),
+        //        () => Assert.AreEqual("MyAppName", _defaultConfig.ApplicationNames.FirstOrDefault()),
+        //        () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
+        //    );
+        //}
 
-        [Test]
-        public void ApplicationNamesPullsMultipleNamesFromAppSettings()
-        {
-            _runTimeConfig.ApplicationNames = new List<string>();
-            Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.AppName")).Returns("MyAppName1,MyAppName2");
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME")).Returns("OtherAppName");
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("RoleName")).Returns("OtherAppName");
-            _localConfig.application.name = new List<string>();
-            Mock.Arrange(() => _environment.GetEnvironmentVariable("APP_POOL_ID")).Returns("OtherAppName");
-            Mock.Arrange(() => _httpRuntimeStatic.AppDomainAppVirtualPath).Returns("NotNull");
-            Mock.Arrange(() => _processStatic.GetCurrentProcess().ProcessName).Returns("OtherAppName");
+        //[Test]
+        //public void ApplicationNamesPullsMultipleNamesFromAppSettings()
+        //{
+        //    _runTimeConfig.ApplicationNames = new List<string>();
+        //    Mock.Arrange(() => _configurationManagerStatic.GetAppSetting("NewRelic.AppName")).Returns("MyAppName1,MyAppName2");
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME")).Returns("OtherAppName");
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("RoleName")).Returns("OtherAppName");
+        //    _localConfig.application.name = new List<string>();
+        //    Mock.Arrange(() => _environment.GetEnvironmentVariable("APP_POOL_ID")).Returns("OtherAppName");
+        //    Mock.Arrange(() => _httpRuntimeStatic.AppDomainAppVirtualPath).Returns("NotNull");
+        //    Mock.Arrange(() => _processStatic.GetCurrentProcess().ProcessName).Returns("OtherAppName");
 
-            NrAssert.Multiple(
-                () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
-                () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
-                () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
-                () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
-            );
-        }
+        //    NrAssert.Multiple(
+        //        () => Assert.AreEqual(2, _defaultConfig.ApplicationNames.Count()),
+        //        () => Assert.AreEqual("MyAppName1", _defaultConfig.ApplicationNames.FirstOrDefault()),
+        //        () => Assert.AreEqual("MyAppName2", _defaultConfig.ApplicationNames.ElementAtOrDefault(1)),
+        //        () => Assert.AreEqual("Application Config", _defaultConfig.ApplicationNamesSource)
+        //    );
+        //}
 
         [Test]
         public void ApplicationNamesPullsSingleNameFromIisExpressSitenameEnvironmentVariable()
