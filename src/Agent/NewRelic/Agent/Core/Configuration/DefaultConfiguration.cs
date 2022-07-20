@@ -184,13 +184,7 @@ namespace NewRelic.Agent.Core.Configuration
         {
             get
             {
-                var agentEnabledAsString = _configurationManagerStatic.GetAppSetting("NewRelic.AgentEnabled");
-
-                bool agentEnabled;
-                if (!bool.TryParse(agentEnabledAsString, out agentEnabled))
-                    return _localConfiguration.agentEnabled;
-
-                return agentEnabled;
+                return _localConfiguration.agentEnabled;
             }
         }
 
@@ -202,8 +196,7 @@ namespace NewRelic.Agent.Core.Configuration
                 if (_agentLicenseKey != null)
                     return _agentLicenseKey;
 
-                _agentLicenseKey = _configurationManagerStatic.GetAppSetting("NewRelic.LicenseKey")
-                    ?? EnvironmentOverrides(_localConfiguration.service.licenseKey, "NEW_RELIC_LICENSE_KEY", "NEWRELIC_LICENSEKEY");
+                EnvironmentOverrides(_localConfiguration.service.licenseKey, "NEW_RELIC_LICENSE_KEY", "NEWRELIC_LICENSEKEY");
 
                 if (_agentLicenseKey != null)
                     _agentLicenseKey = _agentLicenseKey.Trim();
@@ -229,16 +222,7 @@ namespace NewRelic.Agent.Core.Configuration
                 return runtimeAppNames;
             }
 
-            var appName = _configurationManagerStatic.GetAppSetting("NewRelic.AppName");
-            if (appName != null)
-            {
-                Log.Info("Application name from web.config or app.config.");
-                _applicationNamesSource = "Application Config";
-
-                return appName.Split(StringSeparators.Comma);
-            }
-
-            appName = _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME");
+            var appName = _environment.GetEnvironmentVariable("IISEXPRESS_SITENAME");
             if (appName != null)
             {
                 Log.Info("Application name from IISEXPRESS_SITENAME Environment Variable.");
