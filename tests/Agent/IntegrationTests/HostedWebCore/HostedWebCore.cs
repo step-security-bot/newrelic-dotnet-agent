@@ -57,12 +57,28 @@ namespace HostedWebCore
 
         public void Run()
         {
-            StartWebServer();
-            //The HWC creates this shutdown event and waits for the test runner to set so that it can shutdown.  
-            var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "app_server_wait_for_all_request_done_" + _port.ToString());
-            CreatePidFile();
-            eventWaitHandle.WaitOne(TimeSpan.FromMinutes(ServerTimeoutShutdownMinutes));
-            FinishWebServer();
+            try
+            {
+                StartWebServer();
+            }
+            catch (Exception ex)
+            {
+                Log($"HostedWebCore.Run().StartWebServer(): caught exception: {ex}");
+                throw;
+            }
+            try
+            {
+                //The HWC creates this shutdown event and waits for the test runner to set so that it can shutdown.  
+                var eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, "app_server_wait_for_all_request_done_" + _port.ToString());
+                CreatePidFile();
+                eventWaitHandle.WaitOne(TimeSpan.FromMinutes(ServerTimeoutShutdownMinutes));
+                FinishWebServer();
+            }
+            catch (Exception ex)
+            {
+                Log($"HostedWebCore.Run(): caught exception in rest of method: {ex}");
+                throw;
+            }
         }
 
         private void StartWebServer()
@@ -85,5 +101,13 @@ namespace HostedWebCore
             var pidFilePath = thisAssemblyPath + ".pid";
             File.WriteAllText(pidFilePath, pid.ToString(CultureInfo.InvariantCulture));
         }
+        private static void Log(string format)
+        {
+            string prefix = string.Format("[{0} {1}-{2}] HostedWebCore: ", DateTime.Now,
+                    System.Diagnostics.Process.GetCurrentProcess().Id,
+                    System.Threading.Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine(prefix + format);
+        }
+
     }
 }

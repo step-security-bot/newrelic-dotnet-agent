@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 using CommandLine;
 using System.IO;
 using System.Text;
+using System.Net.Sockets;
 
 namespace HostedWebCore
 {
@@ -43,32 +44,61 @@ namespace HostedWebCore
 
             Contract.Assume(options.Port != null);
 
+            var retries = 3;
+            var retry = true;
+            while (retry && retries-- > 0)
+            {
+                retry = false;
+                try
+                {
+                    var hostedWebCore = new HostedWebCore(options.Port);
+                    Log("Starting server...");
+                    hostedWebCore.Run();
+                    Log("Done.");
+                }
+                catch (DllNotFoundException ex)
+                {
+                    Log($"HostedWebCore.exe failed: Check that the Hostable Web Core Windows feature is installed.: {ex}");
+                    Environment.Exit(4);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Log($"HostedWebCore.exe failed: Running HostedWebCore.exe requires certain IIS components to be installed.: {ex}");
+                    Environment.Exit(3);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    Log($"HostedWebCore.exe failed: This application must be run with administrator privileges.: {ex}");
+                    Environment.Exit(2);
+                }
+                catch (FileLoadException ex)
+                {
+                    Log($"HostedWebCore.exe failed: FileLoadException.  Port {options.Port} is in use?");
+                    CheckPortInUse(options.Port);
+                    System.Threading.Thread.Sleep(1000); // wait a second and then retry
+                    retry = true;
+                }
+                catch (Exception ex)
+                {
+                    Log($"HostedWebCore.exe failed: Reason unknown.: {ex}");
+                    Environment.Exit(1);
+                }
+            }
+        }
+
+        private static void CheckPortInUse(string port)
+        {
+            Log($"Checking to see if port {port} is available...");
             try
             {
-                var hostedWebCore = new HostedWebCore(options.Port);
-                Log("Starting server...");
-                hostedWebCore.Run();
-                Log("Done.");
-            }
-            catch (DllNotFoundException ex)
-            {
-                Log($"HostedWebCore.exe failed: Check that the Hostable Web Core Windows feature is installed.: {ex}");
-                Environment.Exit(4);
-            }
-            catch (FileNotFoundException ex)
-            {
-                Log($"HostedWebCore.exe failed: Running HostedWebCore.exe requires certain IIS components to be installed.: {ex}");
-                Environment.Exit(3);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Log($"HostedWebCore.exe failed: This application must be run with administrator privileges.: {ex}");
-                Environment.Exit(2);
+                var tcpListener = new TcpListener(System.Net.IPAddress.Any, int.Parse(port));
+                tcpListener.Start();
+                tcpListener.Stop();
+                Log($"Port {port} appears to be available.");
             }
             catch (Exception ex)
             {
-                Log($"HostedWebCore.exe failed: Reason unknown.: {ex}");
-                Environment.Exit(1);
+                Log($"Port {port} appears to be in use, exception is: {ex}");
             }
         }
     }
