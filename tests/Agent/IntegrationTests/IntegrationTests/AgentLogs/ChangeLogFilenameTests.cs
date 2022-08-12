@@ -10,6 +10,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.AgentLogs
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public abstract class ChangeLogFilenameTestsBase : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;

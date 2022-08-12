@@ -73,6 +73,7 @@ namespace NewRelic.Agent.IntegrationTests.AgentFeatures
     }
 
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class EnvironmentFrameworkTests : EnvironmentTests<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         public EnvironmentFrameworkTests(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output)

@@ -5,11 +5,13 @@
 using System.Net.Http;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NewRelic.Agent.IntegrationTests.RequestHandling
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class WebApi2NotFoundAndOptionsTests : NotFoundAndOptionsTests<WebApiAsyncFixture>
     {
         public WebApi2NotFoundAndOptionsTests(WebApiAsyncFixture fixture, ITestOutputHelper output)

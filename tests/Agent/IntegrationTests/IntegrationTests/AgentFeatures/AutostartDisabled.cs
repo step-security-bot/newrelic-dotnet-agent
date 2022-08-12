@@ -38,6 +38,7 @@ namespace NewRelic.Agent.IntegrationTests.AgentFeatures
         }
 
         [Fact]
+        [Trait("TestAppType", "HWC")]
         public void Test()
         {
             var events = _fixture.AgentLog.GetTransactionEvents();

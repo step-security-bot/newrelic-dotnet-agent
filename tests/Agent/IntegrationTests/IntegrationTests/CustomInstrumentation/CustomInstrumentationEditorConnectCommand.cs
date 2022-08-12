@@ -14,6 +14,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.CustomInstrumentation
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class CustomInstrumentationEditorConnectCommand : NewRelicIntegrationTest<MvcWithCollectorFixture>
     {
         private readonly MvcWithCollectorFixture _fixture;

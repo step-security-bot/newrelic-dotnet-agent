@@ -20,6 +20,7 @@ namespace NewRelic.Agent.IntegrationTests.ReJit.NetFramework
     /// Files: Integration.Testing.AddAttributeTest.xml
     /// </summary>
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class RejitAddAttribute : NewRelicIntegrationTest<AspNetFrameworkReJitMvcApplicationFixture>
     {
         private readonly AspNetFrameworkReJitMvcApplicationFixture _fixture;

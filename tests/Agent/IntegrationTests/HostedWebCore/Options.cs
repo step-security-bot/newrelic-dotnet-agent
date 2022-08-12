@@ -11,5 +11,8 @@ namespace HostedWebCore
     {
         [Option("port", Required = true)]
         public string Port { get; set; }
+
+        [Option("debug", Required = false)]
+        public bool Debug { get; set; }
     }
 }

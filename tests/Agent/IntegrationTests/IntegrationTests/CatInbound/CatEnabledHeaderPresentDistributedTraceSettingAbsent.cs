@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.CatInbound
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class CatEnabledHeaderPresentDistributedTraceSettingAbsent : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
 

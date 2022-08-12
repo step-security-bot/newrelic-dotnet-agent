@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.AgentMetrics
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class CpuMvc : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;

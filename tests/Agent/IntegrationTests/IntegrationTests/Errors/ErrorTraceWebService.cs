@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.Errors
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class ErrorTraceWebService : NewRelicIntegrationTest<RemoteServiceFixtures.BasicWebService>
     {
         private const string ExpectedExceptionType = "System.Exception";

@@ -47,6 +47,7 @@ namespace NewRelic.Agent.IntegrationTests.BasicInstrumentation
         }
 
         [Fact]
+        [Trait("TestAppType", "HWC")]
         public void Test()
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>

@@ -5,11 +5,13 @@
 using System.Net.Http;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTests.RemoteServiceFixtures;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace NewRelic.Agent.IntegrationTests.RequestHandling
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class Mvc3NotFoundAndOptionsTests : NotFoundAndOptionsTests<BasicMvcApplicationTestFixture>
     {
         public Mvc3NotFoundAndOptionsTests(BasicMvcApplicationTestFixture fixture, ITestOutputHelper output)

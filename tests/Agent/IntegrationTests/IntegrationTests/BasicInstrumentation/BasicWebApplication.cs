@@ -12,6 +12,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.BasicInstrumentation
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class BasicWebApplication : NewRelicIntegrationTest<RemoteServiceFixtures.BasicWebApplication>
     {
 

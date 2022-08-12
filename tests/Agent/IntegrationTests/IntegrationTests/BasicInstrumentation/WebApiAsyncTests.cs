@@ -15,6 +15,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.BasicInstrumentation
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class WebApiAsyncTests : NewRelicIntegrationTest<WebApiAsyncFixture>
     {
         private readonly WebApiAsyncFixture _fixture;

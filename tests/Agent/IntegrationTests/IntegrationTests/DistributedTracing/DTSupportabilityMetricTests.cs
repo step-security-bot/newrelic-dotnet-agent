@@ -12,6 +12,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.DistributedTracing
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class DTSupportabilityMetricTests : NewRelicIntegrationTest<RemoteServiceFixtures.DTBasicMVCApplicationFixture>
     {
         readonly RemoteServiceFixtures.DTBasicMVCApplicationFixture _fixture;

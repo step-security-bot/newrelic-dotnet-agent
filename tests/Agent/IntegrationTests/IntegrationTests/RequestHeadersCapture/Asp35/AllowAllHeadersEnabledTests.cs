@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.RequestHeadersCapture.Asp35
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class AllowAllHeadersEnabledTests : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;

@@ -49,6 +49,7 @@ namespace NewRelic.Agent.IntegrationTests.AgentLogs
         }
 
         [Fact]
+        [Trait("TestAppType", "HWC")]
         public void Test()
         {
             Assert.True(File.Exists(Path.Combine(_fixture.DestinationNewRelicLogFileDirectoryPath, CustomLogFileNameFromConfig)));

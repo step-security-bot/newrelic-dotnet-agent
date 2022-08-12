@@ -187,6 +187,7 @@ namespace NewRelic.Agent.Core.DataTransport
 
             foreach (var header in _requestHeadersMap)
             {
+                Log.Finest($"HttpCollectorWire.SendData: adding request header from map, key={header.Key}, value={header.Value}");
                 request.Headers.Add(header.Key, header.Value);
             }
 

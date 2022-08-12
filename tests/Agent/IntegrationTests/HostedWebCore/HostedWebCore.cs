@@ -18,6 +18,7 @@ namespace HostedWebCore
         private const int ServerTimeoutShutdownMinutes = 5;
 
         private readonly string _port;
+        private readonly bool _debug;
 
         private static string AssemblyDirectory
         {
@@ -48,11 +49,12 @@ namespace HostedWebCore
             Contract.Invariant(_port != null);
         }
 
-        public HostedWebCore(string port)
+        public HostedWebCore(string port, bool debug)
         {
             Contract.Requires(port != null);
 
             _port = port;
+            _debug = debug;
         }
 
         public void Run()
@@ -83,7 +85,17 @@ namespace HostedWebCore
 
         private void StartWebServer()
         {
+            if (_debug)
+            {
+                Console.WriteLine("Pausing before activating webcore...");
+                Console.ReadKey();
+            }
             var hresult = NativeMethods.WebCoreActivate(ApplicationHostConfigFilePath, null, @".NET Agent Integration Test Web Host");
+            if (_debug)
+            {
+                Console.WriteLine($"Pausing after activating webcore (HRESULT={hresult})...");
+                Console.ReadKey();
+            }
             Marshal.ThrowExceptionForHR(hresult);
         }
 

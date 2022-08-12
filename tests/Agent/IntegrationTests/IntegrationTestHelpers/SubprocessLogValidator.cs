@@ -29,7 +29,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers
                         "HostedWebCore: Firing up...",
                         "HostedWebCore: Starting directory:",
                         "HostedWebCore: Environment Variables:",
-                        "HostedWebCore: Starting server...",
+                        "HostedWebCore: Starting server with pid",
                         "HostedWebCore: Done.",
                         null
         };

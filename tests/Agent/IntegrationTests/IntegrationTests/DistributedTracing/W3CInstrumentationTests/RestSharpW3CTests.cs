@@ -15,6 +15,7 @@ namespace NewRelic.Agent.IntegrationTests.DistributedTracing.W3CInstrumentationT
     /// Instrumentations occur in this test are RestSharp and Asp35.
     /// </summary>
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class RestSharpW3CTests : W3CTestBase<RemoteServiceFixtures.FrameworkTracingChainFixture>
     {
         public RestSharpW3CTests(RemoteServiceFixtures.FrameworkTracingChainFixture fixture, ITestOutputHelper output) : base(fixture, output)

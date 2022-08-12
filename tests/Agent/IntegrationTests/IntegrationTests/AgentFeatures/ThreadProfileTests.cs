@@ -14,6 +14,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.AgentFeatures
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class ThreadProfileTests : NewRelicIntegrationTest<MvcWithCollectorFixture>
     {
 

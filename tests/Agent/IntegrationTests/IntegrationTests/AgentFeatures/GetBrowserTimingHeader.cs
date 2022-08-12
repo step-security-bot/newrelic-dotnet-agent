@@ -42,6 +42,7 @@ namespace NewRelic.Agent.IntegrationTests.AgentFeatures
         }
 
         [Fact]
+        [Trait("TestAppType", "HWC")]
         public void Test()
         {
             Assert.Contains("NREUM", _browserTimingHeader);

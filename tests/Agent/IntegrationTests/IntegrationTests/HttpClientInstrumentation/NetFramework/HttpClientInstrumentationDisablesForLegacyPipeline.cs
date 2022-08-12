@@ -13,6 +13,7 @@ using Xunit.Abstractions;
 namespace NewRelic.Agent.IntegrationTests.HttpClientInstrumentation.NetFramework
 {
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class HttpClientInstrumentationDisablesForLegacyPipeline : NewRelicIntegrationTest<RemoteServiceFixtures.BasicMvcApplicationTestFixture>
     {
         private readonly RemoteServiceFixtures.BasicMvcApplicationTestFixture _fixture;

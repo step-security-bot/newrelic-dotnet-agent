@@ -44,6 +44,9 @@ namespace HostedWebCore
 
             Contract.Assume(options.Port != null);
 
+            var thisProcess = System.Diagnostics.Process.GetCurrentProcess();
+            var myPid = thisProcess.Id;
+
             var retries = 3;
             var retry = true;
             while (retry && retries-- > 0)
@@ -51,8 +54,8 @@ namespace HostedWebCore
                 retry = false;
                 try
                 {
-                    var hostedWebCore = new HostedWebCore(options.Port);
-                    Log("Starting server...");
+                    var hostedWebCore = new HostedWebCore(options.Port, options.Debug);
+                    Log($"Starting server with pid {myPid}...");
                     hostedWebCore.Run();
                     Log("Done.");
                 }
@@ -94,6 +97,11 @@ namespace HostedWebCore
                 var tcpListener = new TcpListener(System.Net.IPAddress.Any, int.Parse(port));
                 tcpListener.Start();
                 tcpListener.Stop();
+
+                var tcp6Listener = new TcpListener(System.Net.IPAddress.IPv6Any, int.Parse(port));
+                tcp6Listener.Start();
+                tcp6Listener.Stop();
+
                 Log($"Port {port} appears to be available.");
             }
             catch (Exception ex)

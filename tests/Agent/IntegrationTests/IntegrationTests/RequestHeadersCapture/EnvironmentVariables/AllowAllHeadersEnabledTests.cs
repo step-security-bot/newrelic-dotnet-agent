@@ -64,6 +64,7 @@ namespace NewRelic.Agent.IntegrationTests.RequestHeadersCapture.EnvironmentVaria
     }
 
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class EnvironmentVariableAllowAllHeadersEnabledTests_Defaults : EnvironmentVariableAllowAllHeadersEnabledTests_Base
     {
         public EnvironmentVariableAllowAllHeadersEnabledTests_Defaults(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output) : base(fixture, output)
@@ -109,6 +110,7 @@ namespace NewRelic.Agent.IntegrationTests.RequestHeadersCapture.EnvironmentVaria
     }
 
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class EnvironmentVariableAllowAllHeadersEnabledTests_Includes_CommaDelimited : EnvironmentVariableAllowAllHeadersEnabledTests_Base
     {
         public EnvironmentVariableAllowAllHeadersEnabledTests_Includes_CommaDelimited(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output) : base(fixture, output)
@@ -155,6 +157,7 @@ namespace NewRelic.Agent.IntegrationTests.RequestHeadersCapture.EnvironmentVaria
     }
 
     [NetFrameworkTest]
+    [Trait("TestAppType", "HWC")]
     public class EnvironmentVariableAllowAllHeadersEnabledTests_Includes_CommaSpaceDelimited : EnvironmentVariableAllowAllHeadersEnabledTests_Base
     {
         public EnvironmentVariableAllowAllHeadersEnabledTests_Includes_CommaSpaceDelimited(RemoteServiceFixtures.BasicMvcApplicationTestFixture fixture, ITestOutputHelper output) : base(fixture, output)
