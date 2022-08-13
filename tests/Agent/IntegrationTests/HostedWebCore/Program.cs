@@ -95,10 +95,12 @@ namespace HostedWebCore
             try
             {
                 var tcpListener = new TcpListener(System.Net.IPAddress.Any, int.Parse(port));
+                tcpListener.ExclusiveAddressUse = true;
                 tcpListener.Start();
                 tcpListener.Stop();
 
                 var tcp6Listener = new TcpListener(System.Net.IPAddress.IPv6Any, int.Parse(port));
+                tcp6Listener.ExclusiveAddressUse = true;
                 tcp6Listener.Start();
                 tcp6Listener.Stop();
 
