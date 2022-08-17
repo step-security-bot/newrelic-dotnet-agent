@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #if NETFRAMEWORK
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using MultiFunctionApplicationHelpers;
 using NewRelic.Agent.IntegrationTestHelpers;
 using NewRelic.Agent.IntegrationTestHelpers.Models;
@@ -93,6 +96,17 @@ namespace NewRelic.Agent.IntegrationTests.RequestHeadersCapture.WCF
             base.AddFixtureCommands();
 
             _fixture.AddCommand($"WCFClient GetDataWithHeaders");
+
+            _fixture.AddActions(
+                exerciseApplication: () =>
+                {
+                    // This queries both the client AND server logs to make sure we have encountered all required data
+                    _logHelpers.QueryServiceLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.MetricDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    _logHelpers.QueryServiceLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.TransactionSampleLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    _logHelpers.QueryServiceLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.SpanEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    _logHelpers.QueryServiceLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.AnalyticsEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                }
+            );
         }
     }
 

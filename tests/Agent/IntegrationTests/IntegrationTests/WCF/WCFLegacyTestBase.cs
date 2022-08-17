@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using System.Text.RegularExpressions;
 
 namespace NewRelic.Agent.IntegrationTests.WCF
 {
@@ -148,7 +149,11 @@ namespace NewRelic.Agent.IntegrationTests.WCF
                 },
                 exerciseApplication: () =>
                 {
-                    _fixture.AgentLog.WaitForLogLine(AgentLogBase.MetricDataLogLineRegex, TimeSpan.FromMinutes(2));
+                    // This queries both the client AND server logs to make sure we have encountered all required data
+                    LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.MetricDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.TransactionSampleLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.SpanEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.AnalyticsEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
                 }
             );
 
@@ -294,7 +299,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
                 // Verify the correct transport type 
                 var actualTransportType = svcTrx.IntrinsicAttributes["parent.transportType"].ToString();
-               
+
                 Assert.True(actualTransportType == ExpectedTransportType, $"Mismatched TransportType, expected {ExpectedTransportType}, actual {actualTransportType}");
 
                 //Given the ParentID on the Svc Transaction, we should find the client transaction that matches.

@@ -45,6 +45,8 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         ConnectResponseData ConnectResponse_Service { get; }
 
         IEnumerable<T> QueryLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction);
+        IEnumerable<T> QueryServiceLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction);
+        IEnumerable<T> QueryClientLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction);
     }
 
 
@@ -97,6 +99,15 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         {
             return logFunction.Invoke(AgentLog_Client)
                 .Union(logFunction.Invoke(AgentLog_Service));
+        }
+        public IEnumerable<T> QueryServiceLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
+        {
+            return logFunction.Invoke(AgentLog_Service);
+        }
+
+        public IEnumerable<T> QueryClientLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
+        {
+            return logFunction.Invoke(AgentLog_Client);
         }
 
         public TransactionSample[] TrxSamples_Client => throw new NotImplementedException();
@@ -169,7 +180,6 @@ namespace NewRelic.Agent.IntegrationTests.WCF
             return result.ToArray();
         }
 
-
         private IntegrationTestHelpers.Models.ErrorTrace[] _errorTraces;
         public IntegrationTestHelpers.Models.ErrorTrace[] ErrorTraces => _errorTraces ?? (_errorTraces = AgentLog_Client.GetErrorTraces().Union(AgentLog_Service.GetErrorTraces()).ToArray());
 
@@ -219,6 +229,15 @@ namespace NewRelic.Agent.IntegrationTests.WCF
         private readonly ConsoleDynamicMethodFixture _fixture;
 
         public IEnumerable<T> QueryLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
+        {
+            return logFunction.Invoke(_fixture.AgentLog);
+        }
+        public IEnumerable<T> QueryServiceLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
+        {
+            return logFunction.Invoke(_fixture.AgentLog);
+        }
+
+        public IEnumerable<T> QueryClientLog<T>(Func<AgentLogFile, IEnumerable<T>> logFunction)
         {
             return logFunction.Invoke(_fixture.AgentLog);
         }
