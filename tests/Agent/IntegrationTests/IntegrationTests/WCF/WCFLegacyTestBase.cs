@@ -15,6 +15,7 @@ using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace NewRelic.Agent.IntegrationTests.WCF
 {
@@ -149,6 +150,26 @@ namespace NewRelic.Agent.IntegrationTests.WCF
                 },
                 exerciseApplication: () =>
                 {
+                    var logsFound = false;
+                    for (var deadline = DateTime.Now.AddMinutes(2); !logsFound && deadline > DateTime.Now; Thread.Sleep(100))
+                    {
+                        try
+                        {
+                            logsFound = LogHelpers.QueryLog((agentLog) => new List<bool>() { agentLog.Found }).All(x => x == true);
+                        }
+                        catch (Exception) { }
+                    }
+
+                    Console.WriteLine("We're all done with that now...");
+
+                    // Thread.Sleep(10000);
+                    // This queries both the client AND server logs to make sure we have encountered all required data
+                    //_logHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.MetricDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    //_logHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.TransactionSampleLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    //_logHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.SpanEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                    //_logHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.AnalyticsEventDataLogLineRegex, TimeSpan.FromMinutes(2)) });
+                
+            
                     // This queries both the client AND server logs to make sure we have encountered all required data
                     LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.MetricDataLogLineRegex, TimeSpan.FromMinutes(2)) });
                     LogHelpers.QueryLog((agentLog) => new List<Match>() { agentLog.WaitForLogLine(AgentLogBase.TransactionSampleLogLineRegex, TimeSpan.FromMinutes(2)) });
