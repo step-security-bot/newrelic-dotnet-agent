@@ -140,6 +140,9 @@ jobs:
 
           Write-Host "Run tests"
 
+          Write-Host "Get hostname"
+          hostname
+
           # Test parallelization is disabled until we can solve concurrent dotnet publish issues with ConsoleMF usage
           $json = Get-Content "${{ env.integration_tests_path }}/xunit.runner.json" | ConvertFrom-Json
           $json | Add-Member -Name "parallelizeAssembly" -Value $false -MemberType NoteProperty
