@@ -36,8 +36,19 @@ namespace NewRelic.Providers.Wrapper.Elasticsearch
             var databaseName = string.Empty; // Per Elastic.co this SQL DB concept most closely maps to "cluster instance name".  TBD how to get this
             var model = path.Split('/')[0]; // "model"=table name for SQL.  For elastic it's index name.  It appears to always be the first component of the path
 
-            // TODO: get these somehow
+            var typeOfRequestParams = requestParams.GetType();
+
             var operation = string.Empty; // Depends on the type of either postData or requestParams
+            if (typeOfRequestParams.FullName == "Elasticsearch.Net.IndexRequestParameters")
+            {
+                operation = "Index";
+            }
+            else if (typeOfRequestParams.FullName == "Elasticsearch.Net.SearchRequestParameters")
+            {
+                operation = "Search";
+            }
+            // etc, etc
+
             Uri endpoint = null; // Unavailable at this point, but maybe available in the response - need to do some work in the AfterWrappedMethodDelegate
 
             // Playing with extending the experimental API to allow us to add data to a datastore segment after it has been started.
