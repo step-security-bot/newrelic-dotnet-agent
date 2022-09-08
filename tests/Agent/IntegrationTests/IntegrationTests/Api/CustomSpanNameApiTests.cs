@@ -57,7 +57,14 @@ namespace NewRelic.Agent.IntegrationTests.Api
         }
 
         [Fact]
-        public void MetricsHaveCustomSpanName()
+        public void SupportabilityMetricExists()
+        {
+            var expectedMetric = new Assertions.ExpectedMetric { metricName = $"Supportability/ApiInvocation/SpanSetName", callCount = 1 };
+            Assertions.MetricExists(expectedMetric, Fixture.AgentLog.GetMetrics());
+        }
+
+        [Fact]
+        public void MethodMetricsHaveCustomSpanName()
         {
             var expectedMetrics = new List<Assertions.ExpectedMetric>
             {
