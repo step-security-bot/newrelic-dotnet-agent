@@ -33,16 +33,14 @@ namespace NewRelic.Agent.IntegrationTests.CustomInstrumentation
 
     public abstract class CustomSpanNameApiTests<TFixture> : NewRelicIntegrationTest<TFixture> where TFixture : ConsoleDynamicMethodFixture
     {
-        private const string LibraryClassName = "MultiFunctionApplicationHelpers.NetStandardLibraries.Internal.AttributeInstrumentation";
-
         protected readonly TFixture Fixture;
 
         public CustomSpanNameApiTests(TFixture fixture, ITestOutputHelper output) : base(fixture)
         {
             Fixture = fixture;
             Fixture.TestLogger = output;
-            Fixture.RemoteApplication.AppName = "Josh CustomSpanTests";
-            Fixture.AddCommand($"AttributeInstrumentation TransactionWithCustomSpanName derp");
+
+            Fixture.AddCommand($"AttributeInstrumentation TransactionWithCustomSpanName CustomSpanName");
             Fixture.AddCommand("RootCommands DelaySeconds 5");
 
             Fixture.Actions
@@ -59,23 +57,33 @@ namespace NewRelic.Agent.IntegrationTests.CustomInstrumentation
         }
 
         [Fact]
-        public void Test()
+        public void MetricsHaveCustomSpanName()
         {
-            var expectedMetrics = new List<Assertions.ExpectedMetric>();
-
-           // expectedMetrics.Add(new Assertions.ExpectedMetric { metricName = $"OtherTransaction/all", callCount = ForceNewTransaction ? 2 : 1 });
-            expectedMetrics.Add(new Assertions.ExpectedMetric { metricName = $"OtherTransaction/Custom/{LibraryClassName}/MakeOtherTransactionWithThreadedCallToInstrumentedMethod", callCount = 1 });
-            expectedMetrics.Add(new Assertions.ExpectedMetric { metricName = $"DotNet/{LibraryClassName}/MakeOtherTransactionWithThreadedCallToInstrumentedMethod", callCount = 1 });
-
-            //if (ForceNewTransaction)
-            //{
-            //    expectedMetrics.Add(new Assertions.ExpectedMetric { metricName = $"OtherTransaction/Custom/{LibraryClassName}/SpanOrTransactionBasedOnConfig", callCount = 1 });
-            //}
-            expectedMetrics.Add(new Assertions.ExpectedMetric { metricName = $"DotNet/{LibraryClassName}/SpanOrTransactionBasedOnConfig", callCount = 1 });
+            var expectedMetrics = new List<Assertions.ExpectedMetric>
+            {
+                new Assertions.ExpectedMetric { metricName = $"DotNet/CustomSpanName", callCount = 1 },
+                new Assertions.ExpectedMetric { metricName = $"DotNet/CustomSpanName", metricScope = "OtherTransaction/Custom/MultiFunctionApplicationHelpers.NetStandardLibraries.Internal.AttributeInstrumentation/TransactionWithCustomSpanName", callCount = 1 }
+            };
 
             var metrics = Fixture.AgentLog.GetMetrics().ToList();
 
             Assertions.MetricsExist(expectedMetrics, metrics);
+        }
+
+        [Fact]
+        public void TransactionTraceContainsSegmentWithCustomSpanName()
+        {
+            var transactionTrace = Fixture.AgentLog.GetTransactionSamples().FirstOrDefault();
+            Assert.NotNull(transactionTrace);
+
+            transactionTrace.TraceData.ContainsSegment("CustomSpanName");
+        }
+
+        [Fact]
+        public void SpanEventDataHasCustomSpanName()
+        {
+            var spanEvents = Fixture.AgentLog.GetSpanEvents();
+            Assert.Contains(spanEvents, x => (string)x.IntrinsicAttributes["name"] == "CustomSpanName");
         }
     }
 }
