@@ -11,21 +11,21 @@ using Xunit;
 using Xunit.Abstractions;
 using NewRelic.Agent.IntegrationTestHelpers.Models;
 
-namespace NewRelic.Agent.IntegrationTests.CustomInstrumentation
+namespace NewRelic.Agent.IntegrationTests.Api
 {
     [NetFrameworkTest]
-    public class CustomSpanNameApiTestsFW462 : CustomSpanNameApiTests<ConsoleDynamicMethodFixtureFW462>
+    public class CustomSpanNameApiTestsFWLatest : CustomSpanNameApiTests<ConsoleDynamicMethodFixtureFWLatest>
     {
-        public CustomSpanNameApiTestsFW462(ConsoleDynamicMethodFixtureFW462 fixture, ITestOutputHelper output)
+        public CustomSpanNameApiTestsFWLatest(ConsoleDynamicMethodFixtureFWLatest fixture, ITestOutputHelper output)
             : base(fixture, output)
         {
         }
     }
 
     [NetCoreTest]
-    public class CustomSpanNameApiTestsCore31 : CustomSpanNameApiTests<ConsoleDynamicMethodFixtureCore31>
+    public class CustomSpanNameApiTestsCoreLatest : CustomSpanNameApiTests<ConsoleDynamicMethodFixtureCoreLatest>
     {
-        public CustomSpanNameApiTestsCore31(ConsoleDynamicMethodFixtureCore31 fixture, ITestOutputHelper output)
+        public CustomSpanNameApiTestsCoreLatest(ConsoleDynamicMethodFixtureCoreLatest fixture, ITestOutputHelper output)
             : base(fixture, output)
         {
         }
