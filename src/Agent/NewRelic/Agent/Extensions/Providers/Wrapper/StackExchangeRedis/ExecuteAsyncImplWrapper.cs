@@ -47,7 +47,6 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
             //yielding its execution. We're not applying this change across the board, because we still need to better understand the impact of making this
             //change more broadly vs just fixing a known customer issue.
 
-
             return Delegates.GetAsyncDelegateFor<Task>(agent, segment, TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.HideScheduler);
         }
     }

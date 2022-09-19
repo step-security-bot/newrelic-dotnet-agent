@@ -30,7 +30,6 @@ namespace NewRelic.Parsing.ConnectionString
             }
 
             var resolvedHostName = hostIsLocalhost ? utilizationHostName : host;
-            //var resolvedHostName = hostIsLocalhost ? Dns.GetHostName() : host;
             return resolvedHostName;
         }
     }
