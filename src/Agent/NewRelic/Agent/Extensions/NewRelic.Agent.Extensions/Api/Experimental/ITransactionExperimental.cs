@@ -1,8 +1,10 @@
 // Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+using NewRelic.Agent.Extensions.Parsing;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
 using System;
+using System.Collections.Generic;
 
 namespace NewRelic.Agent.Api.Experimental
 {
@@ -39,5 +41,11 @@ namespace NewRelic.Agent.Api.Experimental
         /// <param name="method">The method of the request, such as an HTTP verb (e.g. GET or POST).</param>
         /// <returns>An object that can be used to manage all of the data we support for external requests.</returns>
         IExternalSegmentData CreateExternalSegmentData(Uri destinationUri, string method);
+
+        string Guid { get; }
+
+        DateTime StartTime { get; }
+
+        ISegment StartStackExchangeRedisSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime);
     }
 }

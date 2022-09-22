@@ -19,7 +19,7 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
             var canWrap = method.MatchesAny(
                 assemblyName: AssemblyName,
                 typeName: Common.ConnectionMultiplexerTypeName,
-                methodName: "ExecuteSyncImpl"
+                methodName: "ExecuteSyncImpl-X"
             );
 
             return new CanWrapResponse(canWrap);

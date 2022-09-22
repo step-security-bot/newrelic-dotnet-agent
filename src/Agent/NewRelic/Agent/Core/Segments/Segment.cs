@@ -54,6 +54,21 @@ namespace NewRelic.Agent.Core.Segments
             IsLeaf = false;
         }
 
+        public Segment(ITransactionSegmentState transactionSegmentState, MethodCallData methodCallData, TimeSpan relativeStartTime, TimeSpan relativeEndTime)
+        {
+            ThreadId = transactionSegmentState.CurrentManagedThreadId;
+            RelativeStartTime = relativeStartTime;
+            RelativeEndTime = relativeEndTime;
+            _transactionSegmentState = transactionSegmentState;
+            ParentUniqueId = transactionSegmentState.ParentSegmentId();
+            UniqueId = transactionSegmentState.CallStackPush(this);
+            MethodCallData = methodCallData;
+            Data = new MethodSegmentData(methodCallData.TypeName, methodCallData.MethodName);
+            Data.AttachSegmentDataState(this);
+            Combinable = false;
+            IsLeaf = true;
+        }
+
         /// <summary>
         /// This .ctor is used when combining segments or within unit tests that need to control the start time and duration.
         /// </summary>
@@ -231,8 +246,13 @@ namespace NewRelic.Agent.Core.Segments
         
 		private void Finish()
         {
-            var endTime = _transactionSegmentState.GetRelativeTime();
-            RelativeEndTime = endTime;
+            // Allows segments to be created with specific timings (for example StackExchange.Redis)
+            if (!RelativeEndTime.HasValue)
+            {
+                var endTime = _transactionSegmentState.GetRelativeTime();
+                RelativeEndTime = endTime;
+            }
+            
             _parameters = Data.Finish();
 
             // if transactionTracer is disabled, we not need stack traces.
@@ -257,6 +277,11 @@ namespace NewRelic.Agent.Core.Segments
             else if (_parameters == null) // External segments return a dictionary, so we have to check for null here.
             {
                 _parameters = EmptyImmutableParameters;
+            }
+
+            if (Agent.Instance.StackExchangeRedisCache != null)
+            {
+                Agent.Instance.StackExchangeRedisCache.Harvest(this.SpanId, Agent.Instance.CurrentTransaction);
             }
         }
 

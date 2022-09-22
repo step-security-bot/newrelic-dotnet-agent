@@ -187,6 +187,20 @@ namespace NewRelic.Agent.Core.Transactions
             return new Segment(this, methodCallData);
         }
 
+        private Segment StartSegmentImpl(MethodCall methodCall, TimeSpan relativeStartTime, TimeSpan relativeEndTime)
+        {
+            var methodCallData = GetMethodCallData(methodCall);
+
+            return new Segment(this, methodCallData, relativeStartTime, relativeEndTime);
+        }
+
+        private Segment StartAndFinishSegmentImpl(MethodCall methodCall)
+        {
+            var methodCallData = GetMethodCallData(methodCall);
+
+            return new Segment(this, methodCallData);
+        }
+
         public ISegment StartCustomSegment(MethodCall methodCall, string segmentName)
         {
             if (Ignored)
@@ -249,11 +263,26 @@ namespace NewRelic.Agent.Core.Transactions
             return new MessageBrokerSegmentData(brokerVendorName, destinationName, destType, action);
         }
 
-        public ISegment StartDatastoreSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, string commandText, IDictionary<string, IConvertible> queryParameters = null, bool isLeaf = false)
+        public ISegment StartStackExchangeRedisSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime)
         {
             if (Ignored)
                 return Segment.NoOpSegment;
 
+            var segment = StartSegmentImpl(methodCall, relativeStartTime, relativeEndTime);
+            segment.IsLeaf = true;
+            var datastoreSegmentData = CreateDatastoreSegmentData(parsedSqlStatement, connectionInfo, null, null);
+
+            segment.SetSegmentData(datastoreSegmentData);
+
+            if (Log.IsFinestEnabled) LogFinest($"Segment start {{{segment.ToStringForFinestLogging()}}}");
+
+            return segment;
+        }
+
+        public ISegment StartDatastoreSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, string commandText, IDictionary<string, IConvertible> queryParameters = null, bool isLeaf = false)
+        {
+            if (Ignored)
+                return Segment.NoOpSegment;
 
             var segment = StartSegmentImpl(methodCall);
             segment.IsLeaf = isLeaf;

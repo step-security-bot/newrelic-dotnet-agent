@@ -5,7 +5,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 <extension xmlns="urn:newrelic-extension">
   <instrumentation>
-    <tracerFactory>
+    <!--<tracerFactory>
       <match assemblyName="StackExchange.Redis" className="StackExchange.Redis.ConnectionMultiplexer">
         <exactMethodMatcher methodName="ExecuteSyncImpl" />
         <exactMethodMatcher methodName="ExecuteAsyncImpl" />
@@ -13,6 +13,11 @@ SPDX-License-Identifier: Apache-2.0
       <match assemblyName="StackExchange.Redis.StrongName" className="StackExchange.Redis.ConnectionMultiplexer">
         <exactMethodMatcher methodName="ExecuteSyncImpl" />
         <exactMethodMatcher methodName="ExecuteAsyncImpl" />
+      </match>
+    </tracerFactory>-->
+    <tracerFactory name="testing-inst">
+      <match assemblyName="StackExchange.Redis" className="StackExchange.Redis.Configuration.DefaultOptionsProvider">
+        <exactMethodMatcher methodName="AfterConnectAsync" />
       </match>
     </tracerFactory>
   </instrumentation>

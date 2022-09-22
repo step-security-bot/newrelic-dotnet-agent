@@ -64,7 +64,7 @@ namespace NewRelic.Agent.Core.Transactions
 
         bool IgnoreAllBrowserMonitoring { get; }
         // This guid is created during the transaction initizialiaztion
-        string Guid { get; }
+        //string Guid { get; }
 
 
         // Used for RUM and CAT to get the duration until this point in time
