@@ -125,11 +125,54 @@ namespace NewRelic.Agent.Core.Segments
             // this segment may have already been forced to end
             if (RelativeEndTime.HasValue == false)
             {
+                var endTime = _transactionSegmentState.GetRelativeTime();
+                RelativeEndTime = endTime;
+
                 Finish();
 
                 _transactionSegmentState.CallStackPop(this, true);
-            }
 
+                if (Agent.Instance.StackExchangeRedisCache != null)
+                {
+                    Agent.Instance.StackExchangeRedisCache.Harvest(SpanId, Agent.Instance.CurrentTransaction);
+                }
+            }
+        }
+
+        private void Finish()
+        {
+            _parameters = Data.Finish();
+
+            // if transactionTracer is disabled, we not need stack traces.
+            // if stack frames is 0, it is considered that the customer disabled stack traces.
+            // if max stack traces is 0, it is considered that the customer disabled stack traces.
+            if (_configurationSubscriber.Configuration.TransactionTracerEnabled
+            && _configurationSubscriber.Configuration.StackTraceMaximumFrames > 0
+            && _configurationSubscriber.Configuration.TransactionTracerMaxStackTraces > 0)
+            {
+                var stackFrames = StackTraces.ScrubAndTruncate(new StackTrace(2, true), _configurationSubscriber.Configuration.StackTraceMaximumFrames);// first 2 stack frames are agent code
+                var stackFramesAsStringArray = StackTraces.ToStringList(stackFrames); // serializer doesn't understand StackFrames, but does understand strings
+                if (_parameters == null)
+                {
+                    _parameters = new KeyValuePair<string, object>[1] { new KeyValuePair<string, object>("backtrace", stackFramesAsStringArray) };
+                }
+                else
+                {
+                    // Only external segments return a collection and its a Dictionary
+                    ((Dictionary<string, object>)_parameters).Add("backtrace", stackFramesAsStringArray);
+                }
+            }
+            else if (_parameters == null) // External segments return a dictionary, so we have to check for null here.
+            {
+                _parameters = EmptyImmutableParameters;
+            }
+        }
+
+        public void EndStackExchangeRedis()
+        {
+            Finish();
+            _transactionSegmentState.CallStackPop(this, true);
+            
         }
 
         public void End(Exception ex)
@@ -244,47 +287,6 @@ namespace NewRelic.Agent.Core.Segments
 		
         public string SegmentNameOverride { get; set; }
         
-		private void Finish()
-        {
-            // Allows segments to be created with specific timings (for example StackExchange.Redis)
-            if (!RelativeEndTime.HasValue)
-            {
-                var endTime = _transactionSegmentState.GetRelativeTime();
-                RelativeEndTime = endTime;
-            }
-            
-            _parameters = Data.Finish();
-
-            // if transactionTracer is disabled, we not need stack traces.
-            // if stack frames is 0, it is considered that the customer disabled stack traces.
-            // if max stack traces is 0, it is considered that the customer disabled stack traces.
-            if (_configurationSubscriber.Configuration.TransactionTracerEnabled
-            && _configurationSubscriber.Configuration.StackTraceMaximumFrames > 0
-            && _configurationSubscriber.Configuration.TransactionTracerMaxStackTraces > 0)
-            {
-                var stackFrames = StackTraces.ScrubAndTruncate(new StackTrace(2, true), _configurationSubscriber.Configuration.StackTraceMaximumFrames);// first 2 stack frames are agent code
-                var stackFramesAsStringArray = StackTraces.ToStringList(stackFrames); // serializer doesn't understand StackFrames, but does understand strings
-                if (_parameters == null)
-                {
-                    _parameters = new KeyValuePair<string, object>[1] { new KeyValuePair<string, object>("backtrace", stackFramesAsStringArray) };
-                }
-                else
-                {
-                    // Only external segments return a collection and its a Dictionary
-                    ((Dictionary<string, object>)_parameters).Add("backtrace", stackFramesAsStringArray);
-                }
-            }
-            else if (_parameters == null) // External segments return a dictionary, so we have to check for null here.
-            {
-                _parameters = EmptyImmutableParameters;
-            }
-
-            if (Agent.Instance.StackExchangeRedisCache != null)
-            {
-                Agent.Instance.StackExchangeRedisCache.Harvest(this.SpanId, Agent.Instance.CurrentTransaction);
-            }
-        }
-
         public SpanAttributeValueCollection GetAttributeValues()
         {
             var attribValues = _customAttribValues ?? new SpanAttributeValueCollection();

@@ -18,51 +18,62 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
     {
         private readonly EventWaitHandle _stopHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
 
-        internal readonly ConcurrentDictionary<string, ProfilingSession> Cache = new ConcurrentDictionary<string, ProfilingSession>();
-
-        private readonly ProfilingSession _defaultSession = new ProfilingSession();
+        private readonly ConcurrentDictionary<string, ProfilingSession> _sessionCache = new ConcurrentDictionary<string, ProfilingSession>();
 
         private readonly IAgent _agent;
 
         private readonly ConnectionInfo _connectionInfo;
 
-        private readonly MethodCall _methodCall;
+        private readonly int _invocationTargetHashCode;
 
-        public SessionCache(IAgent agent, ConnectionInfo connectionInfo, MethodCall methodCall)
+        public SessionCache(IAgent agent, ConnectionInfo connectionInfo, int invocationTargetHashCode)
         {
             _agent = agent;
             _connectionInfo = connectionInfo;
-            _methodCall = methodCall;
+
+            // Since the methodcall will not change, it is passed in from the instrumentation for reuse later.
+            _invocationTargetHashCode = invocationTargetHashCode;
         }
 
+        /// <summary>
+        /// Finishes a profiling session for the segment indicated by the span id and creates a child DataStoreSegment for each command in the session.
+        /// </summary>
+        /// <param name="spanId">Span ID of the segment being finalized.</param>
+        /// <param name="transaction">The currently active transaction for the given context.</param>
         public void Harvest(string spanId, Agent.Api.ITransaction transaction)
         {
-            // the segment is finishing, we pull its session and call the api to make more segments
-            // these new ones would be children of the existing segment.
-            var xTransaction = (ITransactionExperimental)transaction;
-            if (!Cache.TryRemove(spanId, out var session))
+            // If we can't remove the session, it doesn't exist, so do nothing and return.
+            if (!_sessionCache.TryRemove(spanId, out var session))
             {
                 return;
             }
 
             var commands = session.FinishProfiling();
-            _agent.Logger.Log(Agent.Extensions.Logging.Level.Info, "Harvest:" + spanId + ":commands=" + commands.Count());
 
+            var xTransaction = (ITransactionExperimental)transaction;
             var startTime = xTransaction.StartTime;
             foreach (var command in commands)
             {
+                // We need to build the relative start and stop time based on the transaction start time.
                 var relativeStartTime = command.CommandCreated - startTime;
                 var relativeEndTime = relativeStartTime + command.ElapsedTime;
                 var operation = command.Command;
 
-                // This new segment maker accepts relative start and stop times since we will be starting and ending the segment immediately.
-                var segment = xTransaction.StartStackExchangeRedisSegment(_methodCall, ParsedSqlStatement.FromOperation(DatastoreVendor.Redis, operation),
+                // This new segment maker accepts relative start and stop times since we will be starting and ending(RemoveSegmentFromCallStack) the segment immediately.
+                // This also sets the segment as a Leaf.
+                var segment = xTransaction.StartStackExchangeRedisSegment(_invocationTargetHashCode, ParsedSqlStatement.FromOperation(DatastoreVendor.Redis, operation),
                     _connectionInfo, relativeStartTime, relativeEndTime);
 
-                // We can't call end since we set the times, but we still want to cleanup the callstack.
-                segment.RemoveSegmentFromCallStack();
+                // This version of End does not set the end time or check for redis Harvests
+                // This calls Finish and removes the segment from the callstack.
+                segment.EndStackExchangeRedis();
             }
         }
+
+        /// <summary>
+        /// On-demand ambient session provider based on the calling context.  Context is a segment in a transaction.
+        /// </summary>
+        /// <returns></returns>
         public Func<ProfilingSession> GetProfilingSession()
         {
             return () =>
@@ -73,17 +84,20 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
                 }
 
                 var transaction = _agent.CurrentTransaction;
+
+                // Don't want to save data to a session outside of a transaction - no way to clean it up easily or reliably.
                 if (!transaction.IsValid)
                 {
-                    return _defaultSession;
+                    return null; 
                 }
 
+                // Use the spanid of the segment as the key for the cache.
                 var segment = transaction.CurrentSegment;
                 var spanId = segment.SpanId;
-                if (!Cache.TryGetValue(spanId, out var session))
+                if (!_sessionCache.TryGetValue(spanId, out var session))
                 {
                     session = new ProfilingSession(segment);
-                    Cache.TryAdd(spanId, session);
+                    _sessionCache.TryAdd(spanId, session);
                 }
 
                 return session;

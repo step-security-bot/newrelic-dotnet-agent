@@ -39,6 +39,7 @@ namespace NewRelic.Agent.Core.Segments
 		public string SegmentNameOverride { get; set; } = null;
 		
         public void End() { }
+        public void EndStackExchangeRedis() { }
         public void End(Exception ex) { }
         public void MakeCombinable() { }
 

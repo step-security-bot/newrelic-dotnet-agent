@@ -282,7 +282,7 @@ namespace NewRelic.Agent.Core.Transactions
             return this;
         }
 
-        public ISegment StartStackExchangeRedisSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime)
+        public ISegment StartStackExchangeRedisSegment(int invocationTargetHashCode, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime)
         {
             // no log here since this could be call many thousands of times.
             return Segment.NoOpSegment;

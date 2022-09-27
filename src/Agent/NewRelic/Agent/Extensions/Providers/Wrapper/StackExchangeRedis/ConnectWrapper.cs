@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 using System;
+using System.Runtime.CompilerServices;
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Api.Experimental;
 using NewRelic.Agent.Extensions.Parsing;
@@ -28,15 +29,21 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
 
             // We need this information to create a DataStoreSegemnt  - using a new method called StartStackExchangeRedisSegment
             var connection = Common.GetConnectionInfoFromConnectionMultiplexer(multiplexer, agent.Configuration.UtilizationHostName);
-            var method = new Method(typeof(IConnectionMultiplexer), "Execute", "");
-            var methodCall = new MethodCall(method, multiplexer, new object[0]);
+            var xAgent = (IAgentExperimental)agent;
 
+            // The SessionCache is not connection-specific.  This checks for an existing cache and creates one if there is none.
+            if (((IAgentExperimental)agent).StackExchangeRedisCache == null)
+            {
+                // We only need the hashcode since nothing will change for the methodCall
+                var hashCode = RuntimeHelpers.GetHashCode(multiplexer);
+                var sessionCache = new SessionCache(agent, connection, hashCode);
+                xAgent.StackExchangeRedisCache = sessionCache;
+            }
 
-            var sessionCache = new SessionCache(agent, connection, methodCall);
-            ((IAgentExperimental)agent).StackExchangeRedisCache = sessionCache;
-            multiplexer.RegisterProfiler(sessionCache.GetProfilingSession());
+            // Registers the profiling function from the shared SessionCache.
+            multiplexer.RegisterProfiler(((SessionCache)xAgent.StackExchangeRedisCache).GetProfilingSession());
 
-            // This instrumentation likely runs only 1 since instruments the connection attempt.  We don't want a segment.
+            // We don't want a segment here since this is only preparing for later operations.
             return Delegates.NoOp;
         }
     }

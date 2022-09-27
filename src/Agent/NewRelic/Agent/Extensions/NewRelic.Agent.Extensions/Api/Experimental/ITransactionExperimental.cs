@@ -46,6 +46,6 @@ namespace NewRelic.Agent.Api.Experimental
 
         DateTime StartTime { get; }
 
-        ISegment StartStackExchangeRedisSegment(MethodCall methodCall, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime);
+        ISegment StartStackExchangeRedisSegment(int invocationTargetHashCode, ParsedSqlStatement parsedSqlStatement, ConnectionInfo connectionInfo, TimeSpan relativeStartTime, TimeSpan relativeEndTime);
     }
 }
