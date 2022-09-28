@@ -1,13 +1,10 @@
 // Copyright 2020 New Relic, Inc. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-using System;
 using System.Runtime.CompilerServices;
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Api.Experimental;
-using NewRelic.Agent.Extensions.Parsing;
 using NewRelic.Agent.Extensions.Providers.Wrapper;
-using NewRelic.Parsing.ConnectionString;
 using StackExchange.Redis;
 
 namespace NewRelic.Providers.Wrapper.StackExchangeRedis
@@ -16,7 +13,7 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis
     {
         public bool IsTransactionRequired => true;
 
-        private const string WrapperName = "testing-inst";
+        private const string WrapperName = "stackexchangeredis-connect";
 
         public CanWrapResponse CanWrap(InstrumentedMethodInfo methodInfo)
         {
