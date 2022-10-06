@@ -13951,6 +13951,750 @@
       - method_signature: HandleBasicDeliver()
         is_valid: true
     assembly_name: RabbitMQ.Client
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net40
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net40
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net40
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net46
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net40
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net46
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net46
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net45
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net46
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.0.601
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: netcoreapp3.1
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net5.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: netcoreapp3.1
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.4
+  target_framework: net5.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: netcoreapp3.1
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net5.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: netcoreapp3.1
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.6.66
+  target_framework: net5.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net40
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net40
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.0.488
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net40
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net46
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net40
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.1.608
+  target_framework: net46
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net46
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net45
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: netstandard1.5
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 1.2.6
+  target_framework: net46
+  package_name: StackExchange.Redis.StrongName
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis.StrongName
 - instrumentation_set_name: sql
   package_version: 6.9.12
   target_framework: net40
