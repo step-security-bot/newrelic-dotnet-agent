@@ -25,40 +25,40 @@
 <table>
   <tr>
     <th>Method/Version</th>
-    <th>6.9.12</th>
-    <th>8.0.25</th>
-    <th>8.0.30</th>
+    <th id="version-header">6.9.12</th>
+    <th id="version-header">8.0.25</th>
+    <th id="version-header">8.0.31</th>
   </tr>
   <tr>
-    <td>MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(System.Data.CommandBehavior)</td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-  </tr>
-
-  <tr>
-    <td>MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()</td>
+    <td><b>MySql.Data.MySqlClient.MySqlCommand.ExecuteReader</b>(System.Data.CommandBehavior)</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
   </tr>
 
   <tr>
-    <td>MySql.Data.MySqlClient.MySqlDataReader.NextResult()</td>
+    <td><b>MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
   </tr>
 
   <tr>
-    <td>MySql.Data.MySqlClient.MySqlDataReader.Read()</td>
+    <td><b>MySql.Data.MySqlClient.MySqlDataReader.NextResult</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
   </tr>
 
   <tr>
-    <td>MySql.Data.MySqlClient.MySqlConnection.Open()</td>
+    <td><b>MySql.Data.MySqlClient.MySqlDataReader.Read</b>()</td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+  </tr>
+
+  <tr>
+    <td><b>MySql.Data.MySqlClient.MySqlConnection.Open</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -72,23 +72,14 @@
 <table>
   <tr>
     <th>Method/Version</th>
-    <th>3.2.7</th>
-    <th>4.0.5</th>
-    <th>4.1.10</th>
-    <th>5.0.11</th>
-    <th>6.0.7</th>
+    <th id="version-header">3.2.7</th>
+    <th id="version-header">4.0.5</th>
+    <th id="version-header">4.1.10</th>
+    <th id="version-header">5.0.11</th>
+    <th id="version-header">6.0.7</th>
   </tr>
   <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteDbDataReader(System.Data.CommandBehavior)</td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-  </tr>
-
-  <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteNonQuery()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteDbDataReader</b>(System.Data.CommandBehavior)</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -97,7 +88,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteScalar()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteNonQuery</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -106,7 +97,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteScalarAsync()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteScalar</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -115,7 +106,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteNonQueryAsync()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteScalarAsync</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -124,7 +115,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteNonQueryAsync</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -133,7 +124,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlDataReader.NextResult()</td>
+    <td><b>Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -142,7 +133,16 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlDataReader.Read(System.Boolean)</td>
+    <td><b>Npgsql.NpgsqlDataReader.NextResult</b>()</td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+  </tr>
+
+  <tr>
+    <td><b>Npgsql.NpgsqlDataReader.Read</b>(System.Boolean)</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -151,7 +151,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlDataReader.NextResultAsync()</td>
+    <td><b>Npgsql.NpgsqlDataReader.NextResultAsync</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -160,7 +160,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlDataReader.ReadAsync()</td>
+    <td><b>Npgsql.NpgsqlDataReader.ReadAsync</b>()</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -169,7 +169,7 @@
   </tr>
 
   <tr>
-    <td>Npgsql.NpgsqlConnection.Open(System.Boolean,System.Threading.CancellationToken)</td>
+    <td><b>Npgsql.NpgsqlConnection.Open</b>(System.Boolean, System.Threading.CancellationToken)</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>

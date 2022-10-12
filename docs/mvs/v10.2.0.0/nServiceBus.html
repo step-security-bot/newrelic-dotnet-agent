@@ -25,45 +25,25 @@
 <table>
   <tr>
     <th>Method/Version</th>
-    <th>5.0.0</th>
-    <th>5.1.9</th>
-    <th>5.2.26</th>
-    <th>6.0.10</th>
-    <th>6.1.10</th>
-    <th>6.2.8</th>
-    <th>6.3.9</th>
-    <th>6.4.5</th>
-    <th>6.5.10</th>
-    <th>7.0.3</th>
-    <th>7.1.13</th>
-    <th>7.2.5</th>
-    <th>7.3.2</th>
-    <th>7.4.7</th>
-    <th>7.5.0</th>
-    <th>7.8.0</th>
+    <th id="version-header">5.0.0</th>
+    <th id="version-header">5.1.9</th>
+    <th id="version-header">5.2.26</th>
+    <th id="version-header">6.0.10</th>
+    <th id="version-header">6.1.10</th>
+    <th id="version-header">6.2.8</th>
+    <th id="version-header">6.3.9</th>
+    <th id="version-header">6.4.5</th>
+    <th id="version-header">6.5.10</th>
+    <th id="version-header">7.0.3</th>
+    <th id="version-header">7.1.13</th>
+    <th id="version-header">7.2.5</th>
+    <th id="version-header">7.3.2</th>
+    <th id="version-header">7.4.7</th>
+    <th id="version-header">7.5.0</th>
+    <th id="version-header">7.8.0</th>
   </tr>
   <tr>
-    <td>NServiceBus.InvokeHandlersBehavior.Invoke(NServiceBus.Pipeline.Contexts.IncomingContext,System.Action)</td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="pass"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-    <td id="fail"></td>
-  </tr>
-
-  <tr>
-    <td>NServiceBus.Unicast.UnicastBus.SendMessage(NServiceBus.Unicast.SendOptions,NServiceBus.Unicast.Messages.LogicalMessage)</td>
+    <td><b>NServiceBus.InvokeHandlersBehavior.Invoke</b>(NServiceBus.Pipeline.Contexts.IncomingContext, System.Action)</td>
     <td id="pass"></td>
     <td id="pass"></td>
     <td id="pass"></td>
@@ -83,7 +63,27 @@
   </tr>
 
   <tr>
-    <td>NServiceBus.LoadHandlersConnector.Invoke(NServiceBus.Pipeline.IIncomingLogicalMessageContext,System.Func`2[NServiceBus.Pipeline.IInvokeHandlerContext,System.Threading.Tasks.Task])</td>
+    <td><b>NServiceBus.Unicast.UnicastBus.SendMessage</b>(NServiceBus.Unicast.SendOptions, NServiceBus.Unicast.Messages.LogicalMessage)</td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="pass"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+    <td id="fail"></td>
+  </tr>
+
+  <tr>
+    <td><b>NServiceBus.LoadHandlersConnector.Invoke</b>(NServiceBus.Pipeline.IIncomingLogicalMessageContext, System.Func`2[NServiceBus.Pipeline.IInvokeHandlerContext, System.Threading.Tasks.Task])</td>
     <td id="fail"></td>
     <td id="fail"></td>
     <td id="fail"></td>
@@ -103,7 +103,7 @@
   </tr>
 
   <tr>
-    <td>NServiceBus.Pipeline`1.Invoke(!0)</td>
+    <td><b>NServiceBus.Pipeline`1.Invoke</b>(!0)</td>
     <td id="fail"></td>
     <td id="fail"></td>
     <td id="fail"></td>

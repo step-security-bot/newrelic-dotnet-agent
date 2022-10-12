@@ -33,20 +33,6 @@
     validations: {}
     assembly_name: Microsoft.Azure.Cosmos.Serialization.HybridRow
 - instrumentation_set_name: cosmosdb
-  package_version: 3.17.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.17.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
   package_version: 3.23.0
   target_framework: netstandard2.0
   package_name: Microsoft.Azure.Cosmos
@@ -81,20 +67,6 @@
     validations: {}
     assembly_name: Microsoft.Azure.Cosmos.Serialization.HybridRow
 - instrumentation_set_name: cosmosdb
-  package_version: 3.23.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.23.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
   package_version: 3.31.0
   target_framework: netstandard2.0
   package_name: Microsoft.Azure.Cosmos
@@ -128,581 +100,6 @@
   assembly_report:
     validations: {}
     assembly_name: Microsoft.Azure.Cosmos.Serialization.HybridRow
-- instrumentation_set_name: cosmosdb
-  package_version: 3.31.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.31.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.31.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.31.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: cosmosdb
-  package_version: 3.31.0
-  target_framework: native
-  package_name: Microsoft.Azure.Cosmos
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb
-  package_version: 1.5.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: false
-      - method_signature: ExecuteHelper()
-        is_valid: false
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: false
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: false
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: false
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: false
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: false
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: false
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: false
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: false
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: false
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.5.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.6.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: false
-      - method_signature: ExecuteHelper()
-        is_valid: false
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: false
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: false
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: false
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: false
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: false
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: false
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: false
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: false
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.6.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.6.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: false
-      - method_signature: ExecuteHelper()
-        is_valid: false
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: false
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: false
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: false
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: false
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: false
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: false
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: false
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: false
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.6.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.7.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: false
-      - method_signature: ExecuteHelper()
-        is_valid: false
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: false
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: false
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: false
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: false
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: false
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: false
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: false
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.7.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.8.3
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: false
-      - method_signature: ExecuteHelper()
-        is_valid: false
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: false
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: false
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: false
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: false
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: false
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: false
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: false
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.8.3
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.9.2
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: true
-      - method_signature: ExecuteHelper()
-        is_valid: true
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: true
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: true
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: true
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: true
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: true
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: true
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: true
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.9.2
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.10.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: true
-      - method_signature: ExecuteHelper()
-        is_valid: true
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: true
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: true
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: true
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: true
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: true
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: true
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: true
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.10.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.10.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: true
-      - method_signature: ExecuteHelper()
-        is_valid: true
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: true
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: true
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: true
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: true
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: true
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: true
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: true
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.10.1
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
-- instrumentation_set_name: mongodb
-  package_version: 1.11.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations:
-      MongoDB.Driver.BulkWriteOperation:
-      - method_signature: Insert()
-        is_valid: true
-      - method_signature: ExecuteHelper()
-        is_valid: true
-      MongoDB.Driver.MongoCollection:
-      - method_signature: Aggregate()
-        is_valid: true
-      - method_signature: CreateIndex(MongoDB.Driver.IMongoIndexKeys,MongoDB.Driver.IMongoIndexOptions)
-        is_valid: true
-      - method_signature: Drop()
-        is_valid: true
-      - method_signature: FindAndModify(MongoDB.Driver.FindAndModifyArgs)
-        is_valid: true
-      - method_signature: FindAndRemove(MongoDB.Driver.FindAndRemoveArgs)
-        is_valid: true
-      - method_signature: GetIndexes()
-        is_valid: true
-      - method_signature: IndexExistsByName()
-        is_valid: true
-      - method_signature: InitializeOrderedBulkOperation()
-        is_valid: true
-      - method_signature: InitializeUnorderedBulkOperation()
-        is_valid: true
-      - method_signature: ParallelScanAs(MongoDB.Driver.ParallelScanArgs)
-        is_valid: true
-      - method_signature: Save(System.Type,System.Object,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Update(MongoDB.Driver.IMongoQuery,MongoDB.Driver.IMongoUpdate,MongoDB.Driver.MongoUpdateOptions)
-        is_valid: true
-      - method_signature: Validate(MongoDB.Driver.ValidateCollectionArgs)
-        is_valid: true
-      - method_signature: FindAs()
-        is_valid: true
-      - method_signature: FindOneAs(MongoDB.Driver.FindOneArgs)
-        is_valid: true
-      - method_signature: InsertBatch(System.Type,System.Collections.IEnumerable,MongoDB.Driver.MongoInsertOptions)
-        is_valid: true
-      - method_signature: Remove(MongoDB.Driver.IMongoQuery,MongoDB.Driver.RemoveFlags,MongoDB.Driver.WriteConcern)
-        is_valid: true
-      MongoDB.Driver.MongoCursor`1:
-      - method_signature: GetEnumerator()
-        is_valid: true
-      MongoDB.Driver.MongoDatabase:
-      - method_signature: CreateCollection(System.String,MongoDB.Driver.IMongoCollectionOptions)
-        is_valid: true
-    assembly_name: MongoDB.Driver
-- instrumentation_set_name: mongodb
-  package_version: 1.11.0
-  target_framework: net35
-  package_name: mongocsharpdriver
-  assembly_report:
-    validations: {}
-    assembly_name: MongoDB.Bson
 - instrumentation_set_name: mongodb
   package_version: 2.17.1
   target_framework: netstandard2.0
@@ -11280,111 +10677,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
   target_framework: net452
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -11419,111 +10711,6 @@
       - method_signature: GetNextBatchAsync()
         is_valid: true
     assembly_name: MongoDB.Driver.Core
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.11.6
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
 - instrumentation_set_name: mongodb26
   package_version: 2.12.2
   target_framework: net452
@@ -11574,132 +10761,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
   target_framework: net452
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -11746,132 +10807,6 @@
       - method_signature: GetNextBatchAsync()
         is_valid: true
     assembly_name: MongoDB.Driver.Core
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.12.2
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
 - instrumentation_set_name: mongodb26
   package_version: 2.13.3
   target_framework: net452
@@ -11922,132 +10857,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
   target_framework: net452
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -12095,132 +10904,6 @@
         is_valid: true
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.13.3
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
   package_version: 2.14.1
   target_framework: netstandard2.0
   package_name: MongoDB.Driver.Core
@@ -12258,111 +10941,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
   target_framework: netstandard2.0
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -12397,111 +10975,6 @@
       - method_signature: GetNextBatchAsync()
         is_valid: true
     assembly_name: MongoDB.Driver.Core
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.14.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
 - instrumentation_set_name: mongodb26
   package_version: 2.15.0
   target_framework: netstandard2.0
@@ -12540,111 +11013,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
   target_framework: netstandard2.0
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -12679,111 +11047,6 @@
       - method_signature: GetNextBatchAsync()
         is_valid: true
     assembly_name: MongoDB.Driver.Core
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.15.0
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
 - instrumentation_set_name: mongodb26
   package_version: 2.17.1
   target_framework: netstandard2.0
@@ -12822,111 +11085,6 @@
     assembly_name: MongoDB.Driver.Core
 - instrumentation_set_name: mongodb26
   package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
   target_framework: netstandard2.0
   package_name: MongoDB.Driver.Core
   assembly_report:
@@ -12961,118 +11119,6 @@
       - method_signature: GetNextBatchAsync()
         is_valid: true
     assembly_name: MongoDB.Driver.Core
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: native
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: mongodb26
-  package_version: 2.17.1
-  target_framework: win
-  package_name: MongoDB.Driver.Core
-  assembly_report:
-    validations: {}
-    assembly_name: 
-- instrumentation_set_name: nServiceBus
-  package_version: 5.0.0
-  target_framework: tools
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.PowerShell.Development
 - instrumentation_set_name: nServiceBus
   package_version: 5.0.0
   target_framework: net45
@@ -13094,13 +11140,6 @@
     assembly_name: NServiceBus.Core
 - instrumentation_set_name: nServiceBus
   package_version: 5.1.9
-  target_framework: tools
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.PowerShell.Development
-- instrumentation_set_name: nServiceBus
-  package_version: 5.1.9
   target_framework: net45
   package_name: NServiceBus
   assembly_report:
@@ -13118,13 +11157,6 @@
       - method_signature: Invoke(!0)
         is_valid: false
     assembly_name: NServiceBus.Core
-- instrumentation_set_name: nServiceBus
-  package_version: 5.2.26
-  target_framework: tools
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.PowerShell.Development
 - instrumentation_set_name: nServiceBus
   package_version: 5.2.26
   target_framework: net45
@@ -13259,13 +11291,6 @@
         is_valid: false
     assembly_name: NServiceBus.Core
 - instrumentation_set_name: nServiceBus
-  package_version: 6.5.10
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
-- instrumentation_set_name: nServiceBus
   package_version: 7.0.3
   target_framework: net452
   package_name: NServiceBus
@@ -13342,13 +11367,6 @@
         is_valid: false
     assembly_name: NServiceBus.Core
 - instrumentation_set_name: nServiceBus
-  package_version: 7.1.13
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
-- instrumentation_set_name: nServiceBus
   package_version: 7.2.5
   target_framework: net452
   package_name: NServiceBus
@@ -13386,13 +11404,6 @@
       - method_signature: Invoke(!0)
         is_valid: false
     assembly_name: NServiceBus.Core
-- instrumentation_set_name: nServiceBus
-  package_version: 7.2.5
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
 - instrumentation_set_name: nServiceBus
   package_version: 7.3.2
   target_framework: net452
@@ -13432,13 +11443,6 @@
         is_valid: false
     assembly_name: NServiceBus.Core
 - instrumentation_set_name: nServiceBus
-  package_version: 7.3.2
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
-- instrumentation_set_name: nServiceBus
   package_version: 7.4.7
   target_framework: net452
   package_name: NServiceBus
@@ -13476,13 +11480,6 @@
       - method_signature: Invoke(!0)
         is_valid: false
     assembly_name: NServiceBus.Core
-- instrumentation_set_name: nServiceBus
-  package_version: 7.4.7
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
 - instrumentation_set_name: nServiceBus
   package_version: 7.5.0
   target_framework: net452
@@ -13522,13 +11519,6 @@
         is_valid: false
     assembly_name: NServiceBus.Core
 - instrumentation_set_name: nServiceBus
-  package_version: 7.5.0
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
-- instrumentation_set_name: nServiceBus
   package_version: 7.8.0
   target_framework: net452
   package_name: NServiceBus
@@ -13566,34 +11556,6 @@
       - method_signature: Invoke(!0)
         is_valid: false
     assembly_name: NServiceBus.Core
-- instrumentation_set_name: nServiceBus
-  package_version: 7.8.0
-  target_framework: cs
-  package_name: NServiceBus
-  assembly_report:
-    validations: {}
-    assembly_name: NServiceBus.Core.Analyzer
-- instrumentation_set_name: rabbitmq
-  package_version: 3.6.9
-  target_framework: netcore45
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
 - instrumentation_set_name: rabbitmq
   package_version: 3.6.9
   target_framework: net45
@@ -13638,69 +11600,6 @@
     assembly_name: RabbitMQ.Client
 - instrumentation_set_name: rabbitmq
   package_version: 4.1.3
-  target_framework: net451
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
-- instrumentation_set_name: rabbitmq
-  package_version: 5.1.2
-  target_framework: netstandard2.0
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
-- instrumentation_set_name: rabbitmq
-  package_version: 5.1.2
-  target_framework: netstandard1.5
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
-- instrumentation_set_name: rabbitmq
-  package_version: 5.1.2
   target_framework: net451
   package_name: RabbitMQ.Client
   assembly_report:
@@ -13826,48 +11725,6 @@
         is_valid: true
     assembly_name: RabbitMQ.Client
 - instrumentation_set_name: rabbitmq
-  package_version: 6.1.0
-  target_framework: net461
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
-- instrumentation_set_name: rabbitmq
-  package_version: 6.1.0
-  target_framework: netstandard2.0
-  package_name: RabbitMQ.Client
-  assembly_report:
-    validations:
-      RabbitMQ.Client.Framing.Impl.Model:
-      - method_signature: _Private_BasicGet()
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,RabbitMQ.Client.IBasicProperties,System.ReadOnlyMemory`1[System.Byte])
-        is_valid: true
-      - method_signature: _Private_BasicPublish(System.String,System.String,System.Boolean,System.Boolean,RabbitMQ.Client.IBasicProperties,System.Byte[])
-        is_valid: false
-      - method_signature: _Private_QueuePurge()
-        is_valid: true
-      RabbitMQ.Client.Events.EventingBasicConsumer:
-      - method_signature: HandleBasicDeliver()
-        is_valid: true
-    assembly_name: RabbitMQ.Client
-- instrumentation_set_name: rabbitmq
   package_version: 6.2.1
   target_framework: net461
   package_name: RabbitMQ.Client
@@ -13951,6 +11808,149 @@
       - method_signature: HandleBasicDeliver()
         is_valid: true
     assembly_name: RabbitMQ.Client
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net452
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net45
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net4-client
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net4
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net46
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 105.2.3
+  target_framework: net451
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 106.6.10
+  target_framework: net452
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 106.6.10
+  target_framework: netstandard2.0
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: true
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: true
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 108.0.2
+  target_framework: net6.0
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: false
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: false
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 108.0.2
+  target_framework: netstandard2.0
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: false
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: false
+    assembly_name: RestSharp
+- instrumentation_set_name: restSharp
+  package_version: 108.0.2
+  target_framework: net5.0
+  package_name: RestSharp
+  assembly_report:
+    validations:
+      RestSharp.RestClient:
+      - method_signature: ExecuteTaskAsync(RestSharp.IRestRequest,System.Threading.CancellationToken)
+        is_valid: false
+      RestSharp.Http:
+      - method_signature: AppendHeaders(System.Net.HttpWebRequest)
+        is_valid: false
+    assembly_name: RestSharp
 - instrumentation_set_name: stackExchangeRedis
   package_version: 1.0.488
   target_framework: net40
@@ -13990,174 +11990,6 @@
 - instrumentation_set_name: stackExchangeRedis
   package_version: 1.0.488
   target_framework: net45
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net40
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net45
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: netstandard1.5
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net46
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net40
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net45
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: netstandard1.5
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.1.608
-  target_framework: net46
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: net45
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: netstandard1.5
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: net46
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: net45
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: netstandard1.5
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 1.2.6
-  target_framework: net46
   package_name: StackExchange.Redis
   assembly_report:
     validations:
@@ -14240,7 +12072,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.1.58
   target_framework: net461
   package_name: StackExchange.Redis
   assembly_report:
@@ -14252,19 +12084,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
-  target_framework: netcoreapp3.1
-  package_name: StackExchange.Redis
-  assembly_report:
-    validations:
-      StackExchange.Redis.ConnectionMultiplexer:
-      - method_signature: ExecuteSyncImpl()
-        is_valid: true
-      - method_signature: ExecuteAsyncImpl()
-        is_valid: true
-    assembly_name: StackExchange.Redis
-- instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.1.58
   target_framework: netstandard2.0
   package_name: StackExchange.Redis
   assembly_report:
@@ -14276,7 +12096,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.1.58
   target_framework: net472
   package_name: StackExchange.Redis
   assembly_report:
@@ -14288,7 +12108,91 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.1.58
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.1.58
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.1.58
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.88
+  target_framework: net461
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.88
+  target_framework: netcoreapp3.1
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.88
+  target_framework: netstandard2.0
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.88
+  target_framework: net472
+  package_name: StackExchange.Redis
+  assembly_report:
+    validations:
+      StackExchange.Redis.ConnectionMultiplexer:
+      - method_signature: ExecuteSyncImpl()
+        is_valid: true
+      - method_signature: ExecuteAsyncImpl()
+        is_valid: true
+    assembly_name: StackExchange.Redis
+- instrumentation_set_name: stackExchangeRedis
+  package_version: 2.2.88
   target_framework: net5.0
   package_name: StackExchange.Redis
   assembly_report:
@@ -14300,7 +12204,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.2.88
   target_framework: net461
   package_name: StackExchange.Redis
   assembly_report:
@@ -14312,7 +12216,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.2.88
   target_framework: netcoreapp3.1
   package_name: StackExchange.Redis
   assembly_report:
@@ -14324,7 +12228,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.2.88
   target_framework: netstandard2.0
   package_name: StackExchange.Redis
   assembly_report:
@@ -14336,7 +12240,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.2.88
   target_framework: net472
   package_name: StackExchange.Redis
   assembly_report:
@@ -14348,7 +12252,7 @@
         is_valid: true
     assembly_name: StackExchange.Redis
 - instrumentation_set_name: stackExchangeRedis
-  package_version: 2.2.4
+  package_version: 2.2.88
   target_framework: net5.0
   package_name: StackExchange.Redis
   assembly_report:
@@ -17006,21 +14910,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -17040,21 +14937,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -17074,21 +14964,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -17108,21 +14991,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -17142,21 +15018,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -17176,21 +15072,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -17210,21 +15099,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -17244,21 +15126,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -17278,21 +15153,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -17312,21 +15180,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -17346,21 +15207,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -17380,21 +15261,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -17414,21 +15288,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -17448,21 +15315,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -17482,21 +15342,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -17516,21 +15369,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -17550,21 +15396,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -17584,21 +15450,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -17618,21 +15477,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -17652,21 +15504,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -17686,21 +15531,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -17720,21 +15558,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -17754,21 +15585,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -17788,21 +15639,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -17822,21 +15666,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -17856,21 +15693,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -17890,21 +15720,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -17924,21 +15747,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -17958,21 +15774,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -17992,21 +15828,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -18026,21 +15855,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -18060,21 +15882,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -18094,21 +15909,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -18128,21 +15936,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -18162,21 +15963,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -18196,21 +16017,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -18230,21 +16044,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -18264,21 +16071,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -18298,21 +16098,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -18332,21 +16125,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -18366,21 +16152,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -18400,21 +16206,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -18434,21 +16233,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -18468,21 +16260,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -18502,21 +16287,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -18536,21 +16314,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -18570,21 +16341,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -18604,21 +16395,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -18638,21 +16422,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -18672,21 +16449,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -18706,21 +16476,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -18740,21 +16503,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -18774,21 +16530,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -18808,21 +16584,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -18842,21 +16611,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -18876,21 +16638,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -18910,21 +16665,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -18944,21 +16692,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -18978,21 +16719,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -19012,21 +16773,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -19046,21 +16800,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net6.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net6.0
   package_name: MySql.Data
   assembly_report:
@@ -19080,21 +16827,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net452
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net452
   package_name: MySql.Data
   assembly_report:
@@ -19114,21 +16854,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.0
   package_name: MySql.Data
   assembly_report:
@@ -19148,21 +16881,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: netstandard2.1
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: netstandard2.1
   package_name: MySql.Data
   assembly_report:
@@ -19182,21 +16908,41 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations: {}
+    assembly_name: ZstdNet
+- instrumentation_set_name: sql
+  package_version: 8.0.31
+  target_framework: net7.0
+  package_name: MySql.Data
+  assembly_report:
+    validations:
+      MySql.Data.MySqlClient.MySqlCommand:
+      - method_signature: ExecuteReader(System.Data.CommandBehavior)
+        is_valid: true
+      - method_signature: ExecuteNonQuery()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlDataReader:
+      - method_signature: NextResult()
+        is_valid: true
+      - method_signature: Read()
+        is_valid: true
+      MySql.Data.MySqlClient.MySqlConnection:
+      - method_signature: Open()
+        is_valid: true
+    assembly_name: MySql.Data
+- instrumentation_set_name: sql
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net48
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net48
   package_name: MySql.Data
   assembly_report:
@@ -19216,21 +16962,14 @@
         is_valid: true
     assembly_name: MySql.Data
 - instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
     validations: {}
     assembly_name: ZstdNet
 - instrumentation_set_name: sql
-  package_version: 8.0.30
-  target_framework: net5.0
-  package_name: MySql.Data
-  assembly_report:
-    validations: {}
-    assembly_name: Ubiety.Dns.Core
-- instrumentation_set_name: sql
-  package_version: 8.0.30
+  package_version: 8.0.31
   target_framework: net5.0
   package_name: MySql.Data
   assembly_report:
@@ -26289,3 +24028,243 @@
       - method_signature: Open(System.Boolean,System.Threading.CancellationToken)
         is_valid: true
     assembly_name: Npgsql
+- instrumentation_set_name: nlog
+  package_version: 4.1.2
+  target_framework: net40
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.1.2
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.3.11
+  target_framework: net40
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.3.11
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.9
+  target_framework: net40-client
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.9
+  target_framework: netstandard2.0
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.9
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.9
+  target_framework: netstandard1.5
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.9
+  target_framework: netstandard1.3
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.11
+  target_framework: net40-client
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.11
+  target_framework: netstandard2.0
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.11
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.11
+  target_framework: netstandard1.5
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.5.11
+  target_framework: netstandard1.3
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.7.15
+  target_framework: net40-client
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.7.15
+  target_framework: netstandard2.0
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.7.15
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.7.15
+  target_framework: netstandard1.5
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 4.7.15
+  target_framework: netstandard1.3
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 5.0.4
+  target_framework: netstandard2.0
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 5.0.4
+  target_framework: net45
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 5.0.4
+  target_framework: netstandard1.5
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 5.0.4
+  target_framework: netstandard1.3
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
+- instrumentation_set_name: nlog
+  package_version: 5.0.4
+  target_framework: net46
+  package_name: NLog
+  assembly_report:
+    validations:
+      NLog.LoggerImpl:
+      - method_signature: Write()
+        is_valid: true
+    assembly_name: NLog
