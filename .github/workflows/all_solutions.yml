@@ -1,3 +1,5 @@
+#NOTE: This workflow has been heavily modified to just run the one test of interest for this branch (Browser Injection)
+
 name: .NET Agent All Solutions Build
 
 # Does not run on PUSH since we have already ran all the test
@@ -28,167 +30,167 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-windows-profiler:
-    needs: cancel-previous-workflow-runs
-    name: Build Windows Profiler
-    runs-on: windows-2019
+  # build-windows-profiler:
+  #   needs: cancel-previous-workflow-runs
+  #   name: Build Windows Profiler
+  #   runs-on: windows-2019
 
-    env:
-      profiler_path: ${{ github.workspace }}\src\Agent\NewRelic\Profiler
-      profiler_solution_path: ${{ github.workspace }}\src\Agent\NewRelic\Profiler\NewRelic.Profiler.sln
-      output_path: ${{ github.workspace }}\src\Agent\_profilerBuild
+  #   env:
+  #     profiler_path: ${{ github.workspace }}\src\Agent\NewRelic\Profiler
+  #     profiler_solution_path: ${{ github.workspace }}\src\Agent\NewRelic\Profiler\NewRelic.Profiler.sln
+  #     output_path: ${{ github.workspace }}\src\Agent\_profilerBuild
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1
+  #     - name: Add msbuild to PATH
+  #       uses: microsoft/setup-msbuild@v1
 
-      - name: Clean out _profilerBuild directory
-        run: |
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\*.*" -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x64-Release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x86-Release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-x64-release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-arm64-release" -Recurse -Force  -ErrorAction SilentlyContinue
-        shell: powershell
+  #     - name: Clean out _profilerBuild directory
+  #       run: |
+  #         Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\*.*" -Force -ErrorAction SilentlyContinue
+  #         Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x64-Release" -Recurse -Force  -ErrorAction SilentlyContinue
+  #         Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x86-Release" -Recurse -Force  -ErrorAction SilentlyContinue
+  #         Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-x64-release" -Recurse -Force  -ErrorAction SilentlyContinue
+  #         Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-arm64-release" -Recurse -Force  -ErrorAction SilentlyContinue
+  #       shell: powershell
 
-      - name: Build x64
-        run: |
-          Write-Host "List NuGet Sources"
-          dotnet nuget list source # For unknown reasons, this step is necessary to avoid subsequent problems with NuGet package restore
-          Write-Host "MSBuild.exe -restore -m -p:Platform=x64 -p:Configuration=Release ${{ env.profiler_solution_path }}"
-          MSBuild.exe -restore -m -p:Platform=x64 -p:Configuration=Release ${{ env.profiler_solution_path }}
-        shell: powershell
+  #     - name: Build x64
+  #       run: |
+  #         Write-Host "List NuGet Sources"
+  #         dotnet nuget list source # For unknown reasons, this step is necessary to avoid subsequent problems with NuGet package restore
+  #         Write-Host "MSBuild.exe -restore -m -p:Platform=x64 -p:Configuration=Release ${{ env.profiler_solution_path }}"
+  #         MSBuild.exe -restore -m -p:Platform=x64 -p:Configuration=Release ${{ env.profiler_solution_path }}
+  #       shell: powershell
         
-      - name: Build x86
-        run: |
-          Write-Host "MSBuild.exe -restore -m -p:Platform=Win32 -p:Configuration=Release ${{ env.profiler_solution_path }}"
-          MSBuild.exe -restore -m -p:Platform=Win32 -p:Configuration=Release ${{ env.profiler_solution_path }}
-        shell: powershell
+  #     - name: Build x86
+  #       run: |
+  #         Write-Host "MSBuild.exe -restore -m -p:Platform=Win32 -p:Configuration=Release ${{ env.profiler_solution_path }}"
+  #         MSBuild.exe -restore -m -p:Platform=Win32 -p:Configuration=Release ${{ env.profiler_solution_path }}
+  #       shell: powershell
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: profiler
-          path: ${{ github.workspace }}\src\Agent\_profilerBuild\**\*
-          if-no-files-found: error
+  #     - name: Archive Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: profiler
+  #         path: ${{ github.workspace }}\src\Agent\_profilerBuild\**\*
+  #         if-no-files-found: error
 
-  build-linux-x64-profiler:
-    needs: cancel-previous-workflow-runs
-    name: Build Linux x64 Profiler
-    runs-on: ubuntu-22.04
+  # build-linux-x64-profiler:
+  #   needs: cancel-previous-workflow-runs
+  #   name: Build Linux x64 Profiler
+  #   runs-on: ubuntu-22.04
 
-    env:
-      profiler_path: ${{ github.workspace }}/src/Agent/NewRelic/Profiler
-      #<other env vars here>
+  #   env:
+  #     profiler_path: ${{ github.workspace }}/src/Agent/NewRelic/Profiler
+  #     #<other env vars here>
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Clean out _profilerBuild directory
-        run: |
-          rm -f ${{ github.workspace }}/src/Agent/_profilerBuild/*.* || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x64-Release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x86-Release || true
-        shell: bash
+  #     - name: Clean out _profilerBuild directory
+  #       run: |
+  #         rm -f ${{ github.workspace }}/src/Agent/_profilerBuild/*.* || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x64-Release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x86-Release || true
+  #       shell: bash
 
-      - name: Build Linux Profler
-        run: |
-          cd ${{ env.profiler_path }}
-          docker-compose build build
-          docker-compose run build
-        shell: bash
+  #     - name: Build Linux Profler
+  #       run: |
+  #         cd ${{ env.profiler_path }}
+  #         docker-compose build build
+  #         docker-compose run build
+  #       shell: bash
 
-      - name: Move Profiler to staging folder
-        run: |
-          mkdir --parents ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release/
-          mv -f ${{ env.profiler_path }}/libNewRelicProfiler.so  ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release/libNewRelicProfiler.so
-        shell: bash
+  #     - name: Move Profiler to staging folder
+  #       run: |
+  #         mkdir --parents ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release/
+  #         mv -f ${{ env.profiler_path }}/libNewRelicProfiler.so  ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release/libNewRelicProfiler.so
+  #       shell: bash
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: profiler
-          path: ${{ github.workspace }}/src/Agent/_profilerBuild/
-          if-no-files-found: error
+  #     - name: Archive Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: profiler
+  #         path: ${{ github.workspace }}/src/Agent/_profilerBuild/
+  #         if-no-files-found: error
 
-  build-linux-arm64-profiler:
-    needs: cancel-previous-workflow-runs
-    name: Build Linux ARM64 Profiler
-    runs-on: ubuntu-22.04
+  # build-linux-arm64-profiler:
+  #   needs: cancel-previous-workflow-runs
+  #   name: Build Linux ARM64 Profiler
+  #   runs-on: ubuntu-22.04
     
-    env:
-      profiler_path: ${{ github.workspace }}/src/Agent/NewRelic/Profiler
+  #   env:
+  #     profiler_path: ${{ github.workspace }}/src/Agent/NewRelic/Profiler
     
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
       
-      - name: Clean out _profilerBuild directory
-        run: |
-          rm -f ${{ github.workspace }}/src/Agent/_profilerBuild/*.* || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x64-Release || true
-          rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x86-Release || true
-        shell: bash
+  #     - name: Clean out _profilerBuild directory
+  #       run: |
+  #         rm -f ${{ github.workspace }}/src/Agent/_profilerBuild/*.* || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-x64-release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x64-Release || true
+  #         rm -rf ${{ github.workspace }}/src/Agent/_profilerBuild/x86-Release || true
+  #       shell: bash
         
-      - uses: uraimo/run-on-arch-action@v2.0.5
-        name: Run commands
-        id: runcmd
-        with:
-          arch: aarch64
-          distro: ubuntu18.04
-          githubToken: ${{ github.token }}
-          install: |
-            apt-get update -q -y
-            apt-get install -q -y wget curl git dos2unix software-properties-common make binutils libc++-dev clang-3.9 lldb-3.9 build-essential
-            echo "deb https://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main" | tee /etc/apt/sources.list.d/llvm.list
-            wget --no-cache --no-cookies -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-            mkdir /root/git
-            cd /root/git
-            git clone --branch release/3.1 https://github.com/dotnet/coreclr.git
-            curl -sSL https://virtuoso-testing.s3.us-west-2.amazonaws.com/cmake-3.9.0-rc3-aarch64.tar.gz | tar -xzC ~
-            chmod 777 ~/cmake-3.9.0-rc3-aarch64/bin/cmake
-            ln -s ~/cmake-3.9.0-rc3-aarch64/bin/cmake /usr/bin/cmake || true
-            rm /usr/bin/cc || true
-            ln -s /usr/bin/clang-3.9 /usr/bin/cc
-            rm /usr/bin/c++ || true
-            ln -s /usr/bin/clang++-3.9 /usr/bin/c++
-          dockerRunArgs: |
-            --volume "${{ env.profiler_path }}:/profiler"
-          run: |
-            cd /profiler
-            chmod 777 ./linux/build_profiler.sh
-            ./linux/build_profiler.sh
+  #     - uses: uraimo/run-on-arch-action@v2.0.5
+  #       name: Run commands
+  #       id: runcmd
+  #       with:
+  #         arch: aarch64
+  #         distro: ubuntu18.04
+  #         githubToken: ${{ github.token }}
+  #         install: |
+  #           apt-get update -q -y
+  #           apt-get install -q -y wget curl git dos2unix software-properties-common make binutils libc++-dev clang-3.9 lldb-3.9 build-essential
+  #           echo "deb https://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main" | tee /etc/apt/sources.list.d/llvm.list
+  #           wget --no-cache --no-cookies -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+  #           mkdir /root/git
+  #           cd /root/git
+  #           git clone --branch release/3.1 https://github.com/dotnet/coreclr.git
+  #           curl -sSL https://virtuoso-testing.s3.us-west-2.amazonaws.com/cmake-3.9.0-rc3-aarch64.tar.gz | tar -xzC ~
+  #           chmod 777 ~/cmake-3.9.0-rc3-aarch64/bin/cmake
+  #           ln -s ~/cmake-3.9.0-rc3-aarch64/bin/cmake /usr/bin/cmake || true
+  #           rm /usr/bin/cc || true
+  #           ln -s /usr/bin/clang-3.9 /usr/bin/cc
+  #           rm /usr/bin/c++ || true
+  #           ln -s /usr/bin/clang++-3.9 /usr/bin/c++
+  #         dockerRunArgs: |
+  #           --volume "${{ env.profiler_path }}:/profiler"
+  #         run: |
+  #           cd /profiler
+  #           chmod 777 ./linux/build_profiler.sh
+  #           ./linux/build_profiler.sh
             
-      - name: Move Profiler to staging folder
-        run: |
-          mkdir --parents ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release/
-          mv -f ${{ env.profiler_path }}/libNewRelicProfiler.so  ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release/libNewRelicProfiler.so
-        shell: bash
+  #     - name: Move Profiler to staging folder
+  #       run: |
+  #         mkdir --parents ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release/
+  #         mv -f ${{ env.profiler_path }}/libNewRelicProfiler.so  ${{ github.workspace }}/src/Agent/_profilerBuild/linux-arm64-release/libNewRelicProfiler.so
+  #       shell: bash
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: profiler
-          path: ${{ github.workspace }}/src/Agent/_profilerBuild/
-          if-no-files-found: error
+  #     - name: Archive Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: profiler
+  #         path: ${{ github.workspace }}/src/Agent/_profilerBuild/
+  #         if-no-files-found: error
 
   # This builds both FullAgent and MSIInstaller since MSIInstaller requires FullAgent artifacts.
   build-test-fullagent-msi:
-    needs: [ build-windows-profiler, build-linux-x64-profiler, build-linux-arm64-profiler ]
+    needs: cancel-previous-workflow-runs
     name: Build and Test FullAgent and MSIInstaller
     runs-on: windows-2019
 
@@ -211,20 +213,20 @@ jobs:
       - name: Setup VSTest Path
         uses: darenm/Setup-VSTest@v1
 
-      - name: Clean out _profilerBuild directory
-        run: |
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\*.*" -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x64-Release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x86-Release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-x64-release" -Recurse -Force  -ErrorAction SilentlyContinue
-          Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-arm64-release" -Recurse -Force  -ErrorAction SilentlyContinue
-        shell: powershell
+      # - name: Clean out _profilerBuild directory
+      #   run: |
+      #     Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\*.*" -Force -ErrorAction SilentlyContinue
+      #     Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x64-Release" -Recurse -Force  -ErrorAction SilentlyContinue
+      #     Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\x86-Release" -Recurse -Force  -ErrorAction SilentlyContinue
+      #     Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-x64-release" -Recurse -Force  -ErrorAction SilentlyContinue
+      #     Remove-Item -Path "${{ github.workspace }}\src\Agent\_profilerBuild\linux-arm64-release" -Recurse -Force  -ErrorAction SilentlyContinue
+      #   shell: powershell
 
-      - name: Download Profiler Artifacts Before Agent Build
-        uses: actions/download-artifact@v2
-        with:
-          name: profiler
-          path: ${{ github.workspace }}/src/Agent/_profilerBuild/
+      # - name: Download Profiler Artifacts Before Agent Build
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: profiler
+      #     path: ${{ github.workspace }}/src/Agent/_profilerBuild/
             
       - name: Build FullAgent.sln
         run: |
@@ -417,49 +419,49 @@ jobs:
             !${{ github.workspace }}\tests\Agent\IntegrationTests\**\obj\**\*
           if-no-files-found: error
 
-  build-unbounded-tests:
-    needs: build-test-fullagent-msi
-    name: Build UnboundedIntegrationTests
-    runs-on: windows-2022
+  # build-unbounded-tests:
+  #   needs: build-test-fullagent-msi
+  #   name: Build UnboundedIntegrationTests
+  #   runs-on: windows-2022
 
-    env:
-      unbounded_solution_path: ${{ github.workspace }}\tests\Agent\IntegrationTests\UnboundedIntegrationTests.sln
+  #   env:
+  #     unbounded_solution_path: ${{ github.workspace }}\tests\Agent\IntegrationTests\UnboundedIntegrationTests.sln
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.3
-        with:
-          vs-prerelease: true
+  #     - name: Add msbuild to PATH
+  #       uses: microsoft/setup-msbuild@v1.0.3
+  #       with:
+  #         vs-prerelease: true
 
-      - name: Add .NET 6 SDK
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
-          include-prerelease: true
+  #     - name: Add .NET 6 SDK
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: '6.0.x'
+  #         include-prerelease: true
 
-      - name: Build UnboundedIntegrationTests.sln
-        run: |
-          Write-Host "List NuGet Sources"
-          dotnet nuget list source # For unknown reasons, this step is necessary to avoid subsequent problems with NuGet package restore
-          Write-Host "MSBuild.exe -restore -m -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=LocalDeploy ${{ env.unbounded_solution_path }}"
-          MSBuild.exe -restore -m -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=LocalDeploy ${{ env.unbounded_solution_path }}
-        shell: powershell
+  #     - name: Build UnboundedIntegrationTests.sln
+  #       run: |
+  #         Write-Host "List NuGet Sources"
+  #         dotnet nuget list source # For unknown reasons, this step is necessary to avoid subsequent problems with NuGet package restore
+  #         Write-Host "MSBuild.exe -restore -m -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=LocalDeploy ${{ env.unbounded_solution_path }}"
+  #         MSBuild.exe -restore -m -p:Configuration=Release -p:DeployOnBuild=true -p:PublishProfile=LocalDeploy ${{ env.unbounded_solution_path }}
+  #       shell: powershell
 
-      - name: Archive Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: unboundedintegrationtests
-          path: |
-            ${{ github.workspace }}\test.runsettings  # Force the artifacts to use repo root as root of package.
-            ${{ github.workspace }}\tests\Agent\IntegrationTests\**\bin\**\*
-            ${{ github.workspace }}\tests\Agent\IntegrationTests\**\Deploy\**\*
-            !${{ github.workspace }}\tests\Agent\IntegrationTests\**\obj\**\*
-          if-no-files-found: error
+  #     - name: Archive Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: unboundedintegrationtests
+  #         path: |
+  #           ${{ github.workspace }}\test.runsettings  # Force the artifacts to use repo root as root of package.
+  #           ${{ github.workspace }}\tests\Agent\IntegrationTests\**\bin\**\*
+  #           ${{ github.workspace }}\tests\Agent\IntegrationTests\**\Deploy\**\*
+  #           !${{ github.workspace }}\tests\Agent\IntegrationTests\**\obj\**\*
+  #         if-no-files-found: error
 
   run-integration-tests:
     needs: [build-integration-tests]
@@ -467,16 +469,17 @@ jobs:
     runs-on: windows-2019
     strategy:
       matrix:
-        namespace: [ AgentFeatures, AgentLogs, AgentMetrics, Api, AspNetCore, BasicInstrumentation, CatInbound, CatOutbound, 
-          CSP, CustomAttributes, CustomInstrumentation, DataTransmission, DistributedTracing, Errors, 
-          HttpClientInstrumentation.NetCore, HttpClientInstrumentation.NetFramework, Owin, ReJit.NetCore, 
-          Logging.HsmAndCsp, Logging.LocalDecoration, Logging.MaxSamplesStored, Logging.ZeroMaxSamplesStored,
-          Logging.MetricsAndForwarding.log4net, Logging.MetricsAndForwarding.MicrosoftLogging, 
-          Logging.MetricsAndForwarding.Serilog, Logging.MetricsAndForwarding.NLog, Logging.LogLevelDetection,
-          ReJit.NetFramework, RemoteServiceFixtures, RestSharp, WCF.Client.IIS.ASPDisabled, WCF.Client.IIS.ASPEnabled, 
-          WCF.Client.Self, WCF.Service.IIS.ASPDisabled, WCF.Service.IIS.ASPEnabled, WCF.Service.Self, RequestHeadersCapture.WCF, 
-          RequestHeadersCapture.Owin, RequestHeadersCapture.AspNetCore, RequestHeadersCapture.Asp35, RequestHeadersCapture.EnvironmentVariables, 
-          RequestHandling, CodeLevelMetrics, InfiniteTracing]
+        namespace: [ BrowserAgentInjection ]
+        # , AgentLogs, AgentMetrics, Api, AspNetCore, BasicInstrumentation, CatInbound, CatOutbound, 
+        #   CSP, CustomAttributes, CustomInstrumentation, DataTransmission, DistributedTracing, Errors, 
+        #   HttpClientInstrumentation.NetCore, HttpClientInstrumentation.NetFramework, Owin, ReJit.NetCore, 
+        #   Logging.HsmAndCsp, Logging.LocalDecoration, Logging.MaxSamplesStored, Logging.ZeroMaxSamplesStored,
+        #   Logging.MetricsAndForwarding.log4net, Logging.MetricsAndForwarding.MicrosoftLogging, 
+        #   Logging.MetricsAndForwarding.Serilog, Logging.MetricsAndForwarding.NLog, Logging.LogLevelDetection,
+        #   ReJit.NetFramework, RemoteServiceFixtures, RestSharp, WCF.Client.IIS.ASPDisabled, WCF.Client.IIS.ASPEnabled, 
+        #   WCF.Client.Self, WCF.Service.IIS.ASPDisabled, WCF.Service.IIS.ASPEnabled, WCF.Service.Self, RequestHeadersCapture.WCF, 
+        #   RequestHeadersCapture.Owin, RequestHeadersCapture.AspNetCore, RequestHeadersCapture.Asp35, RequestHeadersCapture.EnvironmentVariables, 
+        #   RequestHandling, CodeLevelMetrics, InfiniteTracing]
       fail-fast: false # we don't want one test failure in one namespace to kill the other runs
 
     env:
@@ -581,397 +584,397 @@ jobs:
           path: C:\IntegrationTestWorkingDirectory\TestResults\**\*TestResults.trx
           if-no-files-found: error
 
-  run-integration-tests-linux-arm64:
-    needs: build-test-fullagent-msi
-    name: Run IntegrationTests linux-arm64
-    runs-on: ubuntu-22.04
-    if: false
+  # run-integration-tests-linux-arm64:
+  #   needs: build-test-fullagent-msi
+  #   name: Run IntegrationTests linux-arm64
+  #   runs-on: ubuntu-22.04
+  #   if: false
 
-    env:
-      test_path: ${{ github.workspace }}/tests/Agent/IntegrationTests/IntegrationTests/TestResults
+  #   env:
+  #     test_path: ${{ github.workspace }}/tests/Agent/IntegrationTests/IntegrationTests/TestResults
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Download Agent Home Folders
-        uses: actions/download-artifact@v2
-        with:
-          name: homefolders
-          path: src/Agent
+  #     - name: Download Agent Home Folders
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: homefolders
+  #         path: src/Agent
 
-      - name: Run test commands
-        uses: uraimo/run-on-arch-action@v2.0.5
-        with:
-          arch: aarch64
-          distro: ubuntu18.04
-          githubToken: ${{ github.token }}
+  #     - name: Run test commands
+  #       uses: uraimo/run-on-arch-action@v2.0.5
+  #       with:
+  #         arch: aarch64
+  #         distro: ubuntu18.04
+  #         githubToken: ${{ github.token }}
 
-          env: |
-            test_secrets: '${{ secrets.TEST_SECRETS }}'
-            NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY: 1
-            DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+  #         env: |
+  #           test_secrets: '${{ secrets.TEST_SECRETS }}'
+  #           NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY: 1
+  #           DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
 
-          install: |
-            apt-get update -q -y && apt-get install -q -y curl
-            export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
-            mkdir -p /usr/share/dotnet
-            curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/3.1.414/dotnet-sdk-3.1.414-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
-            curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/5.0.401/dotnet-sdk-5.0.401-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
-            curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/6.0.100/dotnet-sdk-6.0.100-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
-            ln -sf /usr/share/dotnet/dotnet /usr/bin/dotnet
-            dotnet help
+  #         install: |
+  #           apt-get update -q -y && apt-get install -q -y curl
+  #           export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+  #           mkdir -p /usr/share/dotnet
+  #           curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/3.1.414/dotnet-sdk-3.1.414-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
+  #           curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/5.0.401/dotnet-sdk-5.0.401-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
+  #           curl -sSL https://dotnetcli.azureedge.net/dotnet/Sdk/6.0.100/dotnet-sdk-6.0.100-linux-arm64.tar.gz | tar -xzC /usr/share/dotnet
+  #           ln -sf /usr/share/dotnet/dotnet /usr/bin/dotnet
+  #           dotnet help
 
-          dockerRunArgs: |
-            --volume "${{ env.test_path }}:/tmp/IntegrationTestWorkingDirectory"
+  #         dockerRunArgs: |
+  #           --volume "${{ env.test_path }}:/tmp/IntegrationTestWorkingDirectory"
 
-          run: |
-            cd tests/Agent/IntegrationTests/IntegrationTests
-            echo $test_secrets | dotnet user-secrets set --project "../Shared"
-            dotnet test -f netcoreapp3.1 -c Release -l "trx" --filter "FullyQualifiedName~ApiCallsTestsCore|FullyQualifiedName~InfiniteTracingNetCoreLatestTests"
+  #         run: |
+  #           cd tests/Agent/IntegrationTests/IntegrationTests
+  #           echo $test_secrets | dotnet user-secrets set --project "../Shared"
+  #           dotnet test -f netcoreapp3.1 -c Release -l "trx" --filter "FullyQualifiedName~ApiCallsTestsCore|FullyQualifiedName~InfiniteTracingNetCoreLatestTests"
 
-      - name: Archive IntegrationTestWorkingDirectory on Failure
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: integration-test-artifacts-linux-arm64
-          path: ${{ env.test_path }}/**/*
-          if-no-files-found: error
+  #     - name: Archive IntegrationTestWorkingDirectory on Failure
+  #       if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: integration-test-artifacts-linux-arm64
+  #         path: ${{ env.test_path }}/**/*
+  #         if-no-files-found: error
 
-      - name: Archive Test Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        if: ${{ always() }}
-        with:
-          name: integration-test-artifacts-linux-arm64
-          path: ${{ env.test_path }}/*.trx
-          if-no-files-found: error
+  #     - name: Archive Test Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       if: ${{ always() }}
+  #       with:
+  #         name: integration-test-artifacts-linux-arm64
+  #         path: ${{ env.test_path }}/*.trx
+  #         if-no-files-found: error
 
-  run-unbounded-tests:
-    needs: [build-unbounded-tests]
-    name: Run Unbounded Tests
-    runs-on: windows-2019
-    strategy:
-      matrix:
-        namespace: [ CosmosDB, Couchbase, MongoDB, Msmq, MsSql, MySql, NServiceBus, NServiceBus5, Oracle, Postgres, RabbitMq, Redis ]
-      fail-fast: false # we don't want one test failure in one namespace to kill the other runs
+  # run-unbounded-tests:
+  #   needs: [build-unbounded-tests]
+  #   name: Run Unbounded Tests
+  #   runs-on: windows-2019
+  #   strategy:
+  #     matrix:
+  #       namespace: [ CosmosDB, Couchbase, MongoDB, Msmq, MsSql, MySql, NServiceBus, NServiceBus5, Oracle, Postgres, RabbitMq, Redis ]
+  #     fail-fast: false # we don't want one test failure in one namespace to kill the other runs
 
-    env:
-      integration_tests_shared_project: ${{ github.workspace }}/tests/Agent/IntegrationTests/Shared
-      unbounded_tests_path: ${{ github.workspace }}/tests/Agent/IntegrationTests/UnboundedIntegrationTests/bin/Release/net462
-      NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY: 1
-      # Make this variable true to enable extra data-gathering and logging to help troubleshoot test failures, at the cost of additional time and resources
-      enhanced_logging: false
+  #   env:
+  #     integration_tests_shared_project: ${{ github.workspace }}/tests/Agent/IntegrationTests/Shared
+  #     unbounded_tests_path: ${{ github.workspace }}/tests/Agent/IntegrationTests/UnboundedIntegrationTests/bin/Release/net462
+  #     NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY: 1
+  #     # Make this variable true to enable extra data-gathering and logging to help troubleshoot test failures, at the cost of additional time and resources
+  #     enhanced_logging: false
 
-    steps:
-      - name: My IP
-        run: (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
-        shell: powershell
+  #   steps:
+  #     - name: My IP
+  #       run: (Invoke-WebRequest -uri "http://ifconfig.me/ip").Content
+  #       shell: powershell
         
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '6.0.x'
-          include-prerelease: true
+  #     - name: Setup .NET 6.0
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: '6.0.x'
+  #         include-prerelease: true
 
-      - name: Download Agent Home Folders
-        uses: actions/download-artifact@v2
-        with:
-          name: homefolders
-          path: src/Agent
+  #     - name: Download Agent Home Folders
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: homefolders
+  #         path: src/Agent
 
-      - name: Download Unbounded Integration Test Artifacts
-        uses: actions/download-artifact/@v2
-        with:
-          name: unboundedintegrationtests
-          # Should not need a path because the integration test artifacts are archived with the full directory structure
+  #     - name: Download Unbounded Integration Test Artifacts
+  #       uses: actions/download-artifact/@v2
+  #       with:
+  #         name: unboundedintegrationtests
+  #         # Should not need a path because the integration test artifacts are archived with the full directory structure
       
-      - name: Setup TLS
-        run: |
-          $registryRootPath = "HKCU:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols"
-          $tls10 = "TLS 1.0"
-          $tls11 = "TLS 1.1"
-          $tls12 = "TLS 1.2"
-          $client = "Client"
-          $server = "Server"
-          $registryPaths = @(
-          "$registryRootPath\$tls10\$client",
-          "$registryRootPath\$tls10\$server",
-          "$registryRootPath\$tls11\$client",
-          "$registryRootPath\$tls11\$server",
-          "$registryRootPath\$tls12\$client",
-          "$registryRootPath\$tls12\$server"
-          )
-          $name = "Enabled"
-          $value = "1"
-          foreach ($registryPath in $registryPaths) {
-            if(!(Test-Path $registryPath)) {
-              New-Item -Path $registryPath -Force | Out-Null
-              New-ItemProperty -Path $registryPath -Name $name -Value $value -PropertyType DWORD -Force | Out-Null
-            }
-            else {
-              New-ItemProperty -Path $registryPath -Name $name -Value $value -PropertyType DWORD -Force | Out-Null
-            }
-          }  
-        shell: powershell
+  #     - name: Setup TLS
+  #       run: |
+  #         $registryRootPath = "HKCU:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols"
+  #         $tls10 = "TLS 1.0"
+  #         $tls11 = "TLS 1.1"
+  #         $tls12 = "TLS 1.2"
+  #         $client = "Client"
+  #         $server = "Server"
+  #         $registryPaths = @(
+  #         "$registryRootPath\$tls10\$client",
+  #         "$registryRootPath\$tls10\$server",
+  #         "$registryRootPath\$tls11\$client",
+  #         "$registryRootPath\$tls11\$server",
+  #         "$registryRootPath\$tls12\$client",
+  #         "$registryRootPath\$tls12\$server"
+  #         )
+  #         $name = "Enabled"
+  #         $value = "1"
+  #         foreach ($registryPath in $registryPaths) {
+  #           if(!(Test-Path $registryPath)) {
+  #             New-Item -Path $registryPath -Force | Out-Null
+  #             New-ItemProperty -Path $registryPath -Name $name -Value $value -PropertyType DWORD -Force | Out-Null
+  #           }
+  #           else {
+  #             New-ItemProperty -Path $registryPath -Name $name -Value $value -PropertyType DWORD -Force | Out-Null
+  #           }
+  #         }  
+  #       shell: powershell
 
-      - name: Install dependencies
-        run: |
-          Write-Host "Installing HostableWebCore Feature"
-          Enable-WindowsOptionalFeature -Online -FeatureName IIS-HostableWebCore
-          Write-Host "Installing Msmq Features"
-          Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-Server -All
-          Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-HTTP -All
-          Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-Triggers -All
+  #     - name: Install dependencies
+  #       run: |
+  #         Write-Host "Installing HostableWebCore Feature"
+  #         Enable-WindowsOptionalFeature -Online -FeatureName IIS-HostableWebCore
+  #         Write-Host "Installing Msmq Features"
+  #         Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-Server -All
+  #         Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-HTTP -All
+  #         Enable-WindowsOptionalFeature -Online -FeatureName MSMQ-Triggers -All
 
-          if ("${{ matrix.namespace }}" -eq "MsSql") {
-            Write-Host "Installing MSSQL CLI"
-            msiexec /i "${{ github.workspace }}\build\Tools\sqlncli.msi" IACCEPTSQLNCLILICENSETERMS=YES /quiet /qn /norestart
-            Start-Sleep 20 # Need to wait for install to finish -- takes only a few seconds, but we need to be sure.
-          }
-        shell: powershell
+  #         if ("${{ matrix.namespace }}" -eq "MsSql") {
+  #           Write-Host "Installing MSSQL CLI"
+  #           msiexec /i "${{ github.workspace }}\build\Tools\sqlncli.msi" IACCEPTSQLNCLILICENSETERMS=YES /quiet /qn /norestart
+  #           Start-Sleep 20 # Need to wait for install to finish -- takes only a few seconds, but we need to be sure.
+  #         }
+  #       shell: powershell
 
-      - name: Set up secrets
-        env:
-          INTEGRATION_TEST_SECRETS: ${{ secrets.UNBOUNDED_TEST_SECRETS }}
-        run: |
-          "$Env:INTEGRATION_TEST_SECRETS" | dotnet user-secrets set --project ${{ env.integration_tests_shared_project }}
-        shell: pwsh #this doesn't work with normal powershell due to UTF-8 BOM handling
+  #     - name: Set up secrets
+  #       env:
+  #         INTEGRATION_TEST_SECRETS: ${{ secrets.UNBOUNDED_TEST_SECRETS }}
+  #       run: |
+  #         "$Env:INTEGRATION_TEST_SECRETS" | dotnet user-secrets set --project ${{ env.integration_tests_shared_project }}
+  #       shell: pwsh #this doesn't work with normal powershell due to UTF-8 BOM handling
 
-      - name: Start Local CosmosDB Emulator for CosmosDB Tests
-        if: matrix.namespace == 'CosmosDB'
-        uses: southpolesteve/cosmos-emulator-github-action@v1
+  #     - name: Start Local CosmosDB Emulator for CosmosDB Tests
+  #       if: matrix.namespace == 'CosmosDB'
+  #       uses: southpolesteve/cosmos-emulator-github-action@v1
 
-      - name: Run Unbounded Integration Tests
-        run: |
-          if ($Env:enhanced_logging -eq $True) {
-            Write-Host "List ports in use"
-            netstat -no  
-          }
+  #     - name: Run Unbounded Integration Tests
+  #       run: |
+  #         if ($Env:enhanced_logging -eq $True) {
+  #           Write-Host "List ports in use"
+  #           netstat -no  
+  #         }
 
-          # Test parallelization is disabled until we can solve concurrent dotnet publish issues with ConsoleMF usage
-          $json = Get-Content "${{ env.unbounded_tests_path }}/xunit.runner.json" | ConvertFrom-Json
-          $json | Add-Member -Name "parallelizeAssembly" -Value $false -MemberType NoteProperty
-          $json | Add-Member -Name "parallelizeTestCollections" -Value $false -MemberType NoteProperty
-          $json | ConvertTo-Json | Out-File "${{ env.unbounded_tests_path }}/xunit.runner.json"
+  #         # Test parallelization is disabled until we can solve concurrent dotnet publish issues with ConsoleMF usage
+  #         $json = Get-Content "${{ env.unbounded_tests_path }}/xunit.runner.json" | ConvertFrom-Json
+  #         $json | Add-Member -Name "parallelizeAssembly" -Value $false -MemberType NoteProperty
+  #         $json | Add-Member -Name "parallelizeTestCollections" -Value $false -MemberType NoteProperty
+  #         $json | ConvertTo-Json | Out-File "${{ env.unbounded_tests_path }}/xunit.runner.json"
 
-          dotnet test ${{ env.unbounded_tests_path }}/NewRelic.Agent.UnboundedIntegrationTests.dll --filter FullyQualifiedName~NewRelic.Agent.UnboundedIntegrationTests.${{ matrix.namespace }} --no-build --nologo --logger "trx;LogFileName=C:\IntegrationTestWorkingDirectory\TestResults\${{ matrix.namespace }}_testResults.trx"
+  #         dotnet test ${{ env.unbounded_tests_path }}/NewRelic.Agent.UnboundedIntegrationTests.dll --filter FullyQualifiedName~NewRelic.Agent.UnboundedIntegrationTests.${{ matrix.namespace }} --no-build --nologo --logger "trx;LogFileName=C:\IntegrationTestWorkingDirectory\TestResults\${{ matrix.namespace }}_testResults.trx"
 
-          if ($Env:enhanced_logging -eq $True) {
-            Write-Host "Get HostableWebCore errors (if any)"
-            Get-EventLog -LogName Application -Source HostableWebCore -ErrorAction:Ignore
+  #         if ($Env:enhanced_logging -eq $True) {
+  #           Write-Host "Get HostableWebCore errors (if any)"
+  #           Get-EventLog -LogName Application -Source HostableWebCore -ErrorAction:Ignore
 
-            Write-Host "Get .NET Runtime errors (if any)"
-            Get-EventLog -LogName Application -Source ".NET Runtime" -EntryType "Error","Warning" -ErrorAction:Ignore  
-          }
-        shell: powershell
+  #           Write-Host "Get .NET Runtime errors (if any)"
+  #           Get-EventLog -LogName Application -Source ".NET Runtime" -EntryType "Error","Warning" -ErrorAction:Ignore  
+  #         }
+  #       shell: powershell
 
-      - name: Archive IntegrationTestWorkingDirectory on Failure
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: integration-test-artifacts
-          path: |
-            C:\IntegrationTestWorkingDirectory\**\*.log
-            C:\IntegrationTestWorkingDirectory\**\*.config
-          if-no-files-found: error
+  #     - name: Archive IntegrationTestWorkingDirectory on Failure
+  #       if: ${{ failure() }}
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: integration-test-artifacts
+  #         path: |
+  #           C:\IntegrationTestWorkingDirectory\**\*.log
+  #           C:\IntegrationTestWorkingDirectory\**\*.config
+  #         if-no-files-found: error
 
-      - name: Archive Test Artifacts
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: integration-test-artifacts
-          path: C:\IntegrationTestWorkingDirectory\TestResults\**\*TestResults.trx
-          if-no-files-found: error
+  #     - name: Archive Test Artifacts
+  #       if: ${{ always() }}
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: integration-test-artifacts
+  #         path: C:\IntegrationTestWorkingDirectory\TestResults\**\*TestResults.trx
+  #         if-no-files-found: error
 
-  create-package-rpm:
-    needs: build-test-fullagent-msi
-    if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
-    name: Create RPM Package
-    runs-on: ubuntu-22.04
+  # create-package-rpm:
+  #   needs: build-test-fullagent-msi
+  #   if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
+  #   name: Create RPM Package
+  #   runs-on: ubuntu-22.04
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
       
-      - name: Download msi _build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: msi-build-folder-artifacts
-          path: src/_build
+  #     - name: Download msi _build Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: msi-build-folder-artifacts
+  #         path: src/_build
 
-      - name: Download Agent Home Folders
-        uses: actions/download-artifact@v2
-        with:
-          name: homefolders
-          path: src/Agent
+  #     - name: Download Agent Home Folders
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: homefolders
+  #         path: src/Agent
 
-      - name: Convert GPG Key Into File
-        id: write_gpgkey
-        run: |
-          filePath="/tmp/gpg.tar.bz2"
-          echo "${{ secrets.GPG_KEY }}" | base64 -d > $filePath
-          echo "::set-output name=filePath::$filePath"
-        shell: bash
+  #     - name: Convert GPG Key Into File
+  #       id: write_gpgkey
+  #       run: |
+  #         filePath="/tmp/gpg.tar.bz2"
+  #         echo "${{ secrets.GPG_KEY }}" | base64 -d > $filePath
+  #         echo "::set-output name=filePath::$filePath"
+  #       shell: bash
 
-      - name: Copy GPG Key to keys
-        run: |
-          mkdir ${{ github.workspace }}/build/Linux/keys
-          cp -f ${{ steps.write_gpgkey.outputs.filePath }} ${{ github.workspace }}/build/Linux/keys/gpg.tar.bz2
-        shell: bash
+  #     - name: Copy GPG Key to keys
+  #       run: |
+  #         mkdir ${{ github.workspace }}/build/Linux/keys
+  #         cp -f ${{ steps.write_gpgkey.outputs.filePath }} ${{ github.workspace }}/build/Linux/keys/gpg.tar.bz2
+  #       shell: bash
 
-      - name: Build RPM
-        run: |
-          agentVersion=${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
+  #     - name: Build RPM
+  #       run: |
+  #         agentVersion=${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
           
-          if [[ "$agentVersion" =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            major=$(echo $agentVersion | cut -d'.' -f1)
-            minor=$(echo $agentVersion | cut -d'.' -f2)
-            patch=$(echo $agentVersion | cut -d'.' -f3)
-            agentVersion="${major}.${minor}.${patch}"
-            echo "agentVersion is simplified to $agentVersion"
-          fi
+  #         if [[ "$agentVersion" =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+  #           major=$(echo $agentVersion | cut -d'.' -f1)
+  #           minor=$(echo $agentVersion | cut -d'.' -f2)
+  #           patch=$(echo $agentVersion | cut -d'.' -f3)
+  #           agentVersion="${major}.${minor}.${patch}"
+  #           echo "agentVersion is simplified to $agentVersion"
+  #         fi
           
-          cd ${{ github.workspace }}/build/Linux
-          docker-compose build build_rpm
-          docker-compose run -e AGENT_VERSION=$agentVersion -e GPG_KEYS=/keys/gpg.tar.bz2 build_rpm
-        shell: bash
+  #         cd ${{ github.workspace }}/build/Linux
+  #         docker-compose build build_rpm
+  #         docker-compose run -e AGENT_VERSION=$agentVersion -e GPG_KEYS=/keys/gpg.tar.bz2 build_rpm
+  #       shell: bash
       
-      - name: Archive RPM Package Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: rpm-build-artifacts
-          path: ${{ github.workspace }}/src/_build/CoreArtifacts
-          if-no-files-found: error
+  #     - name: Archive RPM Package Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: rpm-build-artifacts
+  #         path: ${{ github.workspace }}/src/_build/CoreArtifacts
+  #         if-no-files-found: error
 
-  create-package-deb:
-    needs: build-test-fullagent-msi
-    if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
-    name: Create Debian package
-    runs-on: ubuntu-22.04
+  # create-package-deb:
+  #   needs: build-test-fullagent-msi
+  #   if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
+  #   name: Create Debian package
+  #   runs-on: ubuntu-22.04
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
         
-      - name: Download Agent Home Folders
-        uses: actions/download-artifact@v2
-        with:
-          name: homefolders
-          path: src/Agent
+  #     - name: Download Agent Home Folders
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: homefolders
+  #         path: src/Agent
 
-      - name: Download msi _build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: msi-build-folder-artifacts
-          path: src/_build
+  #     - name: Download msi _build Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: msi-build-folder-artifacts
+  #         path: src/_build
 
-      - name: Build Debian Package
-        run: |
-          agentVersion=${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
+  #     - name: Build Debian Package
+  #       run: |
+  #         agentVersion=${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
           
-          if [[ "$agentVersion" =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            major=$(echo $agentVersion | cut -d'.' -f1)
-            minor=$(echo $agentVersion | cut -d'.' -f2)
-            patch=$(echo $agentVersion | cut -d'.' -f3)
-            agentVersion="${major}.${minor}.${patch}"
-            echo "agentVersion is simplified to $agentVersion"
-          fi
+  #         if [[ "$agentVersion" =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+  #           major=$(echo $agentVersion | cut -d'.' -f1)
+  #           minor=$(echo $agentVersion | cut -d'.' -f2)
+  #           patch=$(echo $agentVersion | cut -d'.' -f3)
+  #           agentVersion="${major}.${minor}.${patch}"
+  #           echo "agentVersion is simplified to $agentVersion"
+  #         fi
           
-          cd ${{ github.workspace }}/build/Linux
-          docker-compose build build_deb
-          docker-compose run -e AGENT_VERSION=$agentVersion build_deb
-        shell: bash
+  #         cd ${{ github.workspace }}/build/Linux
+  #         docker-compose build build_deb
+  #         docker-compose run -e AGENT_VERSION=$agentVersion build_deb
+  #       shell: bash
         
-      - name: Archive Debian Package Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: debian-build-artifacts
-          path: ${{ github.workspace }}/src/_build/CoreArtifacts
-          if-no-files-found: error
+  #     - name: Archive Debian Package Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: debian-build-artifacts
+  #         path: ${{ github.workspace }}/src/_build/CoreArtifacts
+  #         if-no-files-found: error
 
-  run-artifactbuilder:
-    needs: [ create-package-rpm, create-package-deb ]
-    if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
-    name: Run ArtifactBuilder
-    runs-on: windows-2019
+  # run-artifactbuilder:
+  #   needs: [ create-package-rpm, create-package-deb ]
+  #   if: ${{ github.event.release }} || github.event_name == 'workflow_dispatch'
+  #   name: Run ArtifactBuilder
+  #   runs-on: windows-2019
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Download Agent Home Folders
-        uses: actions/download-artifact@v2
-        with:
-          name: homefolders
-          path: src/Agent 
+  #     - name: Download Agent Home Folders
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: homefolders
+  #         path: src/Agent 
       
-      - name: Download msi _build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: msi-build-folder-artifacts
-          path: src/_build
+  #     - name: Download msi _build Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: msi-build-folder-artifacts
+  #         path: src/_build
 
-      - name: Download Debian _build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: debian-build-artifacts
-          path: src/_build/CoreArtifacts
+  #     - name: Download Debian _build Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: debian-build-artifacts
+  #         path: src/_build/CoreArtifacts
 
-      - name: Download RPM _build Artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: rpm-build-artifacts
-          path: src/_build/CoreArtifacts
+  #     - name: Download RPM _build Artifacts
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: rpm-build-artifacts
+  #         path: src/_build/CoreArtifacts
 
-      - name: Download NewRelic.NuGetHelper
-        uses: actions/download-artifact@v2
-        with:
-          name: NewRelic.NuGetHelper
-          path: build/NewRelic.NuGetHelper/bin
+  #     - name: Download NewRelic.NuGetHelper
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: NewRelic.NuGetHelper
+  #         path: build/NewRelic.NuGetHelper/bin
       
-      - name: Download NewRelic.Agent.Extensions
-        uses: actions/download-artifact@v2
-        with:
-          name: NewRelic.Agent.Extensions
-          path: src/Agent/NewRelic/Agent/Extensions/NewRelic.Agent.Extensions/bin/Release
+  #     - name: Download NewRelic.Agent.Extensions
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: NewRelic.Agent.Extensions
+  #         path: src/Agent/NewRelic/Agent/Extensions/NewRelic.Agent.Extensions/bin/Release
 
-      - name: Download NewRelic.OpenTracing.AmazonLambda.Tracer
-        uses: actions/download-artifact@v2
-        with:
-          name: NewRelic.OpenTracing.AmazonLambda.Tracer
-          path: src/AwsLambda/AwsLambdaOpenTracer/bin/Release/netstandard2.0-ILRepacked
+  #     - name: Download NewRelic.OpenTracing.AmazonLambda.Tracer
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: NewRelic.OpenTracing.AmazonLambda.Tracer
+  #         path: src/AwsLambda/AwsLambdaOpenTracer/bin/Release/netstandard2.0-ILRepacked
 
-      - name: Run ArtifactBuilder
-        run: |
-          ${{ github.workspace }}\build\package.ps1 -configuration Release -IncludeDownloadSite
-        shell: powershell
+  #     - name: Run ArtifactBuilder
+  #       run: |
+  #         ${{ github.workspace }}\build\package.ps1 -configuration Release -IncludeDownloadSite
+  #       shell: powershell
 
-      - name: Archive Deploy Artifacts
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: deploy-artifacts
-          path: |
-            ${{ github.workspace }}\build\BuildArtifacts
-            ${{ github.workspace }}\deploy
-          if-no-files-found: error
+  #     - name: Archive Deploy Artifacts
+  #       uses: actions/upload-artifact@v2.2.4
+  #       with:
+  #         name: deploy-artifacts
+  #         path: |
+  #           ${{ github.workspace }}\build\BuildArtifacts
+  #           ${{ github.workspace }}\deploy
+  #         if-no-files-found: error
   
-  run-multiverse_testing_suite:
-    name: Build and Publish Multiverse Testing Suite
-    needs: build-test-fullagent-msi
-    if: ${{ github.event.release }}
-    uses: newrelic/newrelic-dotnet-agent/.github/workflows/multiverse_run.yml@main
-    with:
-      agentVersion: ${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
+  # run-multiverse_testing_suite:
+  #   name: Build and Publish Multiverse Testing Suite
+  #   needs: build-test-fullagent-msi
+  #   if: ${{ github.event.release }}
+  #   uses: newrelic/newrelic-dotnet-agent/.github/workflows/multiverse_run.yml@main
+  #   with:
+  #     agentVersion: ${{ needs.build-test-fullagent-msi.outputs.agentVersion }}
