@@ -26,6 +26,13 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
             _log.Info(message);
         }
 
+        public void InfoWithCustomProperty(string message, string key, string value)
+        {
+            LogEventInfo logEvent = new LogEventInfo(LogLevel.Info, null, message);
+            logEvent.Properties[key] = value;
+            _log.Log(logEvent);
+        }
+
         public void Warn(string message)
         {
             _log.Warn(message);
@@ -95,5 +102,6 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
             logFactory.Configuration = logConfig;
             return logFactory.GetLogger("NLogLoggingTest");
         }
+
     }
 }

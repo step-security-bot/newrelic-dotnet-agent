@@ -100,6 +100,11 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
             throw new System.NotImplementedException();
 #endif
         }
+
+        void ILoggingAdapter.InfoWithCustomProperty(string message, string key, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>

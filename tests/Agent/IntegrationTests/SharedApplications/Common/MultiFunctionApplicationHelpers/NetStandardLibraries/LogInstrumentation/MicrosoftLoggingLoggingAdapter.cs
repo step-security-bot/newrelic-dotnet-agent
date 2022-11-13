@@ -109,6 +109,11 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
             });
             logger = loggerFactory.CreateLogger<LoggingTester>();
         }
+
+        void ILoggingAdapter.InfoWithCustomProperty(string message, string key, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

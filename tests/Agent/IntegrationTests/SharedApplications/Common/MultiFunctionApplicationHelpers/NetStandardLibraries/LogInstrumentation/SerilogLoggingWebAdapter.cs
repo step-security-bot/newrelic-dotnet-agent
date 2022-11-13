@@ -121,6 +121,11 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
         {
             throw new NotImplementedException();
         }
+
+        void ILoggingAdapter.InfoWithCustomProperty(string message, string key, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Startup

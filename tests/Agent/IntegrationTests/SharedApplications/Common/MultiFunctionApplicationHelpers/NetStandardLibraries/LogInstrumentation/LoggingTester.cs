@@ -99,6 +99,12 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
         }
 
         [LibraryMethod]
+        public static void CreateSingleLogMessageWithCustomProperties(string message, string key, string value)
+        {
+            _log.InfoWithCustomProperty(message, key, value);
+        }
+
+        [LibraryMethod]
         [Transaction]
         [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
         public static void CreateSingleLogMessageInTransaction(string message, string level)
@@ -161,6 +167,14 @@ namespace MultiFunctionApplicationHelpers.NetStandardLibraries.LogInstrumentatio
         {
             CreateSingleLogMessage(message, level);
             CreateSingleLogMessageWithTraceAttribute(message, level);
+        }
+
+        [LibraryMethod]
+        [Transaction]
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        public static void CreateSingleLogMessageInTransactionWithCustomProperties(string message, string key, string value)
+        {
+            CreateSingleLogMessageWithCustomProperties(message, key, value);
         }
 
     }
