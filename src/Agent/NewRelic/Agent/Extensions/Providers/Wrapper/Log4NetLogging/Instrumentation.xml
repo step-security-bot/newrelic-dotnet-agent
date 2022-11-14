@@ -10,5 +10,10 @@ SPDX-License-Identifier: Apache-2.0
         <exactMethodMatcher methodName="CallAppenders" />
       </match>
     </tracerFactory>
+    <tracerFactory name="AgentInternalLog4net">
+      <match assemblyName="NewRelic.Agent.Core" className="log4net.Repository.Hierarchy.Logger">
+        <exactMethodMatcher methodName="CallAppenders" />
+      </match>
+    </tracerFactory>
   </instrumentation>
 </extension>

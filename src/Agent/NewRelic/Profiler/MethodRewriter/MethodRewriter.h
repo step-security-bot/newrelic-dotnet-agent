@@ -102,6 +102,13 @@ namespace NewRelic { namespace Profiler { namespace MethodRewriter {
         {
             LogTrace("Possibly instrumenting: ", function->ToString());
 
+            auto functionDescription = function->ToString();
+
+            if (NewRelic::Profiler::Strings::ContainsCaseInsensitive(functionDescription, _X("CallAppenders")))
+            {
+                LogTrace("We found our function!");
+            }
+
             InstrumentationSettingsPtr instrumentationSettings = std::make_shared<InstrumentationSettings>(_instrumentationConfiguration, _corePath);
 
             if (_helperInstrumentor->Instrument(function, instrumentationSettings) || _apiInstrumentor->Instrument(function, instrumentationSettings) || _defaultInstrumentor->Instrument(function, instrumentationSettings)) {

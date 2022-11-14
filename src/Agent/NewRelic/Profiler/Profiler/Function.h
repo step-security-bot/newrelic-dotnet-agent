@@ -148,9 +148,15 @@ namespace NewRelic { namespace Profiler
             ULONG functionNameLength = 0;
             DWORD methodAttributes;
             StaticThrowOnError(metaDataImport->GetMethodProps(metaDataToken, nullptr, nullptr, 0, &functionNameLength, &methodAttributes, nullptr, nullptr, nullptr, nullptr));
-            
+
             std::unique_ptr<WCHAR[]> functionName(new WCHAR[functionNameLength]);
             StaticThrowOnError(metaDataImport->GetMethodProps(metaDataToken, &typeDefinitionToken, functionName.get(), functionNameLength, nullptr, nullptr, &signature, &signatureSize, nullptr, nullptr));
+
+            auto functionNameAsWString = ToStdWString(functionName.get());
+            if (Strings::ContainsCaseInsensitive(functionNameAsWString, _X("CallAppenders")))
+            {
+                LogInfo("Creating Function.Create for our function of interest!");
+            }
 
             if (!skipShouldInstrumentChecks && !methodRewriter.get()->ShouldInstrumentFunction(ToStdWString(functionName.get()))) {
                 assemblyName.release();
@@ -188,6 +194,8 @@ namespace NewRelic { namespace Profiler
 
                 return nullptr;
             }
+
+           
 
             return std::make_shared<Function>(profilerInfo, functionId, metaDataImport, metaDataAssemblyImport, methodRewriter,
                 appDomainId, signatureSize, signature, moduleId, classId, metaDataToken, typeDefinitionToken, ToStdWString(assemblyName.get()), 
