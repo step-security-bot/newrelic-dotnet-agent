@@ -3,6 +3,7 @@
 
 using NewRelic.Agent.Api;
 using NewRelic.Agent.Configuration;
+using NewRelic.Agent.Core.AgentHealth;
 using NewRelic.Agent.Core.Commands;
 using NewRelic.Agent.Core.Config;
 using NewRelic.Agent.Core.Configuration;
@@ -103,6 +104,8 @@ namespace NewRelic.Agent.Core
             // Resolve IConfigurationService (so that it starts listening to config changes) before loading newrelic.config
             _container.Resolve<IConfigurationService>();
 
+            
+
             configuration config = null;
 
             try
@@ -122,7 +125,7 @@ namespace NewRelic.Agent.Core
                 throw;
             }
 
-            LoggerBootstrapper.ConfigureLogger(config.LogConfig);
+           
 
             AssertAgentEnabled(config);
 
@@ -152,6 +155,12 @@ namespace NewRelic.Agent.Core
             AgentApi.SetSupportabilityMetricCounters(_container.Resolve<IApiSupportabilityMetricCounters>());
 
             Initialize();
+
+            // Now it is safe to get the health reporter, and reconfigure logging.
+            var healthReporter = _container.Resolve<IAgentHealthReporter>();
+            LoggerBootstrapper.ConfigureLogger(config.LogConfig, healthReporter);
+
+
             _isInitialized = true;
         }
 

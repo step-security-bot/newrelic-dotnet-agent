@@ -6,6 +6,7 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Filter;
 using log4net.Layout;
+using NewRelic.Agent.Core.AgentHealth;
 using NewRelic.Agent.Core.Config;
 using NewRelic.Agent.Core.Logging;
 using NewRelic.Core.Logging;
@@ -102,7 +103,7 @@ namespace NewRelic.Agent.Core
         /// A <see cref="ILogger"/>
         /// </returns>
         /// <remarks>This should only be called once, as soon as you have a valid config.</remarks>
-        public static void ConfigureLogger(ILogConfig config)
+        public static void ConfigureLogger(ILogConfig config, IAgentHealthReporter healthReporter = null)
         {
             var hierarchy = log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()) as log4net.Repository.Hierarchy.Hierarchy;
             var logger = hierarchy.Root;
@@ -127,7 +128,7 @@ namespace NewRelic.Agent.Core
             // the other appenders.
             ShutdownStartupLogAppender(logger);
 
-            Log.Initialize(new Logger());
+            Log.Initialize(new Logger(healthReporter));
         }
 
         /// <summary>

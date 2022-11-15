@@ -96,7 +96,7 @@ namespace NewRelic.Agent.Core
 
         public IConfiguration Configuration => _configurationService.Configuration;
 
-        public Extensions.Logging.ILogger Logger => _logger ?? (_logger = new Logger());
+        public Extensions.Logging.ILogger Logger => _logger ?? (_logger = new Logger(_agentHealthReporter));
 
         #region Transaction management
 

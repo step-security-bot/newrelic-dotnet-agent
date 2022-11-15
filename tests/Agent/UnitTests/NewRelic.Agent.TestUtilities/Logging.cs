@@ -35,7 +35,8 @@ namespace NewRelic.Agent.TestUtilities
 
             Logger.Repository.Configured = true;
 
-            Log.Initialize(new Logger());
+            // TODO: Fix this to mock the health reporter?
+            Log.Initialize(new Logger(null));
         }
 
         /// <summary>
