@@ -31,10 +31,14 @@ namespace NewRelic.Agent.IntegrationTests.Logging.ContextData
             { "mycontext2", "bar" },
             { "mycontext3", "test" },
             { "mycontext4", "value" },
+            { "excludeme", "value" },
         };
 
+        public ContextDataTestsBase(TFixture fixture, ITestOutputHelper output, bool contextDataEnabled, LoggingFramework loggingFramework)
+            : this(fixture, output, true, string.Empty, string.Empty, LoggingFramework.Log4net)
+        { }
 
-        public ContextDataTestsBase(TFixture fixture, ITestOutputHelper output, bool contextDataEnabled, LoggingFramework loggingFramework) : base(fixture)
+        public ContextDataTestsBase(TFixture fixture, ITestOutputHelper output, bool contextDataEnabled, string includes, string excludes, LoggingFramework loggingFramework) : base(fixture)
         {
             _fixture = fixture;
             _loggingFramework = loggingFramework;
@@ -64,6 +68,16 @@ namespace NewRelic.Agent.IntegrationTests.Logging.ContextData
                     .EnableContextData(_contextDataEnabled)
                     .EnableDistributedTrace()
                     .SetLogLevel("debug");
+
+                    if (!string.IsNullOrWhiteSpace(includes))
+                    {
+                        configModifier.SetContextDataIncludes(includes);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(excludes))
+                    {
+                        configModifier.SetContextDataIncludes(excludes);
+                    }
                 },
                 exerciseApplication: () =>
                 {
@@ -167,6 +181,73 @@ namespace NewRelic.Agent.IntegrationTests.Logging.ContextData
     {
         public Log4NetContextDataEnabledNetCore31Tests(ConsoleDynamicMethodFixtureCore31 fixture, ITestOutputHelper output)
             : base(fixture, output, true, LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    #endregion
+
+    #region ContextData Enabled - Includes
+
+    [NetFrameworkTest]
+    public class Log4NetContextDataEnabledIncludesFWLatestTests : ContextDataTestsBase<ConsoleDynamicMethodFixtureFWLatest>
+    {
+        public Log4NetContextDataEnabledIncludesFWLatestTests(ConsoleDynamicMethodFixtureFWLatest fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetFrameworkTest]
+    public class Log4NetContextDataEnabledIncludesFW471Tests : ContextDataTestsBase<ConsoleDynamicMethodFixtureFW471>
+    {
+        public Log4NetContextDataEnabledIncludesFW471Tests(ConsoleDynamicMethodFixtureFW471 fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetFrameworkTest]
+    public class Log4NetContextDataEnabledIncludesFW462Tests : ContextDataTestsBase<ConsoleDynamicMethodFixtureFW462>
+    {
+        public Log4NetContextDataEnabledIncludesFW462Tests(ConsoleDynamicMethodFixtureFW462 fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetCoreTest]
+    public class Log4NetContextDataEnabledIncludesNetCoreLatestTests : ContextDataTestsBase<ConsoleDynamicMethodFixtureCoreLatest>
+    {
+        public Log4NetContextDataEnabledIncludesNetCoreLatestTests(ConsoleDynamicMethodFixtureCoreLatest fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetCoreTest]
+    public class Log4NetContextDataEnabledIncludesNetCore60Tests : ContextDataTestsBase<ConsoleDynamicMethodFixtureCore60>
+    {
+        public Log4NetContextDataEnabledIncludesNetCore60Tests(ConsoleDynamicMethodFixtureCore60 fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetCoreTest]
+    public class Log4NetContextDataEnabledIncludesNetCore50Tests : ContextDataTestsBase<ConsoleDynamicMethodFixtureCore50>
+    {
+        public Log4NetContextDataEnabledIncludesNetCore50Tests(ConsoleDynamicMethodFixtureCore50 fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
+        {
+        }
+    }
+
+    [NetCoreTest]
+    public class Log4NetContextDataEnabledIncludesNetCore31Tests : ContextDataTestsBase<ConsoleDynamicMethodFixtureCore31>
+    {
+        public Log4NetContextDataEnabledIncludesNetCore31Tests(ConsoleDynamicMethodFixtureCore31 fixture, ITestOutputHelper output)
+            : base(fixture, output, true, "", "", LoggingFramework.Log4net)
         {
         }
     }

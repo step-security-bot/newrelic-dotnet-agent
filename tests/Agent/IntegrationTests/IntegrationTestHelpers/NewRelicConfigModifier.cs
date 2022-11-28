@@ -329,5 +329,21 @@ namespace NewRelic.Agent.IntegrationTestHelpers
 
             return this;
         }
+
+        public NewRelicConfigModifier SetContextDataIncludes(string includes)
+        {
+            CommonUtils.ModifyOrCreateXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "applicationLogging", "forwarding" }, "contextData", string.Empty);
+            CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath, new[] { "configuration", "applicationLogging", "forwarding", "contextData" }, "include", includes);
+
+            return this;
+        }
+
+        public NewRelicConfigModifier SetContextDataExcludes(string excludes)
+        {
+            CommonUtils.ModifyOrCreateXmlNodeInNewRelicConfig(_configFilePath, new[] { "configuration", "applicationLogging", "forwarding" }, "contextData", string.Empty);
+            CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(_configFilePath, new[] { "configuration", "applicationLogging", "forwarding", "contextData" }, "exclude", excludes);
+
+            return this;
+        }
     }
 }
