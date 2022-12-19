@@ -6,6 +6,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading;
 using Newtonsoft.Json;
@@ -17,6 +18,9 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
     public class RemoteService : RemoteApplication
     {
         private static readonly ConcurrentDictionary<string, object> PublishCoreAppLocks = new ConcurrentDictionary<string, object>();
+        private static ConcurrentDictionary<string, string> _publishedTestAppsCache = new ConcurrentDictionary<string, string>();
+
+        private static readonly string PublishedTestAppsCacheDir = Path.Combine(DestinationWorkingDirectoryRemotePath, "PublishedTestAppsCache");
 
         protected readonly string _executableName;
 
@@ -24,6 +28,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         private readonly bool _createsPidFile;
         private readonly string _targetFramework;
+
 
         public virtual string ProfilerGuidOverride { get; set; }
 
@@ -108,81 +113,106 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         private void PublishWithDotnetExe(string framework)
         {
-            var projectFile = Path.Combine(SourceApplicationsDirectoryPath, ApplicationDirectoryName,
-                ApplicationDirectoryName + ".csproj");
-            var deployPath = Path.Combine(DestinationRootDirectoryPath, ApplicationDirectoryName);
-
-            TestLogger?.WriteLine($"[RemoteService]: Publishing to {deployPath}.");
-
             var runtime = Utilities.CurrentRuntime;
-            var process = new Process();
-            var startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.UseShellExecute = false;
-            startInfo.FileName = "dotnet";
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
 
-            startInfo.Arguments =
-                $"publish --configuration Release --runtime {runtime} --framework {framework} --output {deployPath} {projectFile}";
-            TestLogger?.WriteLine($"[RemoteService]: executing 'dotnet {startInfo.Arguments}'");
-            process.StartInfo = startInfo;
+            // This is a key used to identify the test app that we want to be published
+            // so that we can "cache" the apps being published and avoid publishing them
+            // over and over again per test run
+            var testAppIdentifier = $"{ApplicationDirectoryName}.{framework}.{runtime}";
 
-            //We cannot run dotnet publish against the same directory concurrently.
-            //Doing so causes the publish job to fail because it can't obtain a lock on files in the obj and bin directories.
-            lock (GetPublishLockObjectForCoreApp())
+            TestLogger?.WriteLine($"cache size is {_publishedTestAppsCache.Count}");
+
+            if (!_publishedTestAppsCache.ContainsKey(testAppIdentifier))
             {
-                process.Start();
 
-                var processOutput = new ProcessOutput(TestLogger, process, true);
+                var projectFile = Path.Combine(SourceApplicationsDirectoryPath, ApplicationDirectoryName,
+                    ApplicationDirectoryName + ".csproj");
+                var deployPath = Path.Combine(PublishedTestAppsCacheDir, testAppIdentifier);
 
-                // Publishes take longer in CI currently, regularly taking longer than 3 minutes.
-                // 10 minutes may or may not be extreme but stabilizes these failures.
-                const int timeoutInMilliseconds = 10 * 60 * 1000;
-                if (!process.WaitForExit(timeoutInMilliseconds))
+                TestLogger?.WriteLine($"[RemoteService]: Test app {testAppIdentifier} not found in cache, publishing to {deployPath}.");
+
+                // Remove previously published copy if it exists
+                if (Directory.Exists(deployPath))
                 {
-                    TestLogger?.WriteLine($"[RemoteService]: PublishCoreApp timed out while waiting for {ApplicationDirectoryName} to publish after {timeoutInMilliseconds} milliseconds.");
-                    try
+                    TestLogger?.WriteLine($"[RemoteService]: deleting previous on-disk copy of {testAppIdentifier} from {deployPath}");
+                    Directory.Delete(deployPath, true);
+                }
+
+                var process = new Process();
+                var startInfo = new ProcessStartInfo();
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                startInfo.UseShellExecute = false;
+                startInfo.FileName = "dotnet";
+                startInfo.RedirectStandardOutput = true;
+                startInfo.RedirectStandardError = true;
+
+                startInfo.Arguments =
+                    $"publish --configuration Release --runtime {runtime} --framework {framework} --output {deployPath} {projectFile}";
+                TestLogger?.WriteLine($"[RemoteService]: executing 'dotnet {startInfo.Arguments}'");
+                process.StartInfo = startInfo;
+
+                //We cannot run dotnet publish against the same directory concurrently.
+                //Doing so causes the publish job to fail because it can't obtain a lock on files in the obj and bin directories.
+                lock (GetPublishLockObjectForCoreApp())
+                {
+                    process.Start();
+
+                    var processOutput = new ProcessOutput(TestLogger, process, true);
+
+                    // Publishes take longer in CI currently, regularly taking longer than 3 minutes.
+                    // 10 minutes may or may not be extreme but stabilizes these failures.
+                    const int timeoutInMilliseconds = 10 * 60 * 1000;
+                    if (!process.WaitForExit(timeoutInMilliseconds))
                     {
-                        //This usually happens because another publishing job has a lock on the file(s) being copied.
-                        //We send a termination request because we no longer want dotnet publish to continue to copy files
-                        //when there's a good chance that at least some of the files are missing.
-                        //We can only use "kill" to request termination here, because there isn't a "close" option for non-GUI apps.
-                        process.Kill();
+                        TestLogger?.WriteLine($"[RemoteService]: PublishCoreApp timed out while waiting for {ApplicationDirectoryName} to publish after {timeoutInMilliseconds} milliseconds.");
+                        try
+                        {
+                            //This usually happens because another publishing job has a lock on the file(s) being copied.
+                            //We send a termination request because we no longer want dotnet publish to continue to copy files
+                            //when there's a good chance that at least some of the files are missing.
+                            //We can only use "kill" to request termination here, because there isn't a "close" option for non-GUI apps.
+                            process.Kill();
+                        }
+                        catch (Exception e)
+                        {
+                            TestLogger?.WriteLine($"======[RemoteService]: PublishCoreApp failed to kill process that publishes {ApplicationDirectoryName} with exception =====");
+                            TestLogger?.WriteLine(e.ToString());
+                            TestLogger?.WriteLine($"-----[RemoteService]: PublishCoreApp failed to kill process that publishes {ApplicationDirectoryName} end of exception -----");
+                        }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        TestLogger?.WriteLine($"======[RemoteService]: PublishCoreApp failed to kill process that publishes {ApplicationDirectoryName} with exception =====");
-                        TestLogger?.WriteLine(e.ToString());
-                        TestLogger?.WriteLine($"-----[RemoteService]: PublishCoreApp failed to kill process that publishes {ApplicationDirectoryName} end of exception -----");
+                        Console.WriteLine($"[{DateTime.Now}] dotnet.exe exits with code {process.ExitCode}");
+                    }
+
+                    processOutput.WriteProcessOutputToLog("[RemoteService]: PublishCoreApp");
+
+                    if (!process.HasExited || process.ExitCode != 0)
+                    {
+                        var failedToPublishMessage = "Failed to publish Core application";
+
+                        TestLogger?.WriteLine($"[RemoteService]: {failedToPublishMessage}");
+                        throw new Exception(failedToPublishMessage);
                     }
                 }
-                else
+
+                if (! _publishedTestAppsCache.TryAdd(testAppIdentifier, deployPath))
                 {
-                    Console.WriteLine($"[{DateTime.Now}] dotnet.exe exits with code {process.ExitCode}");
+                    TestLogger?.WriteLine($"[RemoteService]: failed to add test app identifier {testAppIdentifier} to cache.");
                 }
+                Console.WriteLine($"[{DateTime.Now}] Successfully published {projectFile} to {deployPath}");
 
-                processOutput.WriteProcessOutputToLog("[RemoteService]: PublishCoreApp");
-
-                if (!process.HasExited || process.ExitCode != 0)
-                {
-                    var failedToPublishMessage = "Failed to publish Core application";
-
-                    TestLogger?.WriteLine($"[RemoteService]: {failedToPublishMessage}");
-                    throw new Exception(failedToPublishMessage);
-                }
             }
 
-            Console.WriteLine($"[{DateTime.Now}] Successfully published {projectFile} to {deployPath}");
+            var cachedAppPath = _publishedTestAppsCache[testAppIdentifier];
+            TestLogger?.WriteLine($"Test app has already been published, copying from {cachedAppPath} to {DestinationApplicationDirectoryPath}");
+            CommonUtils.CopyDirectory(cachedAppPath, DestinationApplicationDirectoryPath);
         }
 
         private object GetPublishLockObjectForCoreApp()
         {
             return PublishCoreAppLocks.GetOrAdd(ApplicationDirectoryName, _ => new object());
         }
-
-
-
 
         public override void Start(string commandLineArguments, Dictionary<string, string> environmentVariables, bool captureStandardOutput = false, bool doProfile = true)
         {
