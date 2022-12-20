@@ -122,12 +122,17 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
             TestLogger?.WriteLine($"cache size is {_publishedTestAppsCache.Count}");
 
-            if (!_publishedTestAppsCache.ContainsKey(testAppIdentifier))
+            //var cachedAppPath = _publishedTestAppsCache[testAppIdentifier];
+            var cachedAppPath = Path.Combine(PublishedTestAppsCacheDir, testAppIdentifier);
+
+            //if (!_publishedTestAppsCache.ContainsKey(testAppIdentifier))
+            if (! Directory.Exists(cachedAppPath))
             {
 
                 var projectFile = Path.Combine(SourceApplicationsDirectoryPath, ApplicationDirectoryName,
                     ApplicationDirectoryName + ".csproj");
-                var deployPath = Path.Combine(PublishedTestAppsCacheDir, testAppIdentifier);
+                //var deployPath = Path.Combine(PublishedTestAppsCacheDir, testAppIdentifier);
+                var deployPath = cachedAppPath;
 
                 TestLogger?.WriteLine($"[RemoteService]: Test app {testAppIdentifier} not found in cache, publishing to {deployPath}.");
 
@@ -203,9 +208,12 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 Console.WriteLine($"[{DateTime.Now}] Successfully published {projectFile} to {deployPath}");
 
             }
+            else
+            {
+                TestLogger?.WriteLine($"Found cached test app at {cachedAppPath}");
+            }
 
-            var cachedAppPath = _publishedTestAppsCache[testAppIdentifier];
-            TestLogger?.WriteLine($"Test app has already been published, copying from {cachedAppPath} to {DestinationApplicationDirectoryPath}");
+            TestLogger?.WriteLine($"Copying test app from {cachedAppPath} to {DestinationApplicationDirectoryPath}");
             CommonUtils.CopyDirectory(cachedAppPath, DestinationApplicationDirectoryPath);
         }
 
