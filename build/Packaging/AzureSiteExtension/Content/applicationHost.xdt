@@ -15,6 +15,7 @@
         <add name="CORECLR_PROFILER_PATH_64" value="%HOME%\NewRelicAgent\Core\NewRelic.Profiler.dll" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
         <add name="CORECLR_NEWRELIC_HOME" value="%HOME%\NewRelicAgent\Core" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
         <add name="NEW_RELIC_METADATA_AZURE_APP_SERVICE_ID" value="%WEBSITE_SITE_NAME%" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
+        <add name="NEW_RELIC_APP_NAME" value="%WEBSITE_SITE_NAME%" xdt:Locator="Match(name)" xdt:Transform="InsertIfMissing"/>
       </environmentVariables>
     </runtime>
   </system.webServer>
