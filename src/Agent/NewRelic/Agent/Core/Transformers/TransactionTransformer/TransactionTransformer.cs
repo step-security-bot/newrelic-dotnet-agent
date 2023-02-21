@@ -413,13 +413,15 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
                     var sqlExplainPlansMax = _configurationService.Configuration.SqlExplainPlansMax;
                     var threshold = _configurationService.Configuration.SqlExplainPlanThreshold;
                     var obfuscator = SqlObfuscator.GetSqlObfuscator(_configurationService.Configuration.TransactionTracerRecordSql);
-                    foreach (var segment in segments.Where(s => s.Data is DatastoreSegmentData))
+
+                    foreach (var segment in segments.Where(s => s.Data is DatastoreSegmentData).OrderByDescending(x => x.Duration))
                     {
                         if (segment.Duration > threshold)
                         {
                             var datastoreSegmentData = (DatastoreSegmentData)segment.Data;
                             if (datastoreSegmentData.DoExplainPlanCondition?.Invoke() == true)
                             {
+                                // TODO: Global limit on explain plans per harvest... This logic is currently only per transaction... :(
                                 datastoreSegmentData.ExecuteExplainPlan(obfuscator);
                                 if (++count >= sqlExplainPlansMax)
                                 {
