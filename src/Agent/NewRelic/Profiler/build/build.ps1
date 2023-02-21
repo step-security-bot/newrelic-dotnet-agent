@@ -5,7 +5,7 @@
 
 param(
     [ValidateNotNullOrEmpty()]
-    [ValidateSet('all','linux','windows','x64','x86')]
+    [ValidateSet('all','linux', 'linuxArm64','windows','x64','x86')]
     [string]$Platform="all",
 
     [ValidateNotNullOrEmpty()]
@@ -32,10 +32,12 @@ $profilerRoot = "$rootDirectory\src\Agent\NewRelic\Profiler"
 $profilerSolutionPath = "$profilerRoot\NewRelic.Profiler.sln"
 $outputPath = "$rootDirectory\src\Agent\_profilerBuild"
 $linuxamd64OutputPath = "$outputPath\linux-x64-release"
+$linuxarm64OutputPath = "$outputPath\linux-arm64-release"
 
 $buildx64 = $Platform -eq "all" -or $Platform -eq "windows" -or $Platform -eq "x64"
 $buildx86 = $Platform -eq "all" -or $Platform -eq "windows" -or $Platform -eq "x86"
 $buildLinux = $Platform -eq "all" -or $Platform -eq "linux"
+$buildLinuxArm64 = $Platform -eq "all" -or $Platform -eq "linuxArm64"
 
 if ($Platform -eq "all") {
     if (Test-Path $outputPath) { Remove-Item $outputPath -Recurse }
@@ -66,4 +68,17 @@ if ($buildLinux) {
 
     if (!(Test-Path $linuxamd64OutputPath)) { New-Item $linuxamd64OutputPath -ItemType Directory }
     Move-Item -Force "$profilerRoot\libNewRelicProfiler.so" "$linuxamd64OutputPath"
+}
+if ($buildLinuxArm64) {
+    Write-Host "-- Profiler build: linux-arm64-release"
+
+    if ($Configuration -eq "Debug") {
+        Write-Host "Configuration=Debug is not currently supported by this script when building the linux profiler. Building Configuration=Release instead."
+    }
+
+    & $profilerRoot\build\scripts\build_linux_arm64.ps1
+    ExitIfFailLastExitCode
+
+    if (!(Test-Path $linuxarm64OutputPath)) { New-Item $linuxarm64OutputPath -ItemType Directory }
+    Move-Item -Force "$profilerRoot\libNewRelicProfiler.so" "$linuxarm64OutputPath"
 }
