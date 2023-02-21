@@ -14,7 +14,7 @@ services:
             context: linux/.
             dockerfile: Arm64Dockerfile
 
-        #command: bash -c "dos2unix ./build_profiler.sh && chmod 777 build_profiler.sh && ./build_profiler.sh"
+        command: bash -c "dos2unix ./build_profiler.sh && chmod 777 build_profiler.sh && ./build_profiler.sh"
         volumes: 
             - .:/profiler
         working_dir: /profiler/linux/
