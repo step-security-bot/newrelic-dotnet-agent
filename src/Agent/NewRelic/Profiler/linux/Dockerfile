@@ -1,6 +1,6 @@
 # This builds an Ubuntu image, clones the coreclr github repo and builds it.
 # It then sets up the environment for compiling the New Relic .NET profiler.
-FROM ubuntu:22.04
+FROM ubuntu:14.04
 
 RUN apt-get update && apt-get install -y \
   wget \
@@ -20,7 +20,6 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 # That probably isn't necessary, but whatever.
 RUN mkdir /root/git
 WORKDIR /root/git
-
 RUN git clone --branch release/3.1 https://github.com/dotnet/coreclr.git
 
 # Install the build tools that the profiler requires
@@ -28,16 +27,16 @@ RUN apt-get update && apt-get install -y \
   make \
   binutils \
   libc++-dev \
-  clang-14 \
-  lldb-14
+  clang-3.9 \
+  lldb-3.9
 
 # Remove expired root CA cert
 RUN sed -i 's/mozilla\/DST_Root_CA_X3.crt/!mozilla\/DST_Root_CA_X3.crt/g' /etc/ca-certificates.conf
 RUN update-ca-certificates
 
-# Install cmake 3.25.2 for x86_64
-RUN curl -sSL https://cmake.org/files/v3.25/cmake-3.25.2-linux-x86_64.tar.gz | tar -xzC /opt
-RUN ln -s /opt/cmake-3.25.2-linux-x86_64/bin/cmake /usr/local/sbin/cmake
+# Install cmake 3.9
+RUN curl -sSL https://cmake.org/files/v3.9/cmake-3.9.0-rc3-Linux-x86_64.tar.gz | tar -xzC /opt
+RUN ln -s /opt/cmake-3.9.0-rc3-Linux-x86_64/bin/cmake /usr/local/sbin/cmake
 
-RUN rm /usr/bin/cc;   ln -s /usr/bin/clang-14 /usr/bin/cc
-RUN rm /usr/bin/c++;  ln -s /usr/bin/clang++-14 /usr/bin/c++
+RUN rm /usr/bin/cc;   ln -s /usr/bin/clang-3.9 /usr/bin/cc
+RUN rm /usr/bin/c++;  ln -s /usr/bin/clang++-3.9 /usr/bin/c++
