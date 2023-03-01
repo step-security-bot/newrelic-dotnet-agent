@@ -2950,6 +2950,8 @@ namespace NewRelic.Agent.Core.Config
         
         private int maxExplainPlansField;
         
+        private int maxExplainPlansPerHarvestField;
+        
         private System.Nullable<bool> captureAttributesField;
         
         /// <summary>
@@ -2967,6 +2969,7 @@ namespace NewRelic.Agent.Core.Config
             this.maxSegmentsField = 3000;
             this.maxStackTraceField = 0;
             this.maxExplainPlansField = 20;
+            this.maxExplainPlansPerHarvestField = 200;
         }
         
         public configurationTransactionTracerAttributes attributes
@@ -3104,6 +3107,20 @@ namespace NewRelic.Agent.Core.Config
             set
             {
                 this.maxExplainPlansField = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute()]
+        [System.ComponentModel.DefaultValueAttribute(200)]
+        public int maxExplainPlansPerHarvest
+        {
+            get
+            {
+                return this.maxExplainPlansPerHarvestField;
+            }
+            set
+            {
+                this.maxExplainPlansPerHarvestField = value;
             }
         }
         

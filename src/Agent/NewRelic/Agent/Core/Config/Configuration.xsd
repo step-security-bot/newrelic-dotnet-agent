@@ -991,9 +991,17 @@
                         <xs:attribute name="maxExplainPlans" type="xs:int" default="20">
                             <xs:annotation>
                                 <xs:documentation>
-                                    The maximum number of explain plans to collect during a harvest cycle.
+                                    The maximum number of explain plans to collect during a transaction.
                                 </xs:documentation>
                             </xs:annotation>
+                        </xs:attribute>
+
+                        <xs:attribute name="maxExplainPlansPerHarvest" type="xs:int" default="200">
+                        <xs:annotation>
+                            <xs:documentation>
+                                The maximum number of explain plans to collect during a harvest cycle.
+                            </xs:documentation>
+                        </xs:annotation>
                         </xs:attribute>
 
                         <xs:attribute name="captureAttributes" type="xs:boolean" use="optional">
