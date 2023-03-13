@@ -93,7 +93,7 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
 
             ComputeSampled(transaction);
             PrioritizeAndCollectLogEvents(transaction);
-            
+
             var immutableTransaction = transaction.ConvertToImmutableTransaction();
 
             // Note: Metric names are normally handled internally by the IMetricBuilder. However, transactionMetricName is an exception because (sadly) it is used for more than just metrics. For example, transaction events need to use metric name, as does RUM and CAT.
@@ -118,8 +118,6 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
                 throw new ArgumentException("Transaction does not have any segments");
 
             FinishSegments(immutableTransaction.Segments);
-
-            TryGenerateExplainPlans(immutableTransaction.Segments);
 
             var totalTime = GetTotalExclusiveTime(immutableTransaction.Segments);
             var transactionApdexMetricName = MetricNames.GetTransactionApdex(transactionMetricName);
@@ -380,6 +378,7 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
                 if (datastoreSegmentData.CommandText != null &&
                      segment.Duration >= _configurationService.Configuration.SqlExplainPlanThreshold)
                 {
+                    TryGenerateExplainPlan(segment);
                     AddSqlTraceStats(txSqlTrStats, _sqlTraceMaker.TryGetSqlTrace(immutableTransaction, transactionMetricName, segment));
                 }
             }
@@ -395,7 +394,7 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
             }
         }
 
-        private void TryGenerateExplainPlans(IEnumerable<Segment> segments)
+        private void TryGenerateExplainPlan(Segment segment)
         {
             // First, check if explainPlans are disabled and return if they are
             // If explainPlans are enabled, check if both TransactionTracer and SlowSql are disabled.  If they are, we don't need a plan, so return.
@@ -414,22 +413,23 @@ namespace NewRelic.Agent.Core.Transformers.TransactionTransformer
                     var threshold = _configurationService.Configuration.SqlExplainPlanThreshold;
                     var obfuscator = SqlObfuscator.GetSqlObfuscator(_configurationService.Configuration.TransactionTracerRecordSql);
 
-                    foreach (var segment in segments.Where(s => s.Data is DatastoreSegmentData).OrderByDescending(x => x.Duration))
+                    // TODO: incase we need this data...
+                    //foreach (var segment in segments.Where(s => s.Data is DatastoreSegmentData).OrderByDescending(x => x.Duration))
+                    
+                    if (segment.Duration > threshold)
                     {
-                        if (segment.Duration > threshold)
+                        var datastoreSegmentData = (DatastoreSegmentData)segment.Data;
+                        if (datastoreSegmentData.DoExplainPlanCondition?.Invoke() == true)
                         {
-                            var datastoreSegmentData = (DatastoreSegmentData)segment.Data;
-                            if (datastoreSegmentData.DoExplainPlanCondition?.Invoke() == true)
+                            // TODO: Global limit on explain plans per harvest... This logic is currently only per transaction... :(
+                            datastoreSegmentData.ExecuteExplainPlan(obfuscator);
+                            if (++count >= sqlExplainPlansMax)
                             {
-                                // TODO: Global limit on explain plans per harvest... This logic is currently only per transaction... :(
-                                datastoreSegmentData.ExecuteExplainPlan(obfuscator);
-                                if (++count >= sqlExplainPlansMax)
-                                {
-                                    return;
-                                }
+                                return;
                             }
                         }
                     }
+                    //}
                 }
             }
             catch (Exception exception)

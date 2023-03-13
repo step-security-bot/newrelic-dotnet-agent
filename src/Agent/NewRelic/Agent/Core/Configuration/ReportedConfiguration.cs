@@ -400,6 +400,9 @@ namespace NewRelic.Agent.Core.Configuration
         [JsonProperty("transaction_tracer.max_explain_plans")]
         public int SqlExplainPlansMax => _configuration.SqlExplainPlansMax;
 
+        [JsonProperty("transaction_tracer.max_explain_plans_per_transaction")]
+        public int SqlExplainPlansMaxPerHarvest => _configuration.SqlExplainPlansMaxPerHarvest;
+
         [JsonProperty("transaction_tracer.max_sql_statements")]
         public uint SqlStatementsPerTransaction => _configuration.SqlStatementsPerTransaction;
 

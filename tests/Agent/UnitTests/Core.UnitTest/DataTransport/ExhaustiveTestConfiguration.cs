@@ -262,6 +262,8 @@ namespace NewRelic.Agent.Core.DataTransport
 
         public int SqlExplainPlansMax => 1234;
 
+        public int SqlExplainPlansMaxPerHarvest => 5678;
+
         public uint SqlStatementsPerTransaction => 4321;
 
         public int SqlTracesPerPeriod => 1234;

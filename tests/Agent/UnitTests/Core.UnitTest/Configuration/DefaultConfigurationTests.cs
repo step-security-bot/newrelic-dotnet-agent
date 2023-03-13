@@ -578,6 +578,18 @@ namespace NewRelic.Agent.Core.Configuration.UnitTest
         }
 
         [Test]
+        public void SqlMaxExplainPlansPerTransactionDefaultsTo20()
+        {
+            Assert.AreEqual(20, _defaultConfig.SqlExplainPlansMax);
+        }
+
+        [Test]
+        public void SqlMaxExplainPlansPerHarvestDefaultsTo200()
+        {
+            Assert.AreEqual(200, _defaultConfig.SqlExplainPlansMaxPerHarvest);
+        }
+
+        [Test]
         public void SqlStatementsPerTransactionAlwaysReturns500()
         {
             Assert.AreEqual(500, _defaultConfig.SqlStatementsPerTransaction);

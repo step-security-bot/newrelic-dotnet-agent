@@ -9,6 +9,7 @@ using NewRelic.Agent.Core.WireModels;
 using NewRelic.SystemInterfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace NewRelic.Agent.Core.Aggregators
 {
@@ -19,7 +20,7 @@ namespace NewRelic.Agent.Core.Aggregators
 
     public class SqlTraceAggregator : AbstractAggregator<SqlTraceStatsCollection>, ISqlTraceAggregator
     {
-        private SqlTraceStatsCollection _sqlTraceStats = new SqlTraceStatsCollection();
+        private SqlTraceStatsCollection _sqlTraceStats = new SqlTraceStatsCollection(_configuration.SqlTracesPerPeriod);
 
         private readonly object _sqlTraceLock = new object();
 
@@ -43,13 +44,8 @@ namespace NewRelic.Agent.Core.Aggregators
 
         protected override void Harvest()
         {
-            IDictionary<long, SqlTraceWireModel> oldSqlTraces;
-            lock (_sqlTraceLock)
-            {
-                oldSqlTraces = _sqlTraceStats.Collection;
-                _sqlTraceStats = new SqlTraceStatsCollection();
-            }
-
+            IDictionary<long, SqlTraceWireModel> oldSqlTraces = Interlocked.Exchange(ref _sqlTraceStats, new SqlTraceStatsCollection(_configuration.SqlTracesPerPeriod)).Collection;
+                
             var slowestTraces = oldSqlTraces.Values
                 .Where(trace => trace != null)
                 .OrderByDescending(trace => trace.MaxCallTime)

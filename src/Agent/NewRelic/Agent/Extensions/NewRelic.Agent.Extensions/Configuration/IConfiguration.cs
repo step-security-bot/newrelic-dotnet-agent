@@ -123,7 +123,14 @@ namespace NewRelic.Agent.Configuration
         bool SlowSqlEnabled { get; }
         TimeSpan SqlExplainPlanThreshold { get; }
         bool SqlExplainPlansEnabled { get; }
+        /// <summary>
+        /// Max explain plans per transaction
+        /// </summary>
         int SqlExplainPlansMax { get; }
+        /// <summary>
+        /// Max explain plans per harvest
+        /// </summary>
+        int SqlExplainPlansMaxPerHarvest { get; }
         uint SqlStatementsPerTransaction { get; }
         int SqlTracesPerPeriod { get; }
         int StackTraceMaximumFrames { get; }

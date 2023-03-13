@@ -1472,6 +1472,7 @@ namespace NewRelic.Agent.Core.Configuration
         }
 
         public virtual int SqlExplainPlansMax { get { return _localConfiguration.transactionTracer.maxExplainPlans; } }
+        public virtual int SqlExplainPlansMaxPerHarvest { get { return _localConfiguration.transactionTracer.maxExplainPlansPerHarvest; } }
         public virtual uint SqlStatementsPerTransaction { get { return 500; } }
         public virtual int SqlTracesPerPeriod { get { return 10; } }
 
