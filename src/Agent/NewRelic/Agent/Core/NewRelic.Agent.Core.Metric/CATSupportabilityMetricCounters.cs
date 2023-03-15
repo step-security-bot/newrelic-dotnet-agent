@@ -99,7 +99,8 @@ namespace NewRelic.Agent.Core.Metric
 
         public void Record(CATSupportabilityCondition condition)
         {
-            _counters[condition].Increment();
+            var counter = _counters[condition];
+            counter?.Increment();
         }
 
         public void RegisterPublishMetricHandler(PublishMetricDelegate publishMetricDelegate)

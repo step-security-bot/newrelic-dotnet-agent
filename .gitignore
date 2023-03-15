@@ -149,3 +149,4 @@ src/Agent/_profilerBuild/*Debug
 build/Linux/keys
 
 tests/TestResults/*
+/.infersharpconfig

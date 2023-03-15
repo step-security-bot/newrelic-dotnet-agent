@@ -25,7 +25,7 @@ namespace NewRelic.Agent.Core.Metrics
 
         public string NormalizeUrl(string url)
         {
-            ITimer timer = new Timer();
+            using var timer = new Timer();
             try
             {
                 url = StripParameters(url);

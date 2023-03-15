@@ -295,7 +295,11 @@ namespace NewRelic.Agent.Core.Segments
 
         public SpanAttributeValueCollection GetAttributeValues()
         {
-            var attribValues = _customAttribValues ?? new SpanAttributeValueCollection();
+            SpanAttributeValueCollection attribValues;
+            lock (_customAttribValuesSyncRoot)
+            {
+                attribValues = _customAttribValues ?? new SpanAttributeValueCollection();
+            }
 
             AttribDefs.Duration.TrySetValue(attribValues, DurationOrZero);
             AttribDefs.NameForSpan.TrySetValue(attribValues, GetTransactionTraceName());
@@ -413,7 +417,7 @@ namespace NewRelic.Agent.Core.Segments
             SpanAttributeValueCollection customAttribValues;
             lock (_customAttribValuesSyncRoot)
             {
-                customAttribValues = _customAttribValues ?? (_customAttribValues = new SpanAttributeValueCollection());
+                customAttribValues = _customAttribValues ??= new SpanAttributeValueCollection();
             }
 
             AttribDefs.GetCustomAttributeForSpan(key).TrySetValue(customAttribValues, value);

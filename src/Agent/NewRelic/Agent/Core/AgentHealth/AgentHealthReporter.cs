@@ -243,9 +243,9 @@ namespace NewRelic.Agent.Core.AgentHealth
         {
 #if NETSTANDARD2_0
 
-			bool isLinux = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
-			var metric =_metricBuilder.TryBuildLinuxOsMetric(isLinux);
-			TrySend(metric);
+            bool isLinux = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
+            var metric =_metricBuilder.TryBuildLinuxOsMetric(isLinux);
+            TrySend(metric);
 #endif
         }
 
@@ -424,11 +424,8 @@ namespace NewRelic.Agent.Core.AgentHealth
             _infiniteTracingSpanEventsSent.Add(countSpans);
             _infiniteTracingSpanBatchCount.Increment();
 
-            lock (_syncRootMetrics)
-            {
-                _infiniteTracingSpanBatchSizeMin = Math.Min(_infiniteTracingSpanBatchSizeMin, countSpans);
-                _infiniteTracingSpanBatchSizeMax = Math.Max(_infiniteTracingSpanBatchSizeMax, countSpans);
-            }
+            Interlocked.Exchange(ref _infiniteTracingSpanBatchSizeMin,  Math.Min(_infiniteTracingSpanBatchSizeMin, countSpans));
+            Interlocked.Exchange(ref _infiniteTracingSpanBatchSizeMax, Math.Max(_infiniteTracingSpanBatchSizeMax, countSpans));
 
         }
 
@@ -611,7 +608,7 @@ namespace NewRelic.Agent.Core.AgentHealth
             ReportSupportabilityCountMetric(MetricNames.GetSupportabilityLogDecoratingConfiguredName(_configuration.LogDecoratorEnabled));
         }
 
-#endregion
+        #endregion
 
         public void ReportSupportabilityPayloadsDroppeDueToMaxPayloadSizeLimit(string endpoint)
         {

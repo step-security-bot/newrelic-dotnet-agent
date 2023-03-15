@@ -23,29 +23,14 @@ namespace NewRelic.Agent.Core.Utilities
 
         private class FuncCache<R> where R : class
         {
-            private R _cachedValue;
-            private readonly Func<R> _func;
+            private readonly Lazy<R> _lazyFunc;
 
             public FuncCache(Func<R> func)
             {
-                _func = func;
+                _lazyFunc = new Lazy<R>(func.Invoke);
             }
 
-            public R Invoke()
-            {
-                if (_cachedValue == null)
-                {
-                    lock (this)
-                    {
-                        if (_cachedValue == null)
-                        {
-                            _cachedValue = _func.Invoke();
-                        }
-                    }
-                }
-                return _cachedValue;
-            }
+            public R Invoke() => _lazyFunc.Value;
         }
-
     }
 }

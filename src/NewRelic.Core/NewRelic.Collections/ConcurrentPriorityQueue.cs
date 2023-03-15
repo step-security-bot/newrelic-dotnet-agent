@@ -17,8 +17,25 @@ namespace NewRelic.Collections
         private int _addsAttempted;
 
         private readonly SortedSet<T> _sortedSet;
+        private int _size;
 
-        public int Size { get; private set; }
+        public int Size
+        {
+            get
+            {
+                lock (_syncroot)
+                {
+                    return _size;
+                }
+            }
+            private set
+            {
+                lock (_syncroot)
+                {
+                    _size = value;
+                }
+            }
+        }
 
         public int Count { get { lock (_syncroot) return _sortedSet.Count; } }
 
@@ -112,8 +129,11 @@ namespace NewRelic.Collections
         //Assume lock on the _syncroot is held.
         private void Reset()
         {
-            _addsAttempted = 0;
-            _sortedSet.Clear();
+            lock (_syncroot)
+            {
+                _addsAttempted = 0;
+                _sortedSet.Clear();
+            }
         }
 
         //Assume lock on the _syncroot is held.
@@ -143,7 +163,10 @@ namespace NewRelic.Collections
 
         public int GetAddAttemptsCount()
         {
-            return Volatile.Read(ref _addsAttempted);
+            lock (_syncroot)
+            {
+                return Volatile.Read(ref _addsAttempted);
+            }
         }
 
         public void Clear()

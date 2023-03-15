@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 #pragma warning disable 649 // Unassigned fields. This should be removed when we support thread profiling in the NETSTANDARD2_0 build.
 
@@ -55,6 +56,8 @@ namespace NewRelic.Agent.Core.ThreadProfiling
         // Sync object used to serialize access to the three thread lists. Don't expect access to occur
         // often enough to warrant three separate synchronization objects. Optimize later if necessary.
         private readonly object _syncObjFailedProfiles = new object();
+
+        private readonly object _syncObjThreadProfilingBucket  = new object();
 
         /// <summary>
         /// Count by thread Id of failed thread profiles received from unmanaged thread profiler.
@@ -147,7 +150,7 @@ namespace NewRelic.Agent.Core.ThreadProfiling
                 {
                     _startSessionTime = DateTime.UtcNow;
                     _profileSessionId = profileSessionId;
-                    _numberSamplesInSession = 0;
+                    Interlocked.Exchange(ref _numberSamplesInSession, 0);
                 }
             }
             catch (Exception e)
@@ -210,7 +213,7 @@ namespace NewRelic.Agent.Core.ThreadProfiling
                 }
             }
 
-            ++_numberSamplesInSession;
+            Interlocked.Increment(ref _numberSamplesInSession);
         }
 
         /// <summary>
@@ -448,15 +451,17 @@ namespace NewRelic.Agent.Core.ThreadProfiling
             UpdateRunnableCounts(_threadProfilingBucket.Tree.Root, nonRunnableLeafNodes);
         }
 
-        private static void UpdateRunnableCounts(ProfileNode node, IEnumerable<string> nonRunnableLeafNodes)
+        private void UpdateRunnableCounts(ProfileNode node, IEnumerable<string> nonRunnableLeafNodes)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
-
-            if (node.Children.Count == 0)
-                UpdateRunnableCountsForLeafNode(node, nonRunnableLeafNodes);
-            else
-                UpdateRunnableCountsForNodeChildren(node, nonRunnableLeafNodes);
+            lock (_syncObjThreadProfilingBucket)
+            {
+                if (node.Children.Count == 0)
+                    UpdateRunnableCountsForLeafNode(node, nonRunnableLeafNodes);
+                else
+                    UpdateRunnableCountsForNodeChildren(node, nonRunnableLeafNodes);
+            }
         }
 
         private static void UpdateRunnableCountsForLeafNode(ProfileNode node, IEnumerable<string> nonRunnableLeafNodes)
@@ -470,7 +475,7 @@ namespace NewRelic.Agent.Core.ThreadProfiling
             node.RunnableCount = 0;
         }
 
-        private static void UpdateRunnableCountsForNodeChildren(ProfileNode node, IEnumerable<string> nonRunnableLeafNodes)
+        private void UpdateRunnableCountsForNodeChildren(ProfileNode node, IEnumerable<string> nonRunnableLeafNodes)
         {
             if (node == null)
                 throw new ArgumentNullException("node");
@@ -494,8 +499,11 @@ namespace NewRelic.Agent.Core.ThreadProfiling
         public void ResetCache()
         {
 
-            _numberSamplesInSession = 0;
-            _threadProfilingBucket.ClearTree();
+            Interlocked.Exchange(ref _numberSamplesInSession , 0);
+            lock (_syncObjThreadProfilingBucket)
+            {
+                _threadProfilingBucket.ClearTree();
+            }
 
             lock (_syncObjFunctionNames)
             {

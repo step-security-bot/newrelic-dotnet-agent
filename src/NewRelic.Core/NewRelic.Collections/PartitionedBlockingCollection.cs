@@ -39,7 +39,13 @@ namespace NewRelic.Collections
                 }
             }
 
-            _collections = collections.ToArray();
+            // no idea why .ToArray() wasn't good enough, but Infer# complained until I changed it to the following
+            _collections = new BlockingCollection<T>[collections.Count];
+            var index = 0;
+            foreach (var bc in collections)
+            {
+                _collections[index++] = bc;
+            }
         }
 
         public PartitionedBlockingCollection(int capacity, int partitionCount, PartitionedBlockingCollection<T> fromCollection)

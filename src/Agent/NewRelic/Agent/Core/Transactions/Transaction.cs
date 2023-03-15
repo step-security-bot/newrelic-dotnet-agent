@@ -1135,9 +1135,25 @@ namespace NewRelic.Agent.Core.Transactions
 
         #region TransactionBuilder finalization logic
 
-        public bool IsFinished { get; private set; } = false;
-
         private object _finishLock = new object();
+        private bool _isFinished = false;
+        public bool IsFinished
+        {
+            get
+            {
+                lock (_finishLock)
+                {
+                    return _isFinished;
+                }
+            }
+            private set
+            {
+                lock (_finishLock)
+                {
+                    _isFinished = value;
+                }
+            }
+        }
 
         public bool Finish()
         {
