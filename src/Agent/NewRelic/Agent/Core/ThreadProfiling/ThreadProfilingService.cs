@@ -499,9 +499,9 @@ namespace NewRelic.Agent.Core.ThreadProfiling
         public void ResetCache()
         {
 
-            Interlocked.Exchange(ref _numberSamplesInSession , 0);
             lock (_syncObjThreadProfilingBucket)
             {
+                _numberSamplesInSession = 0;
                 _threadProfilingBucket.ClearTree();
             }
 

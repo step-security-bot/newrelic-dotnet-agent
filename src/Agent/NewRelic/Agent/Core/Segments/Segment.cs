@@ -295,6 +295,9 @@ namespace NewRelic.Agent.Core.Segments
 
         public SpanAttributeValueCollection GetAttributeValues()
         {
+            // Infer#: Read/Write race. Non-private method `Segment.GetAttributeValues()` reads without synchronization from `this.NewRelic.Agent.Core.Segments.Segment._customAttribValues`. Potentially races with write in method `Segment.AddCustomAttribute(...)`.
+            //         Reporting because another access to the same memory occurs on a background thread, although this access may not.
+            // var attribValues = _customAttribValues ?? new SpanAttributeValueCollection();
             SpanAttributeValueCollection attribValues;
             lock (_customAttribValuesSyncRoot)
             {

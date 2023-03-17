@@ -1135,6 +1135,9 @@ namespace NewRelic.Agent.Core.Transactions
 
         #region TransactionBuilder finalization logic
 
+        // Infer#: Read/Write race. Non-private method `Transaction.get_IsFinished()` reads without synchronization from `this.NewRelic.Agent.Core.Transactions.Transaction.<IsFinished>k__BackingField`. Potentially races with write in method `Transaction.Finish()`.
+        //         Reporting because another access to the same memory occurs on a background thread, although this access may not.
+        // public bool IsFinished { get; private set; } = false;
         private object _finishLock = new object();
         private bool _isFinished = false;
         public bool IsFinished

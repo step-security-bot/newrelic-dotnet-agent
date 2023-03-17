@@ -25,6 +25,8 @@ namespace NewRelic.Agent.Core.Metrics
 
         public string NormalizeUrl(string url)
         {
+            // Infer#: Resource dynamically allocated by constructor NewRelic.Agent.Core.Timing.Timer() on line 28 is not closed after the last access at line 38, column 17.
+            // var timer = new Timer();
             using var timer = new Timer();
             try
             {

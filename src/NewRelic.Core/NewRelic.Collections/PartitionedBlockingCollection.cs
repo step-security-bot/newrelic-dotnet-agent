@@ -39,7 +39,8 @@ namespace NewRelic.Collections
                 }
             }
 
-            // no idea why .ToArray() wasn't good enough, but Infer# complained until I changed it to the following
+            // Infer#: Resource dynamically allocated by constructor System.Collections.Concurrent.BlockingCollection`1<!0>() on line 32 is not closed after the last access at line 42, column 13.
+            // _collections = collections.ToArray();
             _collections = new BlockingCollection<T>[collections.Count];
             var index = 0;
             foreach (var bc in collections)

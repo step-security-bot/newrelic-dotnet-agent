@@ -99,6 +99,8 @@ namespace NewRelic.Agent.Core.Metric
 
         public void Record(CATSupportabilityCondition condition)
         {
+            // Infer#: null (last assigned on line 102) is dereferenced.
+            // _counters[condition].Increment();
             var counter = _counters[condition];
             counter?.Increment();
         }
