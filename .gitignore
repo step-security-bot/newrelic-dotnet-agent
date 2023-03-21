@@ -35,6 +35,9 @@ VersionAssemblyInfo.cs
 
 # Misc build artifacts
 
+# JSON schema catalog files
+https*go.microsoft.com*
+
 # Build output
 bin/
 obj/
