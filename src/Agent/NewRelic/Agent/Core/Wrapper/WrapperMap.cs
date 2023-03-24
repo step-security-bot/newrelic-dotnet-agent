@@ -121,6 +121,12 @@ namespace NewRelic.Agent.Core.Wrapper
             var method = instrumentedMethodInfo.Method;
             var canWrapResponse = wrapper.CanWrap(instrumentedMethodInfo);
 
+
+            if (instrumentedMethodInfo.RequestedWrapperName.StartsWith("stack", System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                Log.Info("StackExchangeRedis2Plus CanWrap on wrapper '" + wrapper.GetType().ToString() + "' returned " + canWrapResponse.CanWrap.ToString());
+            }
+
             if (canWrapResponse.AdditionalInformation != null && !canWrapResponse.CanWrap)
                 Log.Warn(canWrapResponse.AdditionalInformation);
             if (canWrapResponse.AdditionalInformation != null && canWrapResponse.CanWrap)

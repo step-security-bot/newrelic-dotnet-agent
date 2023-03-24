@@ -22,6 +22,7 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis2Plus
 
         public AfterWrappedMethodDelegate BeforeWrappedMethod(InstrumentedMethodCall instrumentedMethodCall, IAgent agent, Agent.Api.ITransaction transaction)
         {
+            agent.Logger.Log(Agent.Extensions.Logging.Level.Finest, "Registering StackExchange.Redis Session Profiler");
             return Delegates.GetDelegateFor<ConnectionMultiplexer>(
                 onSuccess: muxer =>
                 {
@@ -43,6 +44,7 @@ namespace NewRelic.Providers.Wrapper.StackExchangeRedis2Plus
 
                 // Registers the profiling function from the shared SessionCache.
                 multiplexer.RegisterProfiler(((SessionCache)xAgent.StackExchangeRedisCache).GetProfilingSession());
+                agent.Logger.Log(Agent.Extensions.Logging.Level.Finest, "Registered StackExchange.Redis Session Profiler");
             }
         }
     }
