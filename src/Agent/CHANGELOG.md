@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [10.9.1](https://github.com/newrelic/newrelic-dotnet-agent/compare/v10.9.0...v10.9.1) (2023-04-06)
+
+
+### Fixes
+
+* allow the agent to accept multiple versions of legacy NR distributed tracing headers ([#1489](https://github.com/newrelic/newrelic-dotnet-agent/issues/1489)) ([23ee241](https://github.com/newrelic/newrelic-dotnet-agent/commit/23ee24141ad44afa39e3f35f93aa2ae7570acb72))
+
 ## [Unreleased]
 
 ### New Features
